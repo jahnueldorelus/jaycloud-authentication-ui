@@ -1,0 +1,163 @@
+// Sets default styles of a button
+button {
+  transition: transform 0.1s ease-in !important;
+
+  // Makes the button smaller when the user clicks it
+  &:active {
+    transform: scale(0.95);
+  }
+
+  // Darkens the color of the button and removes animations when it's disabled
+  &[aria-disabled="true"] {
+    opacity: 50%;
+    transform: none !important;
+  }
+}
+
+// Sets the default styles of an image
+img {
+  pointer-events: none;
+}
+
+// Adds a box-shadow style in replacement of an outline
+@mixin setBoxShadowOutline($newColor) {
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem $newColor !important;
+}
+
+// Changes the color of an element's outline for accessibility purposes
+@mixin setOutlineColor($accessibilityColor) {
+  transition: box-shadow 0.15s ease-in-out;
+
+  /**START** FOR ALL BROSWERS THAT'S NOT SAFARI */
+  &:focus:not(:focus-visible) {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+  &:focus-visible {
+    @include setBoxShadowOutline($accessibilityColor);
+  }
+  /**END** FOR ALL BROSWERS THAT'S NOT SAFARI */
+
+  /**START** FOR THE BROSWER SAFARI */
+  @media not all and (min-resolution: 0.001dpcm) {
+    /* Safari 11+ */
+    @supports (-webkit-appearance: none) and (stroke-color: transparent) {
+      &:focus {
+        @include setBoxShadowOutline($accessibilityColor);
+      }
+    }
+    /* Safari 10.1 */
+    @supports (-webkit-appearance: none) and (not (stroke-color: transparent)) {
+      &:focus {
+        @include setBoxShadowOutline($accessibilityColor);
+      }
+    }
+  }
+  /* Safari 6.1-10.0 (but not 10.1) */
+  @media screen and (min-color-index: 0) and (-webkit-min-device-pixel-ratio: 0) {
+    &:focus {
+      @include setBoxShadowOutline($accessibilityColor);
+    }
+  }
+  /**END** FOR THE BROSWER SAFARI */
+}
+
+// 1. BOOTSTRAP VARIABLE OVERIDES
+$primary: #2e294e;
+$secondary: #efbcd5;
+$tertiary: #be97c6;
+$quaternary: #8661c1;
+$quinary: #4b5267;
+$success: #198754;
+$info: #0dcaf0;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #343a40;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "tertiary": $tertiary,
+  "quaternary": $quaternary,
+  "quinary": $quinary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+);
+
+// IMPORTS ALL OF BOOTSTRAP'S SCSS FILES - REQUIRED
+// 2. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+// Do not change import order or you may receive an error of undefined variables
+@import "@bootstrap/scss/functions";
+@import "@bootstrap/scss/variables";
+@import "@bootstrap/scss/mixins";
+@import "@bootstrap/scss/maps";
+@import "@bootstrap/scss/utilities";
+@import "@bootstrap/scss/root";
+@import "@bootstrap/scss/reboot";
+
+// 3. Include remainder of required Bootstrap stylesheets - OPTIONAL
+// @import "@bootstrap/scss/type";
+// @import "@bootstrap/scss/images";
+@import "@bootstrap/scss/containers";
+// @import "@bootstrap/scss/grid";
+// @import "@bootstrap/scss/tables";
+// @import "@bootstrap/scss/forms";
+@import "@bootstrap/scss/buttons";
+@import "@bootstrap/scss/transitions";
+// @import "@bootstrap/scss/dropdown";
+// @import "@bootstrap/scss/button-group";
+@import "@bootstrap/scss/nav";
+@import "@bootstrap/scss/navbar";
+// @import "@bootstrap/scss/card";
+// @import "@bootstrap/scss/accordion";
+// @import "@bootstrap/scss/breadcrumb";
+// @import "@bootstrap/scss/pagination";
+// @import "@bootstrap/scss/badge";
+// @import "@bootstrap/scss/alert";
+// @import "@bootstrap/scss/progress";
+// @import "@bootstrap/scss/list-group";
+// @import "@bootstrap/scss/close";
+// @import "@bootstrap/scss/toasts";
+// @import "@bootstrap/scss/modal";
+// @import "@bootstrap/scss/tooltip";
+// @import "@bootstrap/scss/popover";
+// @import "@bootstrap/scss/carousel";
+// @import "@bootstrap/scss/spinners";
+// @import "@bootstrap/scss/offcanvas";
+// @import "@bootstrap/scss/placeholders";
+// Helpers
+@import "@bootstrap/scss/helpers";
+// Utilities
+@import "@bootstrap/scss/utilities/api";
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0rem;
+
+  .app {
+    height: auto;
+  }
+}
+
+// Enforces scrolling to happen instantly
+html,
+body {
+  scroll-behavior: auto !important;
+}
+
+// Sets default outline color of a button and text inputs
+button,
+input,
+textarea,
+select,
+a {
+  @include setOutlineColor($blue-300);
+}
