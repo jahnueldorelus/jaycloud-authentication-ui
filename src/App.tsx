@@ -1,8 +1,8 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
-import "./App.scss";
-import { Navbar } from "@components/navbar";
+import { AppNavbar } from "@components/navbar";
 import { AuthProvider } from "./store";
+import "./App.scss";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -10,7 +10,7 @@ function App() {
   return (
     <AuthProvider>
       <div className="App">
-        <Navbar />
+        <AppNavbar />
         <div>
           <a href="https://vitejs.dev" target="_blank">
             <img src="/vite.svg" className="logo" alt="Vite logo" />

@@ -1,0 +1,73 @@
+$navLinkColor: white;
+$navLinkHoverColor: var(--bs-tertiary);
+@mixin navLink {
+  color: $navLinkColor;
+  border-radius: 0.4rem;
+}
+
+.app-navbar {
+  // Navigation logo text
+  .navbar-brand {
+    color: $navLinkColor;
+  }
+
+  /**
+   * DESKTOP NAVIGATION STYLES
+   */
+  .nav-item {
+    // Navigation links
+    .nav-link {
+      padding: 0.25rem 0.5rem;
+      @include navLink;
+
+      &:hover {
+        color: $navLinkHoverColor;
+      }
+      &.active {
+        background-color: var(--bs-senary);
+        color: $navLinkColor;
+      }
+    }
+
+    // User dropdown menu
+    .user-dropdown-menu {
+      .dropdown-item {
+        padding: 0.5rem;
+        @include navLink;
+
+        &:hover {
+          background-color: transparent;
+          color: $navLinkHoverColor;
+        }
+        &.active {
+          @include navLink;
+          background-color: var(--bs-primary);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * MOBILE NAVIGATION OFFCANVAS STYLES
+ */
+.offcanvas {
+  max-width: 15rem !important;
+
+  .nav-item {
+    // Navigation links
+    .nav-link {
+      padding: 0.25rem 0.75rem;
+      @include navLink;
+      color: var(--bs-primary);
+
+      &:hover {
+        color: var(--bs-quaternary);
+      }
+      &.active {
+        background-color: var(--bs-senary);
+        color: $navLinkColor;
+      }
+    }
+  }
+}

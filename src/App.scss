@@ -66,9 +66,10 @@ img {
 // 1. BOOTSTRAP VARIABLE OVERIDES
 $primary: #2e294e;
 $secondary: #efbcd5;
-$tertiary: #be97c6;
+$tertiary: #c4c0de;
 $quaternary: #8661c1;
 $quinary: #4b5267;
+$senary: #5b529b;
 $success: #198754;
 $info: #0dcaf0;
 $warning: #ffc107;
@@ -82,6 +83,7 @@ $theme-colors: (
   "tertiary": $tertiary,
   "quaternary": $quaternary,
   "quinary": $quinary,
+  "senary": $senary,
   "success": $success,
   "info": $info,
   "warning": $warning,
@@ -95,43 +97,45 @@ $theme-colors: (
 // Do not change import order or you may receive an error of undefined variables
 @import "@bootstrap/scss/functions";
 @import "@bootstrap/scss/variables";
-@import "@bootstrap/scss/maps";
 @import "@bootstrap/scss/mixins";
+@import "@bootstrap/scss/maps";
+@import "@bootstrap/scss/utilities";
 @import "@bootstrap/scss/root";
 @import "@bootstrap/scss/reboot";
-@import "@bootstrap/scss/helpers";
 
 // 3. Include remainder of required Bootstrap stylesheets - OPTIONAL
-@import "@bootstrap/scss/utilities";
-@import "@bootstrap/scss/type";
-@import "@bootstrap/scss/images";
+// @import "@bootstrap/scss/type";
+// @import "@bootstrap/scss/images";
 @import "@bootstrap/scss/containers";
-@import "@bootstrap/scss/grid";
-@import "@bootstrap/scss/tables";
-@import "@bootstrap/scss/forms";
+// @import "@bootstrap/scss/grid";
+// @import "@bootstrap/scss/tables";
+// @import "@bootstrap/scss/forms";
 @import "@bootstrap/scss/buttons";
 @import "@bootstrap/scss/transitions";
 @import "@bootstrap/scss/dropdown";
-@import "@bootstrap/scss/button-group";
+// @import "@bootstrap/scss/button-group";
 @import "@bootstrap/scss/nav";
 @import "@bootstrap/scss/navbar";
-@import "@bootstrap/scss/card";
-@import "@bootstrap/scss/accordion";
-@import "@bootstrap/scss/breadcrumb";
-@import "@bootstrap/scss/pagination";
-@import "@bootstrap/scss/badge";
-@import "@bootstrap/scss/alert";
-@import "@bootstrap/scss/progress";
-@import "@bootstrap/scss/list-group";
+// @import "@bootstrap/scss/card";
+// @import "@bootstrap/scss/accordion";
+// @import "@bootstrap/scss/breadcrumb";
+// @import "@bootstrap/scss/pagination";
+// @import "@bootstrap/scss/badge";
+// @import "@bootstrap/scss/alert";
+// @import "@bootstrap/scss/progress";
+// @import "@bootstrap/scss/list-group";
 @import "@bootstrap/scss/close";
-@import "@bootstrap/scss/toasts";
-@import "@bootstrap/scss/modal";
-@import "@bootstrap/scss/tooltip";
+// @import "@bootstrap/scss/toasts";
+// @import "@bootstrap/scss/modal";
+// @import "@bootstrap/scss/tooltip";
 @import "@bootstrap/scss/popover";
-@import "@bootstrap/scss/carousel";
-@import "@bootstrap/scss/spinners";
+// @import "@bootstrap/scss/carousel";
+// @import "@bootstrap/scss/spinners";
 @import "@bootstrap/scss/offcanvas";
-@import "@bootstrap/scss/placeholders";
+// @import "@bootstrap/scss/placeholders";
+// Helpers
+@import "@bootstrap/scss/helpers";
+// Utilities
 @import "@bootstrap/scss/utilities/api";
 
 html,
