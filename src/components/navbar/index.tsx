@@ -1,5 +1,5 @@
 import { authStore } from "@store/index";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import JayCloudLogo from "@assets/jaycloud-logo.svg";
 import UserProfile from "@assets/user-profile.svg";
 import Navbar from "react-bootstrap/Navbar";
@@ -17,13 +17,6 @@ export const AppNavbar = () => {
   const authState = useContext(authStore);
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false);
   const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
-
-  useEffect(() => {
-    authState.dispatch({
-      type: "userAdded",
-      payload: "Maxwell Gonzalez",
-    });
-  }, []);
 
   /**
    * Click handler for the user menu options toggle.
