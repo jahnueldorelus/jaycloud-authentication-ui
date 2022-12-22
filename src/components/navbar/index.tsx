@@ -8,6 +8,7 @@ import Nav from "react-bootstrap/Nav";
 import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import CloseButton from "react-bootstrap/CloseButton";
+import { NavLink } from "react-router-dom";
 import "./index.scss";
 
 export const AppNavbar = () => {
@@ -53,19 +54,23 @@ export const AppNavbar = () => {
     if (authState.user) {
       return (
         <Fragment>
-          <p className="mb-0 py-2 px-2 text-white">
+          <li className="mb-0 py-2 px-2 text-white">
             Logged in as
             <br />
             <span className="text-secondary">
               <strong>{authState.user}</strong>
             </span>
-          </p>
+          </li>
 
           <Dropdown.Divider className="mx-2 bg-white" />
 
-          <Dropdown.Item href="#Profile" as={Nav.Link}>
-            Profile
-          </Dropdown.Item>
+          <li>
+            <NavLink to="/profile">
+              <Dropdown.Item className="mb-1 fs-5" as="h2">
+                Profile
+              </Dropdown.Item>
+            </NavLink>
+          </li>
         </Fragment>
       );
     } else {
@@ -79,27 +84,32 @@ export const AppNavbar = () => {
    */
   const loginOrLogoutDropdownOption = (): JSX.Element => {
     return (
-      <Dropdown.Item href="#Logout" as={Nav.Link}>
-        {authState.user ? "Log Out" : "Log In"}
-      </Dropdown.Item>
+      <li>
+        <NavLink to={authState.user ? "/logout" : "/login"}>
+          <Dropdown.Item className="m-0 fs-5" as="h2">
+            {authState.user ? "Log Out" : "Log In"}
+          </Dropdown.Item>
+        </NavLink>
+      </li>
     );
   };
 
   return (
     <Navbar className="app-navbar p-0 mb-3" bg="primary" expand="md">
       <Container className="flex-row-reverse flex-md-row" fluid="md">
-        <Navbar.Brand className="text-white fs-3" href="#Home">
+        <Navbar.Brand className="d-flex text-white fs-3" href="#Home">
           <img
             className="me-3"
             src={JayCloudLogo}
             alt="JayCloud logo"
             width="40"
           />
-          JayCloud
+          <h1 className="m-0 fs-2">JayCloud</h1>
         </Navbar.Brand>
 
         {/* Mobile navigation */}
         <Navbar.Toggle
+          className="px-2 bg-senary"
           onClick={onMobileMenuToggle}
           aria-controls={mobileNavId}
         />
@@ -130,21 +140,17 @@ export const AppNavbar = () => {
             />
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <Nav onSelect={onMobileMenuToggle}>
-              <Nav.Item>
-                <Nav.Link className="py-1 fs-5" href="#Home" as="li">
-                  Home
-                </Nav.Link>
+            <Nav onSelect={onMobileMenuToggle} as="ul">
+              <Nav.Item className="py-1 px-2 fs-5" as="li">
+                <NavLink to="/">Home</NavLink>
               </Nav.Item>
-              <Nav.Item>
-                <Nav.Link className="py-1 fs-5" href="#Profile" as="li">
-                  Profile
-                </Nav.Link>
+              <Nav.Item className="py-1 px-2 fs-5" as="li">
+                <NavLink to="/profile">Profile</NavLink>
               </Nav.Item>
-              <Nav.Item>
-                <Nav.Link className="py-1 fs-5" href="#Logout" as="li">
-                  Logout
-                </Nav.Link>
+              <Nav.Item className="py-1 px-2 fs-5" as="li">
+                <NavLink to={authState.user ? "/logout" : "/login"}>
+                  {authState.user ? "Logout" : "Login"}
+                </NavLink>
               </Nav.Item>
             </Nav>
           </Offcanvas.Body>
@@ -152,10 +158,12 @@ export const AppNavbar = () => {
 
         {/* Desktop Navigation */}
         <Nav className="d-none d-md-flex flex-row">
-          <Nav.Item>
-            <Nav.Link className="fs-5" href="#Home" as="li">
-              Home
-            </Nav.Link>
+          <Nav.Item className="d-flex align-items-center">
+            <NavLink to="/" className="fs-5">
+              <Nav.Link className="m-0" as="h2">
+                Home
+              </Nav.Link>
+            </NavLink>
           </Nav.Item>
 
           <Dropdown
@@ -175,6 +183,7 @@ export const AppNavbar = () => {
               className="user-dropdown-menu bg-senary p-2 overflow-hidden"
               id={desktopUserMenuId}
               align="end"
+              as="ul"
             >
               {loggedInUserDropdownOptions()}
               {loginOrLogoutDropdownOption()}
