@@ -1,29 +1,9 @@
+import {
+  AuthState,
+  AuthProviderProps,
+  AuthAction,
+} from "@app-types/store/auth";
 import { createContext, useReducer } from "react";
-
-type AuthState = {
-  accessToken: string | null;
-  tokensFetchFailed: boolean;
-  requestLoading: boolean;
-  requestFailedMessage: string | null;
-  user: User | null;
-  dispatch: React.Dispatch<AuthAction>;
-};
-
-type User = string;
-
-type StoreAction<T extends string, K> = { type: T; payload: K };
-type AuthAction =
-  | StoreAction<"userAdded", any>
-  | StoreAction<"refAndAccTokensAdded", any>
-  | StoreAction<"requestFailed", any>
-  | StoreAction<"resetRequestFailed", any>
-  | StoreAction<"userRemoved", any>
-  | StoreAction<"requestStarted", any>
-  | StoreAction<"requestFinished", any>;
-
-type AuthProviderProps = {
-  children: JSX.Element;
-};
 
 const initialState: AuthState = {
   accessToken: null,

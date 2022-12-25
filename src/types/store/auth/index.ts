@@ -3,11 +3,9 @@ import { APIAuthTokenResponse } from "../api";
 
 // Interface of a user's data
 export interface UserData {
-  id: number;
+  _id: number;
   firstName: string;
-  middleName: string | null;
   lastName: string;
-  nickName: string | null;
   email: string;
   createdAt: string;
 }
@@ -36,3 +34,26 @@ export interface EntitiesAuthSliceState {
   requestFailedMessage: string | null;
   user: UserData | null;
 }
+
+export type AuthState = {
+  accessToken: string | null;
+  tokensFetchFailed: boolean;
+  requestLoading: boolean;
+  requestFailedMessage: string | null;
+  user: UserData | null;
+  dispatch: React.Dispatch<AuthAction>;
+};
+
+type StoreAction<T extends string, K> = { type: T; payload: K };
+export type AuthAction =
+  | StoreAction<"userAdded", any>
+  | StoreAction<"refAndAccTokensAdded", any>
+  | StoreAction<"requestFailed", any>
+  | StoreAction<"resetRequestFailed", any>
+  | StoreAction<"userRemoved", any>
+  | StoreAction<"requestStarted", any>
+  | StoreAction<"requestFinished", any>;
+
+export type AuthProviderProps = {
+  children: JSX.Element;
+};

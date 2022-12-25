@@ -3,8 +3,12 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import { Home } from "@views/home";
-import "./index.scss";
 import { ErrorPage } from "@views/error";
+import { Register } from "@views/register";
+import { apiService } from "@services/api";
+import { isAxiosError } from "axios";
+import { RegisterActionData, RegisterLoaderData } from "@app-types/register";
+import "./index.scss";
 
 const router = createBrowserRouter([
   {
@@ -17,11 +21,26 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/login",
-        element: <Home />,
-      },
-      {
         path: "/register",
+        loader: async (): Promise<RegisterLoaderData> => {
+          const response = await apiService.request(
+            apiService.routes.get.newUserFormModel,
+            {
+              method: "GET",
+            }
+          );
+
+          if (!response || isAxiosError(response)) {
+            return { formModel: null };
+          } else {
+            return { formModel: response.data };
+          }
+        },
+        element: <Register />,
+      },
+
+      {
+        path: "/login",
         element: <Home />,
       },
       {

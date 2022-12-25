@@ -10,11 +10,13 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import CloseButton from "react-bootstrap/CloseButton";
 import { NavLink } from "react-router-dom";
 import "./index.scss";
+import { userService } from "@services/user";
 
 export const AppNavbar = () => {
   const mobileNavId = "app-navigation-mobile";
   const desktopUserMenuId = "app-navigation-desktop-user-menu";
   const authState = useContext(authStore);
+  const userName = userService.getFullName(authState.user);
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false);
   const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
 
@@ -47,16 +49,19 @@ export const AppNavbar = () => {
     if (authState.user) {
       return (
         <Fragment>
-          <li className="mb-0 py-2 px-2 text-white">
-            Logged in as
-            <br />
-            <span className="text-secondary">
-              <strong>{authState.user}</strong>
-            </span>
-          </li>
+          {userName && (
+            <Fragment>
+              <li className="mb-0 py-2 px-2 text-white">
+                Logged in as
+                <br />
+                <span className="text-secondary">
+                  <strong>{userName}</strong>
+                </span>
+              </li>
 
-          <Dropdown.Divider className="mx-2 bg-white" />
-
+              <Dropdown.Divider className="mx-2 bg-white" />
+            </Fragment>
+          )}
           <li>
             <NavLink to="/profile">
               <Dropdown.Item className="mb-1 fs-5" as="h2">
@@ -121,7 +126,7 @@ export const AppNavbar = () => {
                 Logged in as
                 <br />
                 <span className="text-secondary">
-                  <strong>{authState.user}</strong>
+                  <strong>{userService.getFullName(authState.user)}</strong>
                 </span>
               </Offcanvas.Title>
             </Container>

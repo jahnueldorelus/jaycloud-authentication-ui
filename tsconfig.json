@@ -40,7 +40,7 @@
       "@store/*": [
         "./src/store/*"
       ],
-      "@types/*": [
+      "@app-types/*": [
         "./src/types/*"
       ],
       "@views/*": [
