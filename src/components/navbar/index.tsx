@@ -93,9 +93,12 @@ export const AppNavbar = () => {
   };
 
   return (
-    <Navbar className="app-navbar p-0 mb-3" bg="primary" expand="md">
+    <Navbar className="app-navbar py-1" bg="primary" expand="md">
       <Container className="flex-row-reverse flex-md-row" fluid="md">
-        <Navbar.Brand className="d-flex text-white fs-3" href="#Home">
+        <Navbar.Brand
+          className="me-0 d-flex align-items-center text-white fs-3"
+          href="#Home"
+        >
           <img
             className="me-3"
             src={JayCloudLogo}

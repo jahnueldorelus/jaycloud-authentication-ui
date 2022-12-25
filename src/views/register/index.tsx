@@ -4,7 +4,6 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
 import { EditableInput } from "@components/editable-input";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
@@ -13,6 +12,7 @@ import { userService } from "@services/user";
 import { authStore } from "@store/index";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/api/class-name";
+import "./index.scss";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -63,18 +63,21 @@ export const Register = () => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
-    setApiRequestPending(true);
-    const result = await userService.createUser(
-      userModifiedInputs,
-      authState.dispatch
-    );
-    setApiRequestPending(false);
 
-    if (result.errorOccurred) {
-      setCreateUserErrorMessage(result.errorMessage);
-    } else {
-      setCreateUserErrorMessage(null);
-      navigate("/");
+    if (isFormValid) {
+      setApiRequestPending(true);
+      const result = await userService.createUser(
+        userModifiedInputs,
+        authState.dispatch
+      );
+      setApiRequestPending(false);
+
+      if (result.errorOccurred) {
+        setCreateUserErrorMessage(result.errorMessage);
+      } else {
+        setCreateUserErrorMessage(null);
+        navigate("/");
+      }
     }
   };
 
@@ -123,7 +126,7 @@ export const Register = () => {
 
       return (
         <Fragment>
-          <Container className="px-4 py-2 bg-primary">
+          <Container className="px-4 py-2 bg-primary text-center text-md-start">
             <h3 className="m-0">{title}</h3>
           </Container>
 
@@ -136,32 +139,31 @@ export const Register = () => {
             )}
             <p>* Required Input</p>
             <Form>
-              <Row md="2">
-                {inputs.map((modelInput, index) => {
-                  const inputName = modelInput.name;
-                  const inputText = userModifiedInputs[inputName] || "";
-                  const isInputValid = !!inputsValidity[modelInput.name];
+              {inputs.map((modelInput, index) => {
+                const inputName = modelInput.name;
+                const inputText = userModifiedInputs[inputName] || "";
+                const isInputValid = !!inputsValidity[modelInput.name];
 
-                  return (
-                    <Form.Group key={index}>
-                      <EditableInput
-                        formModelName={inputName}
-                        input={modelInput}
-                        inputText={inputText}
-                        isInputValid={isInputValid}
-                        placeholder={`Enter your ${modelInput.label.toLowerCase()}`}
-                        labelClassName="text-white"
-                        invalidMessageClassName="mt-1 text-warning"
-                        onTextChange={onInputChange(modelInput)}
-                        disabled={isApiRequestPending}
-                      />
-                    </Form.Group>
-                  );
-                })}
-              </Row>
+                return (
+                  <Form.Group key={index}>
+                    <EditableInput
+                      formModelName={inputName}
+                      input={modelInput}
+                      inputText={inputText}
+                      isInputValid={isInputValid}
+                      placeholder={`Enter your ${modelInput.label.toLowerCase()}`}
+                      labelClassName="text-white"
+                      invalidMessageClassName="mt-1 text-warning"
+                      onTextChange={onInputChange(modelInput)}
+                      disabled={isApiRequestPending}
+                    />
+                  </Form.Group>
+                );
+              })}
 
-              <Container className="px-0 my-3 d-flex justify-content-end">
+              <Container className="my-4 d-flex justify-content-center">
                 <Button
+                  className="mt-2"
                   type="submit"
                   variant="primary"
                   aria-disabled={!isFormValid}
@@ -194,10 +196,13 @@ export const Register = () => {
   };
 
   return (
-    <Container>
+    <Container
+      className="view-register py-5 bg-tertiary d-flex align-items-center"
+      fluid
+    >
       <Container
         fluid="md"
-        className="p-0 mt-5 text-white bg-senary rounded overflow-hidden"
+        className="register-form p-0 text-white bg-senary rounded overflow-hidden shadow"
       >
         {formModelJSX()}
       </Container>
