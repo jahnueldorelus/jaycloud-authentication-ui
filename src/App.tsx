@@ -3,9 +3,11 @@ import { AuthProvider } from "./store";
 import { Outlet } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import "./App.scss";
+import { AppFooter } from "@components/footer";
 
 function App() {
   const headerRef = useRef<HTMLElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
   const [minimumContentHeight, setMinimumContentHeight] = useState<number>(0);
 
   /**
@@ -31,9 +33,11 @@ function App() {
    * content on the page to have the full height of the window.
    */
   const setMinimumMainContentHeight = () => {
-    if (headerRef.current) {
+    if (headerRef.current && footerRef.current) {
       setMinimumContentHeight(
-        window.innerHeight - headerRef.current.offsetHeight
+        window.innerHeight -
+          headerRef.current.offsetHeight -
+          footerRef.current.offsetHeight
       );
     }
   };
@@ -47,7 +51,9 @@ function App() {
         <main className="d-flex" style={{ minHeight: minimumContentHeight }}>
           <Outlet />
         </main>
-        <footer></footer>
+        <footer ref={footerRef}>
+          <AppFooter />
+        </footer>
       </div>
     </AuthProvider>
   );
