@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ErrorSVG from "@assets/error-circle.svg";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -15,6 +15,7 @@ import { objectService } from "@services/object";
 import { userService } from "@services/user";
 import "./index.scss";
 import { NavLink } from "react-router-dom";
+import { UIError } from "@components/ui-error";
 
 export const Login = () => {
   const loaderData = useLoaderData() as LoginLoaderData;
@@ -122,7 +123,10 @@ export const Login = () => {
       const title = loaderData.formModel.title;
       const inputs = loaderData.formModel.inputs;
       return (
-        <Fragment>
+        <Container
+          fluid="md"
+          className="login-form p-0 text-white bg-senary rounded overflow-hidden shadow"
+        >
           <Container className="px-4 py-2 bg-primary text-center text-md-start">
             <h3 className="m-0">{title}</h3>
           </Container>
@@ -195,10 +199,10 @@ export const Login = () => {
               </Container>
             </Form>
           </Container>
-        </Fragment>
+        </Container>
       );
     } else {
-      return <></>;
+      return <UIError />;
     }
   };
   return (
@@ -206,12 +210,7 @@ export const Login = () => {
       className="view-login py-5 bg-tertiary d-flex align-items-center"
       fluid
     >
-      <Container
-        fluid="md"
-        className="login-form p-0 text-white bg-senary rounded overflow-hidden shadow"
-      >
-        {formModelJSX()}
-      </Container>
+      {formModelJSX()}
     </Container>
   );
 };
