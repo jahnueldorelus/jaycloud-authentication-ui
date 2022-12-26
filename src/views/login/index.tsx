@@ -13,9 +13,9 @@ import { LoginLoaderData } from "@app-types/views/login";
 import { authStore } from "@store/index";
 import { objectService } from "@services/object";
 import { userService } from "@services/user";
-import "./index.scss";
 import { NavLink } from "react-router-dom";
 import { UIError } from "@components/ui-error";
+import "./index.scss";
 
 export const Login = () => {
   const loaderData = useLoaderData() as LoginLoaderData;

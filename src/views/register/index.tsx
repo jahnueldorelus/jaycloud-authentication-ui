@@ -1,6 +1,6 @@
 import { RegisterLoaderData } from "@app-types/views/register";
 import { FormModelInputOption } from "@app-types/form-model";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -14,6 +14,7 @@ import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
 import { NavLink } from "react-router-dom";
+import { UIError } from "@components/ui-error";
 import "./index.scss";
 
 export const Register = () => {
@@ -123,7 +124,10 @@ export const Register = () => {
       const inputs = loaderData.formModel.inputs;
 
       return (
-        <Fragment>
+        <Container
+          fluid="md"
+          className="register-form p-0 text-white bg-senary rounded overflow-hidden shadow"
+        >
           <Container className="px-4 py-2 bg-primary text-center text-md-start">
             <h3 className="m-0">{title}</h3>
           </Container>
@@ -196,10 +200,10 @@ export const Register = () => {
               </Container>
             </Form>
           </Container>
-        </Fragment>
+        </Container>
       );
     } else {
-      return <></>;
+      return <UIError />;
     }
   };
 
@@ -208,12 +212,7 @@ export const Register = () => {
       className="view-register py-5 bg-tertiary d-flex align-items-center"
       fluid
     >
-      <Container
-        fluid="md"
-        className="register-form p-0 text-white bg-senary rounded overflow-hidden shadow"
-      >
-        {formModelJSX()}
-      </Container>
+      {formModelJSX()}
     </Container>
   );
 };
