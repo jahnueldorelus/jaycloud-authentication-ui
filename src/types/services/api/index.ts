@@ -3,6 +3,7 @@ import { AxiosRequestConfig, Method } from "axios";
 export type APIRoute = {
   get: {
     newUserFormModel: string;
+    authenticateUserFormModel: string;
   };
   post: {
     data: string;

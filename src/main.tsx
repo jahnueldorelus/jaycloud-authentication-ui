@@ -7,8 +7,10 @@ import { ErrorPage } from "@views/error";
 import { Register } from "@views/register";
 import { apiService } from "@services/api";
 import { isAxiosError } from "axios";
-import { RegisterActionData, RegisterLoaderData } from "@app-types/register";
+import { RegisterLoaderData } from "@app-types/views/register";
 import "./index.scss";
+import { Login } from "@views/login";
+import { LoginLoaderData } from "@app-types/views/login";
 
 const router = createBrowserRouter([
   {
@@ -41,7 +43,21 @@ const router = createBrowserRouter([
 
       {
         path: "/login",
-        element: <Home />,
+        loader: async (): Promise<LoginLoaderData> => {
+          const response = await apiService.request(
+            apiService.routes.get.authenticateUserFormModel,
+            {
+              method: "GET",
+            }
+          );
+
+          if (!response || isAxiosError(response)) {
+            return { formModel: null };
+          } else {
+            return { formModel: response.data };
+          }
+        },
+        element: <Login />,
       },
       {
         path: "/profile",

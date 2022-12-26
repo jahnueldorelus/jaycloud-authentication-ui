@@ -1,36 +1,36 @@
-import { RegisterLoaderData } from "@app-types/views/register";
-import { FormModelInputOption } from "@app-types/form-model";
 import { Fragment, useContext, useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import { EditableInput } from "@components/editable-input";
-import Button from "react-bootstrap/Button";
-import Alert from "react-bootstrap/Alert";
-import Spinner from "react-bootstrap/Spinner";
-import { userService } from "@services/user";
-import { authStore } from "@store/index";
 import ErrorSVG from "@assets/error-circle.svg";
+import Container from "react-bootstrap/Container";
+import Alert from "react-bootstrap/Alert";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 import { ClassName } from "@services/class-name";
+import { EditableInput } from "@components/editable-input";
+import { FormModelInputOption } from "@app-types/form-model";
+import { useLoaderData, useNavigate } from "react-router";
+import { LoginLoaderData } from "@app-types/views/login";
+import { authStore } from "@store/index";
 import { objectService } from "@services/object";
-import { NavLink } from "react-router-dom";
+import { userService } from "@services/user";
 import "./index.scss";
+import { NavLink } from "react-router-dom";
 
-export const Register = () => {
-  const navigate = useNavigate();
-  const loaderData = useLoaderData() as RegisterLoaderData;
+export const Login = () => {
+  const loaderData = useLoaderData() as LoginLoaderData;
   const authState = useContext(authStore);
-  const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
-    {}
+  const navigate = useNavigate();
+  const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
+    null
   );
+  const [isApiRequestPending, setApiRequestPending] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false);
   const [userModifiedInputs, setUserModifiedInputs] = useState<
     Record<string, string>
   >({});
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [createUserErrorMessage, setCreateUserErrorMessage] = useState<
-    string | null
-  >(null);
-  const [isApiRequestPending, setApiRequestPending] = useState(false);
+  const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
+    {}
+  );
 
   // Validates the registration form upon user input
   useEffect(() => {
@@ -61,23 +61,23 @@ export const Register = () => {
 
     if (isFormValid) {
       setApiRequestPending(true);
-      const result = await userService.createUser(
+      const result = await userService.authenticateUser(
         userModifiedInputs,
         authState.dispatch
       );
       setApiRequestPending(false);
 
       if (result.errorOccurred) {
-        setCreateUserErrorMessage(result.errorMessage);
+        setLoginErrorMessage(result.errorMessage);
       } else {
-        setCreateUserErrorMessage(null);
+        setLoginErrorMessage(null);
         navigate("/");
       }
     }
   };
 
   /**
-   * Validates the form.
+   * Validates the form model.
    */
   const validateForm = () => {
     const formInputsValidity: Record<string, boolean> = {};
@@ -121,7 +121,6 @@ export const Register = () => {
     if (loaderData.formModel) {
       const title = loaderData.formModel.title;
       const inputs = loaderData.formModel.inputs;
-
       return (
         <Fragment>
           <Container className="px-4 py-2 bg-primary text-center text-md-start">
@@ -129,20 +128,20 @@ export const Register = () => {
           </Container>
 
           <Container className="px-4 pt-3">
-            <p className="mb-0">Have an account?</p>
+            <p className="mb-0">Don't have an account?</p>
             <NavLink
-              to="/login"
+              to="/register"
               className="text-secondary text-decoration-none"
             >
-              Click here to log into your account
+              Click here to create a new account
             </NavLink>
           </Container>
 
           <Container className="px-4 pt-4">
-            {createUserErrorMessage && (
+            {loginErrorMessage && (
               <Alert className="py-2 d-flex" variant="danger">
                 <img src={ErrorSVG} alt={"A red X in a circle"} width={20} />
-                <p className="m-0 ms-2">{createUserErrorMessage}</p>
+                <p className="m-0 ms-2">{loginErrorMessage}</p>
               </Alert>
             )}
             <p>* Required Input</p>
@@ -191,7 +190,7 @@ export const Register = () => {
                     aria-hidden="true"
                     as="span"
                   />
-                  {isApiRequestPending ? "Loading" : "Create Account"}
+                  {isApiRequestPending ? "Loading" : "Login"}
                 </Button>
               </Container>
             </Form>
@@ -202,15 +201,14 @@ export const Register = () => {
       return <></>;
     }
   };
-
   return (
     <Container
-      className="view-register py-5 bg-tertiary d-flex align-items-center"
+      className="view-login py-5 bg-tertiary d-flex align-items-center"
       fluid
     >
       <Container
         fluid="md"
-        className="register-form p-0 text-white bg-senary rounded overflow-hidden shadow"
+        className="login-form p-0 text-white bg-senary rounded overflow-hidden shadow"
       >
         {formModelJSX()}
       </Container>

@@ -3,8 +3,8 @@ import FormSelect from "react-bootstrap/FormSelect";
 import FormControl from "react-bootstrap/FormControl";
 import SuccessSVG from "@assets/success-circle.svg";
 import ErrorSVG from "@assets/error-circle.svg";
+import { ClassName } from "@services/class-name";
 import "./index.scss";
-import { ClassName } from "@services/api/class-name";
 
 type EditableInputProps = {
   formModelName: string;

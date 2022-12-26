@@ -4,11 +4,14 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 class APIService {
   private baseApiPath = "http://localhost:61177/api";
   private baseApiUsersPath = "/users";
+  private baseApiFormModelPath = this.baseApiUsersPath + "/form-models";
 
   get routes(): APIRoute {
     return {
       get: {
-        newUserFormModel: "/users/form-models",
+        newUserFormModel: this.baseApiFormModelPath + "/create-user",
+        authenticateUserFormModel:
+          this.baseApiFormModelPath + "/authenticate-user",
       },
       post: {
         data: "/data",

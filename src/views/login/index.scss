@@ -1,0 +1,24 @@
+.view-login {
+  background-image: linear-gradient(
+    to right top,
+    #5b529b,
+    #6f66a8,
+    #827ab4,
+    #958ec1,
+    #a9a3cd,
+    #a7a3c8,
+    #a5a3c4,
+    #a4a3bf,
+    #8d8ea8,
+    #767992,
+    #60657c,
+    #4b5267
+  );
+
+  .login-form {
+    max-width: 25rem;
+    height: -webkit-min-content;
+    height: -moz-min-content;
+    height: min-content;
+  }
+}
