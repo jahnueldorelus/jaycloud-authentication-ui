@@ -63,6 +63,13 @@ img {
   /**END** FOR THE BROSWER SAFARI */
 }
 
+// Sets width of an element to fit it's content size
+.w-fit {
+  width: -webkit-fit-content !important;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+}
+
 // 1. BOOTSTRAP VARIABLE OVERIDES
 $primary: #2e294e;
 $secondary: #efbcd5;
@@ -132,7 +139,7 @@ $theme-colors: (
 // @import "@bootstrap/scss/carousel";
 @import "@bootstrap/scss/spinners";
 @import "@bootstrap/scss/offcanvas";
-// @import "@bootstrap/scss/placeholders";
+@import "@bootstrap/scss/placeholders";
 // Helpers
 @import "@bootstrap/scss/helpers";
 // Utilities

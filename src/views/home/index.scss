@@ -1,0 +1,50 @@
+@import "@bootstrap/scss/functions";
+@import "@bootstrap/scss/variables";
+@import "@bootstrap/scss/mixins";
+
+.view-home {
+  img {
+    max-width: 100%;
+  }
+
+  .section-one-divider {
+    overflow: hidden;
+    transform: rotate(180deg);
+
+    svg {
+      width: calc(137% + 1.3px);
+      height: 8rem;
+
+      .shape-fill {
+        fill: $white;
+      }
+    }
+  }
+
+  .section-three-divider {
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+
+    svg {
+      max-width: 5rem;
+
+      .shape-fill {
+        fill: $white;
+      }
+    }
+  }
+
+  .service-card {
+    min-width: 14rem;
+    max-width: 18rem;
+
+    .service-card-img {
+      max-height: 8rem;
+    }
+
+    .service-card-body {
+      height: 100%;
+    }
+  }
+}

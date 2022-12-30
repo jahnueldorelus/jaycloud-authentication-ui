@@ -4,6 +4,10 @@ export type APIRoute = {
   get: {
     newUserFormModel: string;
     authenticateUserFormModel: string;
+    services: {
+      list: string;
+      logo: string;
+    };
   };
   post: {
     data: string;

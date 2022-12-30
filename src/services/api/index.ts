@@ -5,6 +5,7 @@ class APIService {
   private baseApiPath = "http://localhost:61177/api";
   private baseApiUsersPath = "/users";
   private baseApiFormModelPath = this.baseApiUsersPath + "/form-models";
+  private baseApiServicesPath = "/services";
 
   get routes(): APIRoute {
     return {
@@ -12,6 +13,10 @@ class APIService {
         newUserFormModel: this.baseApiFormModelPath + "/create-user",
         authenticateUserFormModel:
           this.baseApiFormModelPath + "/authenticate-user",
+        services: {
+          list: this.baseApiServicesPath,
+          logo: this.baseApiServicesPath + "/logo",
+        },
       },
       post: {
         data: "/data",
