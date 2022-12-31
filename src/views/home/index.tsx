@@ -86,18 +86,19 @@ export const Home = () => {
 
   return (
     <Container className="view-home p-0" fluid>
-      <Container className="px-0 pt-5 bg-primary" fluid>
+      <Container className="section-one px-0 pt-5 bg-primary" fluid>
         <Container className="text-white d-flex flex-column flex-md-row align-items-center">
-          <Container className="px-0">
-            <h2>Central Hub</h2>
+          <Container className="px-3 px-sm-0">
+            <h2 className="text-secondary">Central Information Hub</h2>
             <h3 className="fs-4">
               All of your information stored in one place. No need to dig deep
               in your emails, letters, and notes trying to find that one piece
-              of information you forgot about.
+              of information you forgot about. Quickly find what you're looking
+              for without any hassle with JayCloud.
             </h3>
           </Container>
-          <Container className="w-fit d-flex justify-content-center">
-            <img src={JayCloudHub} alt="JayCloud service hub" height="300" />
+          <Container className="px-5 pt-5 pt-md-0 w-fit d-flex justify-content-center">
+            <img src={JayCloudHub} alt="JayCloud service hub" width="500" />
           </Container>
         </Container>
         <div className="section-one-divider">

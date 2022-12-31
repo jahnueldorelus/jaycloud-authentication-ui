@@ -3,20 +3,23 @@
 @import "@bootstrap/scss/mixins";
 
 .view-home {
-  img {
-    max-width: 100%;
-  }
+  .section-one {
+    img {
+      max-width: 100%;
+      max-height: 22rem;
+    }
 
-  .section-one-divider {
-    overflow: hidden;
-    transform: rotate(180deg);
+    &-divider {
+      overflow: hidden;
+      transform: rotate(180deg);
 
-    svg {
-      width: calc(137% + 1.3px);
-      height: 8rem;
+      svg {
+        width: calc(137% + 1.3px);
+        height: 8rem;
 
-      .shape-fill {
-        fill: $white;
+        .shape-fill {
+          fill: $white;
+        }
       }
     }
   }
