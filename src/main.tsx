@@ -103,7 +103,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <Home />,
+        element: <></>,
+      },
+      {
+        path: "/services",
+        element: <></>,
       },
     ],
   },

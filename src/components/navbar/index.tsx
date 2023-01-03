@@ -35,6 +35,21 @@ export const AppNavbar = () => {
   };
 
   /**
+   * Creates an offcanvas nav item.
+   * @param itemLink The path to link the nav item to
+   * @param itemName The name of the nav item
+   */
+  const createOffCanvasNavItem = (itemLink: string, itemName: string) => {
+    return (
+      <Nav.Item className="py-1 px-2 fs-5" as="li">
+        <NavLink to={itemLink} onClick={onMobileMenuToggle}>
+          {itemName}
+        </NavLink>
+      </Nav.Item>
+    );
+  };
+
+  /**
    * Retrieves the JSX for the user profile image.
    */
   const getUserProfileImgJSX = () => {
@@ -45,7 +60,7 @@ export const AppNavbar = () => {
    * Retrieves the JSX for a logged in user in the user
    * menu options dropdown.
    */
-  const loggedInUserDropdownOptions = (): JSX.Element => {
+  const loggedInUserDropdownInfo = (): JSX.Element => {
     if (authState.user) {
       return (
         <Fragment>
@@ -62,34 +77,11 @@ export const AppNavbar = () => {
               <Dropdown.Divider className="mx-2 bg-white" />
             </Fragment>
           )}
-          <li>
-            <NavLink to="/profile">
-              <Dropdown.Item className="mb-1 fs-5" as="h2">
-                Profile
-              </Dropdown.Item>
-            </NavLink>
-          </li>
         </Fragment>
       );
     } else {
       return <></>;
     }
-  };
-
-  /**
-   * Retrieves the JSX for logging or logging out option in the user
-   * menu options dropdown.
-   */
-  const loginOrLogoutDropdownOption = (): JSX.Element => {
-    return (
-      <li>
-        <NavLink to={authState.user ? "/logout" : "/login"}>
-          <Dropdown.Item className="m-0 fs-5" as="h2">
-            {authState.user ? "Log Out" : "Log In"}
-          </Dropdown.Item>
-        </NavLink>
-      </li>
-    );
   };
 
   return (
@@ -126,7 +118,7 @@ export const AppNavbar = () => {
             <Container className="p-0 me-4">
               {getUserProfileImgJSX()}
               <Offcanvas.Title className="mt-2">
-                Logged in as
+                {authState.user ? "Logged in as" : "Not logged in"}
                 <br />
                 <span className="text-secondary">
                   <strong>{userService.getFullName(authState.user)}</strong>
@@ -136,23 +128,19 @@ export const AppNavbar = () => {
             <CloseButton
               className="m-0 bg-light"
               variant="white"
-              aria-aria-label="Close navigation menu"
+              aria-label="Close navigation menu"
               onClick={onMobileMenuToggle}
             />
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav onSelect={onMobileMenuToggle} as="ul">
-              <Nav.Item className="py-1 px-2 fs-5" as="li">
-                <NavLink to="/">Home</NavLink>
-              </Nav.Item>
-              <Nav.Item className="py-1 px-2 fs-5" as="li">
-                <NavLink to="/profile">Profile</NavLink>
-              </Nav.Item>
-              <Nav.Item className="py-1 px-2 fs-5" as="li">
-                <NavLink to={authState.user ? "/logout" : "/login"}>
-                  {authState.user ? "Logout" : "Login"}
-                </NavLink>
-              </Nav.Item>
+              {createOffCanvasNavItem("/", "Home")}
+              {createOffCanvasNavItem("/services", "Services")}
+              {createOffCanvasNavItem("/profile", "Profile")}
+              {createOffCanvasNavItem(
+                authState.user ? "/logout" : "/login",
+                authState.user ? "Logout" : "Login"
+              )}
             </Nav>
           </Offcanvas.Body>
         </Offcanvas>
@@ -160,10 +148,13 @@ export const AppNavbar = () => {
         {/* Desktop Navigation */}
         <Nav className="d-none d-md-flex flex-row">
           <Nav.Item className="d-flex align-items-center">
-            <NavLink to="/" className="fs-5">
-              <Nav.Link className="m-0" as="h2">
-                Home
-              </Nav.Link>
+            <NavLink className="px-2 py-1 fs-5" to="/">
+              Home
+            </NavLink>
+          </Nav.Item>
+          <Nav.Item className="d-flex align-items-center">
+            <NavLink className="px-2 py-1 ms-3 fs-5" to="/services">
+              Services
             </NavLink>
           </Nav.Item>
 
@@ -186,8 +177,21 @@ export const AppNavbar = () => {
               align="end"
               as="ul"
             >
-              {loggedInUserDropdownOptions()}
-              {loginOrLogoutDropdownOption()}
+              {loggedInUserDropdownInfo()}
+              <li>
+                <NavLink to="/profile">
+                  <Dropdown.Item className="py-2 mb-1 fs-5" as="h2">
+                    Profile
+                  </Dropdown.Item>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={authState.user ? "/logout" : "/login"}>
+                  <Dropdown.Item className="py-2 m-0 fs-5" as="h2">
+                    {authState.user ? "Log Out" : "Log In"}
+                  </Dropdown.Item>
+                </NavLink>
+              </li>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>
