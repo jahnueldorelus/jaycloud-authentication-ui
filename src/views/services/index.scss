@@ -1,0 +1,39 @@
+@import "@bootstrap/scss/functions";
+@import "@bootstrap/scss/variables";
+@import "@bootstrap/scss/mixins";
+
+.view-services {
+  .service-card {
+    min-width: 14rem;
+    width: 100%;
+
+    .service-card-img {
+      width: 100%;
+      -o-object-fit: contain;
+      object-fit: contain;
+
+      &-container {
+        max-width: 7rem;
+        display: flex;
+        flex: 1 1;
+      }
+    }
+
+    .service-card-body {
+      flex: 2 1;
+
+      .service-card-link {
+        height: 100%;
+
+        &.disabled-link {
+          cursor: not-allowed;
+        }
+
+        .service-status-indicator {
+          width: 0.5rem;
+          height: 0.5rem;
+        }
+      }
+    }
+  }
+}

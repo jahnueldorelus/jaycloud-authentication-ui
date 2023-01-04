@@ -5,11 +5,12 @@ import Card from "react-bootstrap/Card";
 import Placeholder from "react-bootstrap/Placeholder";
 import JayCloudHub from "@assets/jaycloud-home-hub.svg";
 import { useLoaderData } from "react-router";
-import { HomeLoaderData, Service } from "@app-types/views/home";
+import { HomeLoaderData } from "@app-types/views/home";
 import { NavLink } from "react-router-dom";
 import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
-import "./index.scss";
 import { Fragment } from "react";
+import { Service } from "@app-types/entities";
+import "./index.scss";
 
 export const Home = () => {
   const loaderData = useLoaderData() as HomeLoaderData;

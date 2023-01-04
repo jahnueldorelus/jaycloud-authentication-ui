@@ -1,14 +1,6 @@
+import { UserData } from "@app-types/entities";
 import { AxiosError } from "axios";
 import { APIAuthTokenResponse } from "../api";
-
-// Interface of a user's data
-export interface UserData {
-  _id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  createdAt: string;
-}
 
 // Interface of a user's refresh token request
 export interface ReqRefreshToken {

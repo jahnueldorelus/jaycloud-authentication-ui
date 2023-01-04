@@ -1,5 +1,5 @@
 import { Service } from "@app-types/entities";
 
-export type HomeLoaderData = {
+export type ServicesLoaderData = {
   servicesList: Service[] | null;
 };
