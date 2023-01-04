@@ -10,6 +10,7 @@ import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
 import { Service } from "@app-types/entities";
 import { ClassName } from "@services/class-name";
 import "./index.scss";
+import React from "react";
 
 export const Services = () => {
   const loaderData = useLoaderData() as ServicesLoaderData;
@@ -28,6 +29,18 @@ export const Services = () => {
       });
     }
   };
+
+  /**
+   * Handles opening a service.
+   * @param service The service to open
+   * @param event The click event
+   */
+  const onServiceLinkClick =
+    (service: Service) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (!service.available) {
+        event.preventDefault();
+      }
+    };
 
   const serviceCardJSX = (cardKey: string | number, service?: Service) => {
     let cardImage: string;
@@ -49,12 +62,13 @@ export const Services = () => {
 
       cardBodyContent = (
         <Link
-          to={service.available ? `/load-service/${service._id}` : "."}
+          to={`/load-service/${service._id}`}
           className={cardBodyLinkClass}
           aria-disabled={!service.available}
           title={
             service.available ? "" : `${service.name} is currently unavailable`
           }
+          onClick={onServiceLinkClick(service)}
         >
           <Container className="px-0 d-flex flex-column justify-content-between">
             <Card.Title className="text-senary" as="h4">
