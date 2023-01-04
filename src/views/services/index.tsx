@@ -71,7 +71,7 @@ export const Services = () => {
               {service.available ? "Online" : "Offline"}
             </Badge>
           </Container>
-          <div className="d-flex align-items-center text-primary">
+          <div className="ms-2 d-flex align-items-end align-items-md-center text-primary">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"
@@ -116,9 +116,9 @@ export const Services = () => {
   };
 
   return (
-    <Container className="view-services mt-5">
-      <h3 className="mb-5 text-senary text-decoration-underline">
-        Select a service to get started
+    <Container className="view-services my-5">
+      <h3 className="px-2 py-1 mb-4 bg-primary text-white w-fit rounded">
+        Select a service below
       </h3>
       <Row lg={3}>{getListOfServicesJSX()}</Row>
     </Container>

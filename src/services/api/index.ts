@@ -2,7 +2,7 @@ import { APIRequestConfig, APIRoute } from "@app-types/services/api";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 class APIService {
-  private baseApiPath = "http://localhost:61177/api";
+  private baseApiPath = "http://10.0.0.4:61177/api";
   private baseApiUsersPath = "/users";
   private baseApiFormModelPath = this.baseApiUsersPath + "/form-models";
   private baseApiServicesPath = "/services";

@@ -22,6 +22,7 @@ import { uiRoutes } from "./routes";
 import "./index.scss";
 import { LoadService } from "@views/load-service";
 import { LoadServiceLoaderData } from "@app-types/views/load-service";
+import { cloudService } from "@services/cloud-service";
 
 const router = createBrowserRouter([
   {
@@ -32,45 +33,8 @@ const router = createBrowserRouter([
       {
         path: uiRoutes.home,
         loader: async (): Promise<HomeLoaderData> => {
-          let servicesList: Service[] | null = null;
-
-          try {
-            // Retrieves the list of services
-            const servicesResponse = await apiService.request(
-              apiService.routes.get.services.list,
-              { method: "GET" }
-            );
-
-            if (!servicesResponse || isAxiosError(servicesResponse)) {
-              throw Error();
-            }
-
-            const responseList = servicesResponse.data as Service[];
-
-            // Retrieves the logo for each service
-            for (let x = 0; x < responseList.length; x++) {
-              try {
-                const service = responseList[x] as Service;
-
-                const logoResponse = await apiService.request(
-                  apiService.routes.get.services.logo + `/${service._id}`,
-                  { method: "GET", responseType: "blob" }
-                );
-
-                if (logoResponse && !isAxiosError(logoResponse)) {
-                  service.logo = logoResponse.data;
-                }
-              } catch (error) {
-                // Does nothing if error occurs while retrieving logo. Moves on to next logo retrieval
-              }
-            }
-
-            servicesList = responseList;
-          } catch (error) {
-            // Does nothing if error occurs retrieving list of services. List will remain unavailable
-          } finally {
-            return { servicesList };
-          }
+          let servicesList: Service[] | null = await cloudService.getServices();
+          return { servicesList };
         },
         element: <Home />,
       },
@@ -124,8 +88,11 @@ const router = createBrowserRouter([
 
       {
         path: uiRoutes.loadService + "/:id",
-        loader: (): LoadServiceLoaderData => {
-          return { service: null };
+        loader: async ({ params }): Promise<LoadServiceLoaderData> => {
+          await cloudService.getServices();
+          const serviceId = params["id"] || "";
+          const service = cloudService.getServiceById(serviceId);
+          return { service };
         },
         element: <LoadService />,
       },
@@ -133,45 +100,8 @@ const router = createBrowserRouter([
       {
         path: uiRoutes.services,
         loader: async (): Promise<ServicesLoaderData> => {
-          let servicesList: Service[] | null = null;
-
-          try {
-            // Retrieves the list of services
-            const servicesResponse = await apiService.request(
-              apiService.routes.get.services.list,
-              { method: "GET" }
-            );
-
-            if (!servicesResponse || isAxiosError(servicesResponse)) {
-              throw Error();
-            }
-
-            const responseList = servicesResponse.data as Service[];
-
-            // Retrieves the logo for each service
-            for (let x = 0; x < responseList.length; x++) {
-              try {
-                const service = responseList[x] as Service;
-
-                const logoResponse = await apiService.request(
-                  apiService.routes.get.services.logo + `/${service._id}`,
-                  { method: "GET", responseType: "blob" }
-                );
-
-                if (logoResponse && !isAxiosError(logoResponse)) {
-                  service.logo = logoResponse.data;
-                }
-              } catch (error) {
-                // Does nothing if error occurs while retrieving logo. Moves on to next logo retrieval
-              }
-            }
-
-            servicesList = responseList;
-          } catch (error) {
-            // Does nothing if error occurs retrieving list of services. List will remain unavailable
-          } finally {
-            return { servicesList };
-          }
+          let servicesList: Service[] | null = await cloudService.getServices();
+          return { servicesList };
         },
         element: <Services />,
       },

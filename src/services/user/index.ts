@@ -1,8 +1,9 @@
+import { UserData } from "@app-types/entities";
 import {
   AuthenticateUserResult,
   CreateUserResult,
 } from "@app-types/services/user";
-import { AuthAction, UserData } from "@app-types/store/auth";
+import { AuthAction } from "@app-types/store/auth";
 import { apiService } from "@services/api";
 import { localStorageService } from "@services/local-storage";
 import { isAxiosError } from "axios";
