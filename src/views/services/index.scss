@@ -7,6 +7,23 @@
     min-width: 14rem;
     width: 100%;
 
+    &.disabled-card {
+      opacity: 0.9;
+      position: relative;
+      cursor: not-allowed;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: black;
+        opacity: 0.2;
+      }
+    }
+
     .service-card-img {
       width: 100%;
       -o-object-fit: contain;
@@ -24,10 +41,6 @@
 
       .service-card-link {
         height: 100%;
-
-        &.disabled-link {
-          cursor: not-allowed;
-        }
 
         .service-status-indicator {
           width: 0.5rem;

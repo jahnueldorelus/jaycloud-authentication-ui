@@ -45,6 +45,9 @@ export const Services = () => {
   const serviceCardJSX = (cardKey: string | number, service?: Service) => {
     let cardImage: string;
     let cardBodyContent: JSX.Element;
+    const cardClass = new ClassName(
+      "service-card mb-4 d-flex rounded border border-2 overflow-hidden"
+    ).addClass(!!service && service.available, "", "disabled-card").fullClass;
 
     if (service) {
       cardImage =
@@ -56,18 +59,11 @@ export const Services = () => {
         "py-1 d-flex align-items-center w-fit"
       ).addClass(service.available, "bg-senary", "bg-primary").fullClass;
 
-      const cardBodyLinkClass = new ClassName(
-        "service-card-link p-3 d-flex text-decoration-none"
-      ).addClass(service.available, "", "disabled-link").fullClass;
-
       cardBodyContent = (
         <Link
           to={`/load-service/${service._id}`}
-          className={cardBodyLinkClass}
+          className="service-card-link p-3 d-flex text-decoration-none"
           aria-disabled={!service.available}
-          title={
-            service.available ? "" : `${service.name} is currently unavailable`
-          }
           onClick={onServiceLinkClick(service)}
         >
           <Container className="px-0 d-flex flex-column justify-content-between">
@@ -116,9 +112,14 @@ export const Services = () => {
     return (
       <Col className="d-flex justify-content-center" key={cardKey}>
         <Card
-          className="service-card mb-4 d-flex rounded border border-2 overflow-hidden"
+          className={cardClass}
           border="primary"
           text="primary"
+          title={
+            service && !service.available
+              ? `${service.name} is currently unavailable`
+              : ""
+          }
         >
           <Container className="service-card-img-container py-2 px-3 bg-primary">
             <Card.Img className="service-card-img" src={cardImage} />
@@ -131,8 +132,8 @@ export const Services = () => {
 
   return (
     <Container className="view-services my-5">
-      <h3 className="px-2 py-1 mb-4 bg-primary text-white w-fit rounded">
-        Select a service below
+      <h3 className="mb-4 text-senary text-decoration-underline">
+        Select a Service Below
       </h3>
       <Row lg={3}>{getListOfServicesJSX()}</Row>
     </Container>
