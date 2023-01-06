@@ -11,8 +11,8 @@ export interface UserData {
 export type Service = {
   _id: string;
   name: string;
-  api: string;
-  portNumber: number;
+  uiUrl: string;
+  uiPort: number;
   description: string;
   available: boolean;
   logo?: Blob;

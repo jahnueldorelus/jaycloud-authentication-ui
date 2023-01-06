@@ -37,7 +37,7 @@ export const LoadService = () => {
         )}
         <iframe
           className={iframeClass}
-          src={`${loaderData.service.api}:${loaderData.service.portNumber}`}
+          src={`${loaderData.service.uiUrl}:${loaderData.service.uiPort}`}
           title={`${loaderData.service.name} Service`}
           onLoad={onIframeLoad}
           height="100%"
