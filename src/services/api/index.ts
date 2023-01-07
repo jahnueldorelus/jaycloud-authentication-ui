@@ -9,6 +9,7 @@ class APIService {
 
   get routes(): APIRoute {
     return {
+      any: { data: "/data" },
       get: {
         newUserFormModel: this.baseApiFormModelPath + "/create-user",
         authenticateUserFormModel:
@@ -19,7 +20,6 @@ class APIService {
         },
       },
       post: {
-        data: "/data",
         users: {
           create: this.baseApiUsersPath + "/new",
           authenticate: this.baseApiUsersPath,

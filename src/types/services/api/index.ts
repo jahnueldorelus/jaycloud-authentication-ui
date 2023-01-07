@@ -1,6 +1,7 @@
 import { AxiosRequestConfig, Method } from "axios";
 
 export type APIRoute = {
+  any: { data: string };
   get: {
     newUserFormModel: string;
     authenticateUserFormModel: string;
@@ -10,7 +11,6 @@ export type APIRoute = {
     };
   };
   post: {
-    data: string;
     users: {
       create: string;
       authenticate: string;
@@ -24,3 +24,8 @@ export type APIRoute = {
 export interface APIRequestConfig extends AxiosRequestConfig {
   method: Method;
 }
+
+export type DataRequest = {
+  serviceId: string;
+  apiPath: string;
+};

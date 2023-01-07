@@ -1,14 +1,26 @@
 import { LoadServiceLoaderData } from "@app-types/views/load-service";
 import Container from "react-bootstrap/Container";
 import Spinner from "react-bootstrap/Spinner";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useLoaderData } from "react-router-dom";
+import { IframeService } from "@services/iframe";
 import "./index.scss";
 
 export const LoadService = () => {
   const loaderData = useLoaderData() as LoadServiceLoaderData;
   const [iframeLoading, setIframeLoading] = useState(true);
   const [iframeClass, setIframeClass] = useState("d-none");
+  const [iframeService, setIframeService] = useState<IframeService>();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    if (iframeRef.current && loaderData.service && !iframeService) {
+      console.log("Setting up iframe service");
+      setIframeService(
+        new IframeService(iframeRef.current, loaderData.service)
+      );
+    }
+  }, [iframeRef.current]);
 
   /**
    * Handles the iframe loading it's source's content.
@@ -42,6 +54,7 @@ export const LoadService = () => {
           onLoad={onIframeLoad}
           height="100%"
           width="100%"
+          ref={iframeRef}
         />
       </Fragment>
     );
