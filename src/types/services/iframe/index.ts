@@ -7,7 +7,7 @@ type IframeMessageContent<A, D> = {
 // Api actions
 type IframeMessageApiAction = "api";
 type IframeMessageApiData = {
-  method: "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
+  apiMethod: "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
   apiPath: string;
   data?: any;
 };
@@ -24,6 +24,13 @@ export const isApiMessage = (
 ): messageEvent is IframeMessageApi => {
   const action: IframeMessageApiAction = "api";
   return messageEvent.action === action;
+};
+// Api response
+export type IframeAPIResponse = {
+  apiPath: string;
+  apiMethod: "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
+  error?: string;
+  data?: any;
 };
 
 // Fullscreen actions
@@ -42,6 +49,7 @@ export const isEnterFullscreenMessage = (
   const action: IframeMessageFullscreenAction = "enter-fullscreen";
   return messageEvent.action === action;
 };
+
 /**
  * Determines if an iframe message event's data is to exit fullscreen message.
  * @param messageEvent The message event to check

@@ -1,5 +1,6 @@
 import { Service } from "@app-types/entities";
 import {
+  IframeAPIResponse as IframeMessageAPIResponse,
   IframeMessageApi,
   IframeMessageEventData,
   messageEventData,
@@ -11,19 +12,21 @@ import { isAxiosError } from "axios";
 export class IframeService {
   private iframe: HTMLIFrameElement;
   private service: Service;
+  private serviceFullUrl: string;
 
   constructor(iframe: HTMLIFrameElement, service: Service) {
     this.iframe = iframe;
     this.service = service;
+    this.serviceFullUrl = `${this.service.uiUrl}:${this.service.uiPort}`;
     this.setupReceivingMessages();
   }
 
   private setupReceivingMessages() {
     window.onmessage = (event: MessageEvent) => {
-      if (event.origin === `${this.service.uiUrl}:${this.service.uiPort}`) {
-        console.log("Received from child!", event);
+      // If the message is from the service that's loaded in the iframe
+      if (event.origin === this.serviceFullUrl) {
         const eventData: IframeMessageEventData = event.data;
-
+        // If the message is an api request
         if (messageEventData.isApiMessage(eventData)) {
           this.sendApiRequest(eventData);
         }
@@ -39,20 +42,26 @@ export class IframeService {
     const requestData: DataRequest = {
       serviceId: this.service._id,
       apiPath: request.payload.apiPath,
+      apiMethod: request.payload.apiMethod,
       ...request.payload.data,
     };
-    console.log("Sending to:", apiService.routes.any.data, requestData);
+
     const response = await apiService.request(apiService.routes.any.data, {
-      method: request.payload.method,
+      method: "POST",
       data: requestData,
     });
-    console.log(response);
 
-    // If a response was returned
-    if (response && !isAxiosError(response)) {
-    }
-    // If an error occurred
-    else {
+    const responseMessage: IframeMessageAPIResponse = {
+      apiPath: request.payload.apiPath,
+      apiMethod: request.payload.apiMethod,
+    };
+
+    if (!isAxiosError(response)) {
+      responseMessage.data = response.data;
+      this.postMessage(responseMessage);
+    } else {
+      responseMessage.error = response.message;
+      this.postMessage(responseMessage);
     }
   }
 
@@ -61,7 +70,10 @@ export class IframeService {
    * @param message The message to send to the iframe
    */
   private postMessage = (message: any) => {
-    if (this.iframe.contentWindow)
-      this.iframe.contentWindow.postMessage(message);
+    if (this.iframe.contentWindow) {
+      this.iframe.contentWindow.postMessage(message, {
+        targetOrigin: this.serviceFullUrl,
+      });
+    }
   };
 }

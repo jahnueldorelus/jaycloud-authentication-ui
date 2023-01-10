@@ -34,14 +34,11 @@ class APIService {
   async request(
     apiPath: string,
     config?: APIRequestConfig
-  ): Promise<AxiosResponse<any, any> | AxiosError<any, any> | null> {
+  ): Promise<AxiosResponse<any, any> | AxiosError<any, any>> {
     try {
       return await axios(`${this.baseApiPath}${apiPath}`, config);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return error;
-      }
-      return null;
+      return <AxiosError<any, any>>error;
     }
   }
 }

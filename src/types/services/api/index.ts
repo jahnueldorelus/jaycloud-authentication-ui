@@ -28,4 +28,5 @@ export interface APIRequestConfig extends AxiosRequestConfig {
 export type DataRequest = {
   serviceId: string;
   apiPath: string;
+  apiMethod: string;
 };

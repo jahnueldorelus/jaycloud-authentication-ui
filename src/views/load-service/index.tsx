@@ -15,7 +15,6 @@ export const LoadService = () => {
 
   useEffect(() => {
     if (iframeRef.current && loaderData.service && !iframeService) {
-      console.log("Setting up iframe service");
       setIframeService(
         new IframeService(iframeRef.current, loaderData.service)
       );
