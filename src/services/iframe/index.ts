@@ -17,7 +17,9 @@ export class IframeService {
   constructor(iframe: HTMLIFrameElement, service: Service) {
     this.iframe = iframe;
     this.service = service;
-    this.serviceFullUrl = `${this.service.uiUrl}:${this.service.uiPort}`;
+    this.serviceFullUrl = `${this.service.uiUrl}${
+      this.service.uiPort ? ":" + this.service.uiPort : ""
+    }`;
     this.setupReceivingMessages();
   }
 

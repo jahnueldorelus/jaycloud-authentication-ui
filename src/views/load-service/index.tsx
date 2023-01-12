@@ -30,6 +30,10 @@ export const LoadService = () => {
   };
 
   if (loaderData.service) {
+    const iframeSrc = `${loaderData.service.uiUrl}${
+      loaderData.service.uiPort ? ":" + loaderData.service.uiPort : ""
+    }`;
+
     return (
       <Fragment>
         {iframeLoading && (
@@ -48,7 +52,7 @@ export const LoadService = () => {
         )}
         <iframe
           className={iframeClass}
-          src={`${loaderData.service.uiUrl}:${loaderData.service.uiPort}`}
+          src={iframeSrc}
           title={`${loaderData.service.name} Service`}
           onLoad={onIframeLoad}
           height="100%"
