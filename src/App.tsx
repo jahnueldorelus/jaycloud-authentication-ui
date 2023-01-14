@@ -12,7 +12,7 @@ function App() {
   const location = useLocation();
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
-  const backToJayCloudRef = useRef<HTMLAnchorElement>(null);
+  const backToJayCloudRef = useRef<HTMLDivElement>(null);
   const [minimumContentHeight, setMinimumContentHeight] = useState<number>(0);
   const isLocationLoadService = location.pathname.includes(
     uiRoutes.loadService
@@ -28,11 +28,9 @@ function App() {
    * content on the page to have the full height of the window.
    */
   useEffect(() => {
-    setMinimumMainContentHeight();
+    const resizeListenerFunction = () => setMinimumMainContentHeight();
 
-    window.addEventListener("resize", () => {
-      setMinimumMainContentHeight();
-    });
+    window.addEventListener("resize", resizeListenerFunction);
 
     /**
      * This is added for all devices that have a visual viewport whose height
@@ -40,13 +38,14 @@ function App() {
      * a window resize event isn't triggered upon the controls of the browser
      * expanding/collapsing.
      */
-    window.visualViewport?.addEventListener("resize", () => {
-      setMinimumMainContentHeight();
-    });
+    window.visualViewport?.addEventListener("resize", resizeListenerFunction);
 
     return () => {
-      window.removeEventListener("resize", () => {});
-      window.visualViewport?.removeEventListener("resize", () => {});
+      window.removeEventListener("resize", resizeListenerFunction);
+      window.visualViewport?.removeEventListener(
+        "resize",
+        resizeListenerFunction
+      );
     };
   }, [location.pathname]);
 
@@ -93,11 +92,15 @@ function App() {
     else {
       return (
         <Fragment>
-          <Container className="py-0 ps-4 bg-primary" fluid>
+          <Container
+            id="jaycloud-service-exit"
+            className="py-3 ps-4 bg-primary"
+            fluid
+            ref={backToJayCloudRef}
+          >
             <Link
-              className="py-3 d-flex align-items-center text-decoration-none text-white"
+              className="w-fit d-flex align-items-center text-decoration-none text-white"
               to={uiRoutes.services}
-              ref={backToJayCloudRef}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

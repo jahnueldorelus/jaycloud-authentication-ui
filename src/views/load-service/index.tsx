@@ -16,7 +16,11 @@ export const LoadService = () => {
   useEffect(() => {
     if (iframeRef.current && loaderData.service && !iframeService) {
       setIframeService(
-        new IframeService(iframeRef.current, loaderData.service)
+        new IframeService(
+          iframeRef.current,
+          loaderData.service,
+          document.getElementById("jaycloud-service-exit")
+        )
       );
     }
   }, [iframeRef.current]);

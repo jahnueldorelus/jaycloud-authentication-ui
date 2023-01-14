@@ -1,64 +1,13 @@
-// Default iframe message properties
-type IframeMessageContent<A, D> = {
+import { isApiMessage } from "@app-types/services/iframe/api";
+import {
+  isEnterFullscreenMessage,
+  isExitFullscreenMessage,
+} from "@app-types/services/iframe/fullscreen";
+
+// Default iframe message request
+export type IframeMessageContent<A, P> = {
   action: A;
-  payload: D;
-};
-
-// Api actions
-type IframeMessageApiAction = "api";
-type IframeMessageApiData = {
-  apiMethod: "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
-  apiPath: string;
-  data?: any;
-};
-export type IframeMessageApi = IframeMessageContent<
-  IframeMessageApiAction,
-  IframeMessageApiData
->;
-/**
- * Determines if an iframe message event's data is an API message.
- * @param messageEvent The message event to check
- */
-export const isApiMessage = (
-  messageEvent: IframeMessageEventData
-): messageEvent is IframeMessageApi => {
-  const action: IframeMessageApiAction = "api";
-  return messageEvent.action === action;
-};
-// Api response
-export type IframeAPIResponse = {
-  apiPath: string;
-  apiMethod: "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
-  error?: string;
-  data?: any;
-};
-
-// Fullscreen actions
-type IframeMessageFullscreenAction = "enter-fullscreen" | "exit-fullscreen";
-export type IframeMessageFullscreen = IframeMessageContent<
-  IframeMessageFullscreenAction,
-  undefined
->;
-/**
- * Determines if an iframe message event's data is to enter fullscreen message.
- * @param messageEvent The message event to check
- */
-export const isEnterFullscreenMessage = (
-  messageEvent: IframeMessageEventData
-): messageEvent is IframeMessageApi => {
-  const action: IframeMessageFullscreenAction = "enter-fullscreen";
-  return messageEvent.action === action;
-};
-
-/**
- * Determines if an iframe message event's data is to exit fullscreen message.
- * @param messageEvent The message event to check
- */
-export const isExitFullscreenMessage = (
-  messageEvent: IframeMessageEventData
-): messageEvent is IframeMessageApi => {
-  const action: IframeMessageFullscreenAction = "exit-fullscreen";
-  return messageEvent.action === action;
+  payload: P;
 };
 
 export const messageEventData = {
@@ -66,4 +15,21 @@ export const messageEventData = {
   isEnterFullscreenMessage,
   isExitFullscreenMessage,
 };
-export type IframeMessageEventData = IframeMessageApi | IframeMessageFullscreen;
+
+// Allows for specific browser fullscreen methods to be available
+export interface BrowserDocument extends Document {
+  webkitExitFullscreen: any;
+  msExitFullscreen: any;
+  cancelFullScreen: any;
+  mozCancelFullScreen: any;
+  isFullScreen: any;
+  webkitFullscreenElement: any;
+  mozFullScreenElement: any;
+  msFullscreenElement: any;
+}
+export interface BrowserDocumentElement extends HTMLElement {
+  webkitRequestFullscreen: any;
+  msRequestFullscreen: any;
+  requestFullScreen: any;
+  mozRequestFullScreen: any;
+}
