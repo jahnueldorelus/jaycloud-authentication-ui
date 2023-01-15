@@ -24,28 +24,42 @@ function App() {
   ).fullClass;
 
   /**
-   * Sets the minimum height of the main content. This makes the
-   * content on the page to have the full height of the window.
+   * Both useEffects sets the minimum height of the main content on page load and
+   * on location change. This makes the content on the page to have the full height 
+   * of the window.
    */
+  useEffect(() => {
+    setMinimumMainContentHeight();
+  }, [])
   useEffect(() => {
     const resizeListenerFunction = () => setMinimumMainContentHeight();
 
-    window.addEventListener("resize", resizeListenerFunction);
+    if (window.visualViewport) {
+      /**
+          * This is added for all devices that have a visual viewport whose height
+          * is different than the window object. This fixes an issue on Safari iOS where
+          * a window resize event isn't triggered upon the controls of the browser
+          * expanding/collapsing.
+          */
+      window.visualViewport.addEventListener("resize", resizeListenerFunction);
+    } else {
 
-    /**
-     * This is added for all devices that have a visual viewport whose height
-     * is different than the window object. This fixes an issue on Safari iOS where
-     * a window resize event isn't triggered upon the controls of the browser
-     * expanding/collapsing.
-     */
-    window.visualViewport?.addEventListener("resize", resizeListenerFunction);
+      window.addEventListener("resize", resizeListenerFunction);
+    }
+
+
 
     return () => {
-      window.removeEventListener("resize", resizeListenerFunction);
-      window.visualViewport?.removeEventListener(
-        "resize",
-        resizeListenerFunction
-      );
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener(
+          "resize",
+          resizeListenerFunction
+        );
+      } else {
+
+        window.removeEventListener("resize", resizeListenerFunction);
+      }
+
     };
   }, [location.pathname]);
 
@@ -61,8 +75,8 @@ function App() {
     } else if (headerRef.current && footerRef.current) {
       setMinimumContentHeight(
         window.innerHeight -
-          headerRef.current.offsetHeight -
-          footerRef.current.offsetHeight
+        headerRef.current.offsetHeight -
+        footerRef.current.offsetHeight
       );
     }
   };
@@ -72,6 +86,7 @@ function App() {
    * is different from the default view of the entire application.
    */
   const getAppBodyJSX = () => {
+    console.log({ window: window.innerHeight, min: minimumContentHeight })
     // View is to not load a service
     if (!isLocationLoadService) {
       return (
