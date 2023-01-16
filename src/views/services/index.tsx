@@ -9,8 +9,9 @@ import { Link, useLoaderData } from "react-router-dom";
 import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
 import { Service } from "@app-types/entities";
 import { ClassName } from "@services/class-name";
+import { MouseEvent } from "react";
+import { uiRoutes } from "@components/navbar/routes";
 import "./index.scss";
-import React from "react";
 
 export const Services = () => {
   const loaderData = useLoaderData() as ServicesLoaderData;
@@ -36,7 +37,7 @@ export const Services = () => {
    * @param event The click event
    */
   const onServiceLinkClick =
-    (service: Service) => (event: React.MouseEvent<HTMLAnchorElement>) => {
+    (service: Service) => (event: MouseEvent<HTMLAnchorElement>) => {
       if (!service.available) {
         event.preventDefault();
       }
@@ -61,7 +62,7 @@ export const Services = () => {
 
       cardBodyContent = (
         <Link
-          to={`/load-service/${service._id}`}
+          to={`${uiRoutes.loadService}/${service._id}`}
           className="service-card-link p-3 d-flex text-decoration-none"
           aria-disabled={!service.available}
           onClick={onServiceLinkClick(service)}

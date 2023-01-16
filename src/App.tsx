@@ -3,7 +3,7 @@ import { AuthProvider } from "./store";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { AppFooter } from "@components/footer";
-import { uiRoutes } from "./routes";
+import { uiRoutes } from "./components/navbar/routes";
 import Container from "react-bootstrap/Container";
 import { ClassName } from "@services/class-name";
 import { appContentHeightService } from "@services/app-content-height";

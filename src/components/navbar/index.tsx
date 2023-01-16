@@ -9,8 +9,9 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import CloseButton from "react-bootstrap/CloseButton";
 import { NavLink } from "react-router-dom";
-import "./index.scss";
 import { userService } from "@services/user";
+import { uiRoutes } from "@components/navbar/routes";
+import "./index.scss";
 
 export const AppNavbar = () => {
   const mobileNavId = "app-navigation-mobile";
@@ -87,17 +88,19 @@ export const AppNavbar = () => {
   return (
     <Navbar className="app-navbar py-1" bg="primary" expand="md">
       <Container className="flex-row-reverse flex-md-row" fluid="md">
-        <Navbar.Brand
-          className="me-0 d-flex align-items-center text-white fs-3"
-          href="#Home"
-        >
-          <img
-            className="me-3"
-            src={JayCloudLogo}
-            alt="JayCloud logo"
-            width="40"
-          />
-          <h1 className="m-0 fs-2">JayCloud</h1>
+        <Navbar.Brand>
+          <NavLink
+            className="me-0 d-flex align-items-center text-white text-decoration-none fs-3"
+            to={uiRoutes.home}
+          >
+            <img
+              className="me-3"
+              src={JayCloudLogo}
+              alt="JayCloud logo"
+              width="40"
+            />
+            <h1 className="m-0 fs-2">JayCloud</h1>
+          </NavLink>
         </Navbar.Brand>
 
         {/* Mobile navigation */}
@@ -134,11 +137,11 @@ export const AppNavbar = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav onSelect={onMobileMenuToggle} as="ul">
-              {createOffCanvasNavItem("/", "Home")}
-              {createOffCanvasNavItem("/services", "Services")}
-              {createOffCanvasNavItem("/profile", "Profile")}
+              {createOffCanvasNavItem(uiRoutes.home, "Home")}
+              {createOffCanvasNavItem(uiRoutes.services, "Services")}
+              {createOffCanvasNavItem(uiRoutes.profile, "Profile")}
               {createOffCanvasNavItem(
-                authState.user ? "/logout" : "/login",
+                authState.user ? uiRoutes.logout : uiRoutes.login,
                 authState.user ? "Logout" : "Login"
               )}
             </Nav>
@@ -148,12 +151,12 @@ export const AppNavbar = () => {
         {/* Desktop Navigation */}
         <Nav className="d-none d-md-flex flex-row">
           <Nav.Item className="d-flex align-items-center">
-            <NavLink className="px-2 py-1 fs-5" to="/">
+            <NavLink className="px-2 py-1 fs-5" to={uiRoutes.home}>
               Home
             </NavLink>
           </Nav.Item>
           <Nav.Item className="d-flex align-items-center">
-            <NavLink className="px-2 py-1 ms-3 fs-5" to="/services">
+            <NavLink className="px-2 py-1 ms-3 fs-5" to={uiRoutes.services}>
               Services
             </NavLink>
           </Nav.Item>
@@ -179,14 +182,14 @@ export const AppNavbar = () => {
             >
               {loggedInUserDropdownInfo()}
               <li>
-                <NavLink to="/profile">
+                <NavLink to={uiRoutes.profile}>
                   <Dropdown.Item className="py-2 mb-1 fs-5" as="h2">
                     Profile
                   </Dropdown.Item>
                 </NavLink>
               </li>
               <li>
-                <NavLink to={authState.user ? "/logout" : "/login"}>
+                <NavLink to={authState.user ? uiRoutes.logout : uiRoutes.login}>
                   <Dropdown.Item className="py-2 m-0 fs-5" as="h2">
                     {authState.user ? "Log Out" : "Log In"}
                   </Dropdown.Item>

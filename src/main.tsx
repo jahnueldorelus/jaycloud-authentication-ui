@@ -18,11 +18,11 @@ import { HomeLoaderData } from "@app-types/views/home";
 import { ServicesLoaderData } from "@app-types/views/services";
 import { Service } from "@app-types/entities";
 import { Services } from "@views/services";
-import { uiRoutes } from "./routes";
-import "./index.scss";
+import { uiRoutes } from "./components/navbar/routes";
 import { LoadService } from "@views/load-service";
 import { LoadServiceLoaderData } from "@app-types/views/load-service";
 import { cloudService } from "@services/cloud-service";
+import "./index.scss";
 
 const router = createBrowserRouter([
   {

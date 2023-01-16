@@ -10,6 +10,7 @@ import { NavLink } from "react-router-dom";
 import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
 import { Fragment } from "react";
 import { Service } from "@app-types/entities";
+import { uiRoutes } from "@components/navbar/routes";
 import "./index.scss";
 
 export const Home = () => {
@@ -135,11 +136,11 @@ export const Home = () => {
         </div>
         <h3 className="py-5 mb-0 text-center">
           To get started, create an&nbsp;
-          <NavLink className="text-senary" to="/register">
+          <NavLink className="text-senary" to={uiRoutes.register}>
             account
           </NavLink>
           &nbsp;or&nbsp;
-          <NavLink className="text-senary" to="/login">
+          <NavLink className="text-senary" to={uiRoutes.login}>
             login
           </NavLink>
           .

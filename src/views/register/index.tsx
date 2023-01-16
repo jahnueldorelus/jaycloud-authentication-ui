@@ -15,6 +15,7 @@ import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
 import { NavLink } from "react-router-dom";
 import { UIError } from "@components/ui-error";
+import { uiRoutes } from "@components/navbar/routes";
 import "./index.scss";
 
 export const Register = () => {
@@ -135,7 +136,7 @@ export const Register = () => {
           <Container className="px-4 pt-3">
             <p className="mb-0">Have an account?</p>
             <NavLink
-              to="/login"
+              to={uiRoutes.login}
               className="text-secondary text-decoration-none"
             >
               Click here to log into your account

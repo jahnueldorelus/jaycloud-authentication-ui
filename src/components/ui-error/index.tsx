@@ -1,3 +1,4 @@
+import { uiRoutes } from "@components/navbar/routes";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { NavLink } from "react-router-dom";
@@ -23,7 +24,7 @@ export const UIError = () => {
           <a href="mailto:support@jahnueldorelus.com">contact us</a>.
         </h5>
         <Container className="py-3 d-flex justify-content-center">
-          <NavLink to="/">
+          <NavLink to={uiRoutes.home}>
             <Button variant="primary">Return Home</Button>
           </NavLink>
         </Container>

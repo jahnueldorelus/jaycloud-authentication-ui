@@ -15,6 +15,7 @@ import { objectService } from "@services/object";
 import { userService } from "@services/user";
 import { NavLink } from "react-router-dom";
 import { UIError } from "@components/ui-error";
+import { uiRoutes } from "@components/navbar/routes";
 import "./index.scss";
 
 export const Login = () => {
@@ -134,7 +135,7 @@ export const Login = () => {
           <Container className="px-4 pt-3">
             <p className="mb-0">Don't have an account?</p>
             <NavLink
-              to="/register"
+              to={uiRoutes.register}
               className="text-secondary text-decoration-none"
             >
               Click here to create a new account
@@ -171,6 +172,13 @@ export const Login = () => {
                   </Form.Group>
                 );
               })}
+
+              <NavLink
+                to={uiRoutes.passwordReset}
+                className="text-secondary text-decoration-none"
+              >
+                Forgot password?
+              </NavLink>
 
               <Container className="my-4 d-flex justify-content-center">
                 <Button
