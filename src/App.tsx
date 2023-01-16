@@ -6,6 +6,7 @@ import { AppFooter } from "@components/footer";
 import { uiRoutes } from "./routes";
 import Container from "react-bootstrap/Container";
 import { ClassName } from "@services/class-name";
+import { appContentHeightService } from "@services/app-content-height";
 import "./App.scss";
 
 function App() {
@@ -24,30 +25,50 @@ function App() {
   ).fullClass;
 
   /**
+   * Handles setting up the app content height service.
+   */
+  useEffect(() => {
+    if (!appContentHeightService.setMinContentHeight) {
+      appContentHeightService.setMinContentHeight = setMinimumContentHeight;
+    }
+    if (headerRef.current !== appContentHeightService.headerRef?.current) {
+      appContentHeightService.headerRef = headerRef;
+    }
+    if (footerRef.current !== appContentHeightService.footerRef?.current) {
+      appContentHeightService.footerRef = footerRef;
+    }
+    if (
+      backToJayCloudRef.current !==
+      appContentHeightService.backToJayCloudRef?.current
+    ) {
+      appContentHeightService.backToJayCloudRef = backToJayCloudRef;
+    }
+  }, [headerRef.current, footerRef.current, backToJayCloudRef.current]);
+
+  /**
    * Both useEffects sets the minimum height of the main content on page load and
-   * on location change. This makes the content on the page to have the full height 
+   * on location change. This makes the content on the page to have the full height
    * of the window.
    */
   useEffect(() => {
-    setMinimumMainContentHeight();
-  }, [location.pathname])
+    appContentHeightService.isLocationLoadService = isLocationLoadService;
+    appContentHeightService.calculateNewHeight();
+  }, [location.pathname]);
 
   useEffect(() => {
-    const resizeListenerFunction = () => setMinimumMainContentHeight();
+    const resizeListenerFunction = appContentHeightService.calculateNewHeight;
 
     if (window.visualViewport) {
       /**
-        * This is added for all devices that have a visual viewport whose height
-        * is different than the window object. This fixes an issue on Safari iOS where
-        * a window resize event isn't triggered upon the controls of the browser
-        * expanding/collapsing.
-        */
+       * This is added for all devices that have a visual viewport whose height
+       * is different than the window object. This fixes an issue on Safari iOS where
+       * a window resize event isn't triggered upon the controls of the browser
+       * expanding/collapsing.
+       */
       window.visualViewport.addEventListener("resize", resizeListenerFunction);
     } else {
       window.addEventListener("resize", resizeListenerFunction);
     }
-
-
 
     return () => {
       if (window.visualViewport) {
@@ -58,27 +79,8 @@ function App() {
       } else {
         window.removeEventListener("resize", resizeListenerFunction);
       }
-
     };
   }, []);
-
-  /**
-   * Sets the minimum height of the main content. This makes the
-   * content on the page to have the full height of the window.
-   */
-  const setMinimumMainContentHeight = () => {
-    if (isLocationLoadService && backToJayCloudRef.current) {
-      setMinimumContentHeight(
-        window.innerHeight - backToJayCloudRef.current.offsetHeight
-      );
-    } else if (headerRef.current && footerRef.current) {
-      setMinimumContentHeight(
-        window.innerHeight -
-        headerRef.current.offsetHeight -
-        footerRef.current.offsetHeight
-      );
-    }
-  };
 
   /**
    * Retrieves the app's body content. The view to load a service
