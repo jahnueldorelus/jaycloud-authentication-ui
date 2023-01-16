@@ -30,20 +30,20 @@ function App() {
    */
   useEffect(() => {
     setMinimumMainContentHeight();
-  }, [])
+  }, [location.pathname])
+
   useEffect(() => {
     const resizeListenerFunction = () => setMinimumMainContentHeight();
 
     if (window.visualViewport) {
       /**
-          * This is added for all devices that have a visual viewport whose height
-          * is different than the window object. This fixes an issue on Safari iOS where
-          * a window resize event isn't triggered upon the controls of the browser
-          * expanding/collapsing.
-          */
+        * This is added for all devices that have a visual viewport whose height
+        * is different than the window object. This fixes an issue on Safari iOS where
+        * a window resize event isn't triggered upon the controls of the browser
+        * expanding/collapsing.
+        */
       window.visualViewport.addEventListener("resize", resizeListenerFunction);
     } else {
-
       window.addEventListener("resize", resizeListenerFunction);
     }
 
@@ -56,12 +56,11 @@ function App() {
           resizeListenerFunction
         );
       } else {
-
         window.removeEventListener("resize", resizeListenerFunction);
       }
 
     };
-  }, [location.pathname]);
+  }, []);
 
   /**
    * Sets the minimum height of the main content. This makes the
@@ -86,7 +85,6 @@ function App() {
    * is different from the default view of the entire application.
    */
   const getAppBodyJSX = () => {
-    console.log({ window: window.innerHeight, min: minimumContentHeight })
     // View is to not load a service
     if (!isLocationLoadService) {
       return (
