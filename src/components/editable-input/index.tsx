@@ -178,6 +178,7 @@ export const EditableInput = (props: EditableInputProps) => {
 
   return (
     <div key={inputLabel} className="mb-3">
+      {/* Input label */}
       <label
         htmlFor={inputID}
         className={
@@ -191,6 +192,7 @@ export const EditableInput = (props: EditableInputProps) => {
         {inputLabel + (inputRequired ? " *" : "")}
       </label>
 
+      {/* Input Content */}
       <div className="d-flex align-items-center">
         {getInputJSX()}
         <img
@@ -208,6 +210,7 @@ export const EditableInput = (props: EditableInputProps) => {
         />
       </div>
 
+      {/* Input invalid error message */}
       {!isInputValid && inputText && (
         <p
           className={

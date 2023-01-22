@@ -23,6 +23,9 @@ import { LoadService } from "@views/load-service";
 import { LoadServiceLoaderData } from "@app-types/views/load-service";
 import { cloudService } from "@services/cloud-service";
 import "./index.scss";
+import { ForgotPassword } from "@views/forgot-password";
+import { UpdatePassword } from "@views/update-password";
+import { ForgotPasswordLoaderData } from "@app-types/views/forgot-password";
 
 const router = createBrowserRouter([
   {
@@ -100,10 +103,47 @@ const router = createBrowserRouter([
       {
         path: uiRoutes.services,
         loader: async (): Promise<ServicesLoaderData> => {
-          let servicesList: Service[] | null = await cloudService.getServices();
+          const servicesList: Service[] | null =
+            await cloudService.getServices();
           return { servicesList };
         },
         element: <Services />,
+      },
+      {
+        path: uiRoutes.forgotPassword,
+        loader: async (): Promise<ForgotPasswordLoaderData> => {
+          const response = await apiService.request(
+            apiService.routes.get.resetPasswordFormModel,
+            {
+              method: "GET",
+            }
+          );
+
+          if (!response || isAxiosError(response)) {
+            return { formModel: null };
+          } else {
+            return { formModel: response.data };
+          }
+        },
+        element: <ForgotPassword />,
+      },
+      {
+        path: uiRoutes.updatePassword,
+        loader: async (): Promise<ForgotPasswordLoaderData> => {
+          const response = await apiService.request(
+            apiService.routes.get.updatePasswordFormModel,
+            {
+              method: "GET",
+            }
+          );
+
+          if (!response || isAxiosError(response)) {
+            return { formModel: null };
+          } else {
+            return { formModel: response.data };
+          }
+        },
+        element: <UpdatePassword />,
       },
     ],
   },

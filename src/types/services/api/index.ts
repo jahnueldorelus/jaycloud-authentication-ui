@@ -5,6 +5,8 @@ export type APIRoute = {
   get: {
     newUserFormModel: string;
     authenticateUserFormModel: string;
+    resetPasswordFormModel: string;
+    updatePasswordFormModel: string;
     services: {
       list: string;
       logo: string;

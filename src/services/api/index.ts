@@ -20,6 +20,8 @@ class APIService {
         newUserFormModel: this.baseApiFormModelPath + "/create-user",
         authenticateUserFormModel:
           this.baseApiFormModelPath + "/authenticate-user",
+        resetPasswordFormModel: this.baseApiFormModelPath + "/password-reset",
+        updatePasswordFormModel: this.baseApiFormModelPath + "/update-password",
         services: {
           list: this.baseApiServicesPath,
           logo: this.baseApiServicesPath + "/logo",

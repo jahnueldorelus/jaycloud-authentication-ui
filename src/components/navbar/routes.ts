@@ -3,7 +3,8 @@ const uiRoutes = {
   register: "",
   login: "",
   logout: "",
-  passwordReset: "",
+  forgotPassword: "",
+  updatePassword: "",
   profile: "",
   loadService: "",
   services: "",
@@ -12,7 +13,8 @@ const uiRoutes = {
 uiRoutes.register = uiRoutes.home + "register";
 uiRoutes.login = uiRoutes.home + "login";
 uiRoutes.logout = uiRoutes.home + "logout";
-uiRoutes.passwordReset = uiRoutes.home + "password-reset";
+uiRoutes.forgotPassword = uiRoutes.home + "forgot-password";
+uiRoutes.updatePassword = uiRoutes.home + "update-password";
 uiRoutes.profile = uiRoutes.home + "profile";
 uiRoutes.loadService = uiRoutes.home + "load-service";
 uiRoutes.services = uiRoutes.home + "services";

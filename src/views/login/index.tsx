@@ -119,10 +119,14 @@ export const Login = () => {
     }
   };
 
+  /**
+   * Retrieves the form model JSX.
+   */
   const formModelJSX = (): JSX.Element => {
     if (loaderData.formModel) {
       const title = loaderData.formModel.title;
       const inputs = loaderData.formModel.inputs;
+
       return (
         <Container
           fluid="md"
@@ -174,7 +178,7 @@ export const Login = () => {
               })}
 
               <NavLink
-                to={uiRoutes.passwordReset}
+                to={uiRoutes.forgotPassword}
                 className="text-secondary text-decoration-none"
               >
                 Forgot password?

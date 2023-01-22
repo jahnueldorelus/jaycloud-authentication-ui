@@ -1,7 +1,11 @@
 import { UserData } from "@app-types/entities";
 import {
-  AuthenticateUserResult,
   CreateUserResult,
+  FormSubmitResult,
+  PasswordResetRequestInfo,
+  PasswordResetRequestResponse,
+  UpdatePasswordRequestInfo,
+  UpdatePasswordRequestResponse,
 } from "@app-types/services/user";
 import { AuthAction } from "@app-types/store/auth";
 import { apiService } from "@services/api";
@@ -9,14 +13,9 @@ import { localStorageService } from "@services/local-storage";
 import { isAxiosError } from "axios";
 
 export class UserService {
-  private defaultUserActionError: CreateUserResult & AuthenticateUserResult;
   private userAccessToken: string;
 
   constructor() {
-    this.defaultUserActionError = {
-      errorMessage: "An error has occured.",
-      errorOccurred: true,
-    };
     this.userAccessToken = "";
   }
 
@@ -45,7 +44,7 @@ export class UserService {
     );
 
     // If a response was returned
-    if (result && !isAxiosError(result)) {
+    if (!isAxiosError(result)) {
       authDispatch({ type: "userAdded", payload: result.data });
 
       return {
@@ -54,15 +53,13 @@ export class UserService {
       };
     }
     // If an error occurred
-    else if (result && isAxiosError(result)) {
+    else {
       const errorMessage: string = result.response ? result.response.data : "";
 
       return {
         errorMessage,
         errorOccurred: true,
       };
-    } else {
-      return this.defaultUserActionError;
     }
   }
 
@@ -74,7 +71,7 @@ export class UserService {
   async authenticateUser(
     requestBody: object,
     authDispatch: React.Dispatch<AuthAction>
-  ): Promise<AuthenticateUserResult> {
+  ): Promise<FormSubmitResult> {
     const result = await apiService.request(
       apiService.routes.post.users.authenticate,
       {
@@ -84,7 +81,7 @@ export class UserService {
     );
 
     // If a response was returned
-    if (result && !isAxiosError(result)) {
+    if (!isAxiosError(result)) {
       authDispatch({ type: "userAdded", payload: result.data });
       this.userAccessToken = result.headers["x-acc-token"] || "";
       localStorageService.setRefreshToken(result.headers["x-ref-token"] || "");
@@ -95,15 +92,83 @@ export class UserService {
       };
     }
     // If an error occurred
-    else if (result && isAxiosError(result)) {
+    else {
       const errorMessage: string = result.response ? result.response.data : "";
 
       return {
         errorMessage,
         errorOccurred: true,
       };
+    }
+  }
+
+  /**
+   * Attempts to reset a user's password.
+   * @param requestInfo The info to attach to the api request
+   */
+  async resetPassword(
+    requestInfo: PasswordResetRequestInfo
+  ): Promise<PasswordResetRequestResponse> {
+    const result = await apiService.request(
+      apiService.routes.post.users.passwordReset,
+      {
+        method: "POST",
+        data: requestInfo,
+      }
+    );
+
+    if (isAxiosError(result) || !result.data) {
+      const errorMessage: string =
+        isAxiosError(result) && result.response ? result.response.data : "";
+      const formSubmitResult: PasswordResetRequestResponse = {
+        errorMessage,
+        errorOccurred: true,
+        timeBeforeTokenExp: null,
+      };
+
+      return formSubmitResult;
     } else {
-      return this.defaultUserActionError;
+      const formSubmitResult: PasswordResetRequestResponse = {
+        errorMessage: "",
+        errorOccurred: false,
+        timeBeforeTokenExp: result.data,
+      };
+
+      return formSubmitResult;
+    }
+  }
+
+  /**
+   * Attempts to update a user's password.
+   * @param requestInfo The info to attach to the api request
+   */
+  async updatePassword(
+    requestInfo: UpdatePasswordRequestInfo
+  ): Promise<UpdatePasswordRequestResponse> {
+    const result = await apiService.request(
+      apiService.routes.post.users.updatePassword,
+      {
+        method: "POST",
+        data: requestInfo,
+      }
+    );
+
+    if (isAxiosError(result) || !result.data) {
+      const errorMessage: string =
+        isAxiosError(result) && result.response ? result.response.data : "";
+      const formSubmitResult: UpdatePasswordRequestResponse = {
+        errorMessage,
+        errorOccurred: true,
+      };
+
+      return formSubmitResult;
+    } else {
+      const formSubmitResult: UpdatePasswordRequestResponse = {
+        errorMessage: "",
+        errorOccurred: false,
+      };
+
+      return formSubmitResult;
     }
   }
 
