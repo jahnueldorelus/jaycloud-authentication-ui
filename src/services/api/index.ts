@@ -31,7 +31,7 @@ class APIService {
         users: {
           create: this.baseApiUsersPath + "/new",
           authenticate: this.baseApiUsersPath,
-          newRefreshToken: this.baseApiUsersPath + "/refreshToken",
+          newRefreshToken: this.baseApiUsersPath + "/refresh-token",
           passwordReset: this.baseApiUsersPath + "/password-reset",
           updatePassword: this.baseApiUsersPath + "/update-password",
         },
