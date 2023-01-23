@@ -11,9 +11,9 @@ class LocalStorageService {
    * Retrieves the user's refresh token from local storage.
    * @returns The user's refresh token
    */
-  getRefreshToken = (): string | null => {
+  getRefreshToken = (): string => {
     const refreshToken = window.localStorage.getItem("reftok");
-    return refreshToken ? refreshToken : null;
+    return refreshToken ? refreshToken : "";
   };
 
   /**

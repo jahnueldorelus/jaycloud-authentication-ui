@@ -1,22 +1,27 @@
-import { UserData } from "@app-types/entities";
+import {
+  ApiAuthTokenResponse,
+  RequestRefreshTokenData,
+} from "@app-types/services/axios-interceptors";
 import {
   CreateUserResult,
   FormSubmitResult,
   PasswordResetRequestInfo,
   PasswordResetRequestResponse,
+  TokenData,
   UpdatePasswordRequestInfo,
   UpdatePasswordRequestResponse,
 } from "@app-types/services/user";
-import { AuthAction } from "@app-types/store/auth";
 import { apiService } from "@services/api";
 import { localStorageService } from "@services/local-storage";
 import { isAxiosError } from "axios";
 
 export class UserService {
-  private userAccessToken: string;
+  private userAccessToken: string | null;
+  private user: TokenData | null;
 
   constructor() {
     this.userAccessToken = "";
+    this.user = null;
   }
 
   /**
@@ -27,14 +32,35 @@ export class UserService {
   }
 
   /**
+   * Retrieves the user's refresh token.
+   */
+  get userRefreshToken() {
+    return localStorageService.getRefreshToken();
+  }
+
+  /**
+   * Sets the user's refresh token
+   */
+  set userRefreshToken(token: string | null) {
+    if (token) {
+      localStorageService.setRefreshToken(token);
+    } else {
+      localStorageService.removeRefreshToken();
+    }
+  }
+
+  /**
+   * Determines if the user is logged in.
+   */
+  get userIsLoggedIn() {
+    return this.accessToken && this.userRefreshToken && this.user;
+  }
+
+  /**
    * Attempts to create a new user.
    * @param requestBody The data to send with the request
-   * @param authDispatch The authorization context dispatch for saving the user's info
    */
-  async createUser(
-    requestBody: object,
-    authDispatch: React.Dispatch<AuthAction>
-  ): Promise<CreateUserResult> {
+  async createUser(requestBody: object): Promise<CreateUserResult> {
     const result = await apiService.request(
       apiService.routes.post.users.create,
       {
@@ -45,7 +71,9 @@ export class UserService {
 
     // If a response was returned
     if (!isAxiosError(result)) {
-      authDispatch({ type: "userAdded", payload: result.data });
+      this.user = result.data;
+      this.userAccessToken = result.headers["x-acc-token"] || "";
+      this.userRefreshToken = result.headers["x-ref-token"] || "";
 
       return {
         errorMessage: "",
@@ -66,12 +94,8 @@ export class UserService {
   /**
    * Attempts to authenticate a user.
    * @param requestBody The data to send with the request
-   * @param authDispatch The authorization context dispatch for saving the user's info
    */
-  async authenticateUser(
-    requestBody: object,
-    authDispatch: React.Dispatch<AuthAction>
-  ): Promise<FormSubmitResult> {
+  async authenticateUser(requestBody: object): Promise<FormSubmitResult> {
     const result = await apiService.request(
       apiService.routes.post.users.authenticate,
       {
@@ -82,9 +106,9 @@ export class UserService {
 
     // If a response was returned
     if (!isAxiosError(result)) {
-      authDispatch({ type: "userAdded", payload: result.data });
+      this.user = result.data;
       this.userAccessToken = result.headers["x-acc-token"] || "";
-      localStorageService.setRefreshToken(result.headers["x-ref-token"] || "");
+      this.userRefreshToken = result.headers["x-ref-token"] || "";
 
       return {
         errorMessage: "",
@@ -100,6 +124,62 @@ export class UserService {
         errorOccurred: true,
       };
     }
+  }
+
+  /**
+   * Attemps to retrieve a new access and refresh token if a refresh token
+   * is available.
+   */
+  async getNewUserTokens(): Promise<boolean> {
+    if (this.userRefreshToken) {
+      try {
+        const requestData: RequestRefreshTokenData = {
+          token: this.userRefreshToken,
+        };
+
+        const response = await apiService.request(
+          apiService.routes.post.users.newRefreshToken,
+          {
+            method: "POST",
+            data: requestData,
+          }
+        );
+
+        // Checks if a new access and refresh token was provided
+        if (
+          !isAxiosError(response) &&
+          (<ApiAuthTokenResponse>response).headers["x-acc-token"] &&
+          (<ApiAuthTokenResponse>response).headers["x-ref-token"]
+        ) {
+          this.userAccessToken = (<ApiAuthTokenResponse>response).headers[
+            "x-acc-token"
+          ];
+          this.userRefreshToken = (<ApiAuthTokenResponse>response).headers[
+            "x-ref-token"
+          ];
+          this.user = response.data;
+          return Promise.resolve(true);
+        } else {
+          throw Error();
+        }
+      } catch (error: any) {
+        return Promise.resolve(false);
+      }
+    } else {
+      return Promise.resolve(false);
+    }
+  }
+
+  /**
+   * Retrieves the user's information.
+   */
+  async getUserInfo(): Promise<TokenData | null> {
+    // Retrieves new user tokens if the access token is missing
+    if (!this.accessToken && this.userRefreshToken) {
+      await this.getNewUserTokens();
+    }
+
+    return this.user;
   }
 
   /**
@@ -174,22 +254,30 @@ export class UserService {
 
   /**
    * Retrieves the full name of a user.
-   * @param user The user to retrieve the full name from
    */
-  getFullName(user: UserData | null) {
-    if (user) {
+  getUserFullName() {
+    if (this.user) {
       const firstName =
-        user.firstName[0] &&
-        user.firstName[0].toUpperCase() + user.firstName.slice(1);
+        this.user.firstName[0] &&
+        this.user.firstName[0].toUpperCase() + this.user.firstName.slice(1);
 
       const lastName =
-        user.lastName[0] &&
-        user.lastName[0].toUpperCase() + user.lastName.slice(1);
+        this.user.lastName[0] &&
+        this.user.lastName[0].toUpperCase() + this.user.lastName.slice(1);
 
       return `${firstName} ${lastName}`;
     } else {
       return "";
     }
+  }
+
+  /**
+   * Logs out the user.
+   */
+  logoutUser() {
+    this.user = null;
+    this.userAccessToken = null;
+    this.userRefreshToken = null;
   }
 }
 

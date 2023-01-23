@@ -22,10 +22,11 @@ import { uiRoutes } from "./components/navbar/routes";
 import { LoadService } from "@views/load-service";
 import { LoadServiceLoaderData } from "@app-types/views/load-service";
 import { cloudService } from "@services/cloud-service";
-import "./index.scss";
 import { ForgotPassword } from "@views/forgot-password";
 import { UpdatePassword } from "@views/update-password";
 import { ForgotPasswordLoaderData } from "@app-types/views/forgot-password";
+import { userService } from "@services/user";
+import "./index.scss";
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,7 @@ const router = createBrowserRouter([
       {
         path: uiRoutes.logout,
         loader: () => {
+          userService.logoutUser();
           return redirect("/");
         },
       },

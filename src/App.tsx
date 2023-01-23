@@ -1,5 +1,4 @@
 import { AppNavbar } from "@components/navbar";
-import { AuthProvider } from "./store";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { AppFooter } from "@components/footer";
@@ -142,11 +141,7 @@ function App() {
     }
   };
 
-  return (
-    <AuthProvider>
-      <div className={appBodyClass}>{getAppBodyJSX()}</div>
-    </AuthProvider>
-  );
+  return <div className={appBodyClass}>{getAppBodyJSX()}</div>;
 }
 
 export default App;

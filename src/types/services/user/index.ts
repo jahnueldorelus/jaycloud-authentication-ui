@@ -19,3 +19,11 @@ export interface PasswordResetRequestResponse extends FormSubmitResult {
 }
 
 export interface UpdatePasswordRequestResponse extends FormSubmitResult {}
+
+export type TokenData = {
+  _id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  createdAt: string;
+};

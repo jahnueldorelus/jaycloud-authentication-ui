@@ -1,6 +1,6 @@
 import { RegisterLoaderData } from "@app-types/views/register";
 import { FormModelInputOption } from "@app-types/form-model";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -9,7 +9,6 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import { userService } from "@services/user";
-import { authStore } from "@store/index";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
@@ -21,7 +20,6 @@ import "./index.scss";
 export const Register = () => {
   const navigate = useNavigate();
   const loaderData = useLoaderData() as RegisterLoaderData;
-  const authState = useContext(authStore);
   const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
     {}
   );
@@ -63,10 +61,7 @@ export const Register = () => {
 
     if (isFormValid) {
       setApiRequestPending(true);
-      const result = await userService.createUser(
-        userModifiedInputs,
-        authState.dispatch
-      );
+      const result = await userService.createUser(userModifiedInputs);
       setApiRequestPending(false);
 
       if (result.errorOccurred) {

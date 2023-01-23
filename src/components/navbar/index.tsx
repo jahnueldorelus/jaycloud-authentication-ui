@@ -1,5 +1,4 @@
-import { authStore } from "@store/index";
-import { Fragment, useContext, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import JayCloudLogo from "@assets/jaycloud-logo.svg";
 import UserProfile from "@assets/user-profile.svg";
 import Navbar from "react-bootstrap/Navbar";
@@ -12,14 +11,26 @@ import { NavLink } from "react-router-dom";
 import { userService } from "@services/user";
 import { uiRoutes } from "@components/navbar/routes";
 import "./index.scss";
+import { TokenData } from "@app-types/services/user";
 
 export const AppNavbar = () => {
   const mobileNavId = "app-navigation-mobile";
   const desktopUserMenuId = "app-navigation-desktop-user-menu";
-  const authState = useContext(authStore);
-  const userName = userService.getFullName(authState.user);
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false);
   const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
+  const [user, setUser] = useState<TokenData | null>(null);
+
+  /**
+   * Updates the user upon authentication change.
+   */
+  useEffect(() => {
+    const getUserData = async () => {
+      const userInfo = await userService.getUserInfo();
+      setUser(userInfo);
+    };
+
+    getUserData();
+  }, [userService.userIsLoggedIn]);
 
   /**
    * Click handler for the user menu options toggle.
@@ -62,22 +73,18 @@ export const AppNavbar = () => {
    * menu options dropdown.
    */
   const loggedInUserDropdownInfo = (): JSX.Element => {
-    if (authState.user) {
+    if (user) {
       return (
         <Fragment>
-          {userName && (
-            <Fragment>
-              <li className="mb-0 py-2 px-2 text-white">
-                Logged in as
-                <br />
-                <span className="text-secondary">
-                  <strong>{userName}</strong>
-                </span>
-              </li>
+          <li className="mb-0 py-2 px-2 text-white">
+            Logged in as
+            <br />
+            <span className="text-secondary">
+              <strong>{userService.getUserFullName()}</strong>
+            </span>
+          </li>
 
-              <Dropdown.Divider className="mx-2 bg-white" />
-            </Fragment>
-          )}
+          <Dropdown.Divider className="mx-2 bg-white" />
         </Fragment>
       );
     } else {
@@ -121,10 +128,10 @@ export const AppNavbar = () => {
             <Container className="p-0 me-4">
               {getUserProfileImgJSX()}
               <Offcanvas.Title className="mt-2">
-                {authState.user ? "Logged in as" : "Not logged in"}
+                {user ? "Logged in as" : "Not logged in"}
                 <br />
                 <span className="text-secondary">
-                  <strong>{userService.getFullName(authState.user)}</strong>
+                  <strong>{userService.getUserFullName()}</strong>
                 </span>
               </Offcanvas.Title>
             </Container>
@@ -141,8 +148,8 @@ export const AppNavbar = () => {
               {createOffCanvasNavItem(uiRoutes.services, "Services")}
               {createOffCanvasNavItem(uiRoutes.profile, "Profile")}
               {createOffCanvasNavItem(
-                authState.user ? uiRoutes.logout : uiRoutes.login,
-                authState.user ? "Logout" : "Login"
+                user ? uiRoutes.logout : uiRoutes.login,
+                user ? "Logout" : "Login"
               )}
             </Nav>
           </Offcanvas.Body>
@@ -189,9 +196,9 @@ export const AppNavbar = () => {
                 </NavLink>
               </li>
               <li>
-                <NavLink to={authState.user ? uiRoutes.logout : uiRoutes.login}>
+                <NavLink to={user ? uiRoutes.logout : uiRoutes.login}>
                   <Dropdown.Item className="py-2 m-0 fs-5" as="h2">
-                    {authState.user ? "Log Out" : "Log In"}
+                    {user ? "Log Out" : "Log In"}
                   </Dropdown.Item>
                 </NavLink>
               </li>

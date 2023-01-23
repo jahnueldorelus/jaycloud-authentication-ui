@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorSVG from "@assets/error-circle.svg";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -10,7 +10,6 @@ import { EditableInput } from "@components/editable-input";
 import { FormModelInputOption } from "@app-types/form-model";
 import { useLoaderData, useNavigate } from "react-router";
 import { LoginLoaderData } from "@app-types/views/login";
-import { authStore } from "@store/index";
 import { objectService } from "@services/object";
 import { userService } from "@services/user";
 import { NavLink } from "react-router-dom";
@@ -20,7 +19,6 @@ import "./index.scss";
 
 export const Login = () => {
   const loaderData = useLoaderData() as LoginLoaderData;
-  const authState = useContext(authStore);
   const navigate = useNavigate();
   const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
     null
@@ -63,10 +61,7 @@ export const Login = () => {
 
     if (isFormValid) {
       setApiRequestPending(true);
-      const result = await userService.authenticateUser(
-        userModifiedInputs,
-        authState.dispatch
-      );
+      const result = await userService.authenticateUser(userModifiedInputs);
       setApiRequestPending(false);
 
       if (result.errorOccurred) {
