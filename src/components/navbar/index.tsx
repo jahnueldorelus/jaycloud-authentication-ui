@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import JayCloudLogo from "@assets/jaycloud-logo.svg";
 import UserProfile from "@assets/user-profile.svg";
 import Navbar from "react-bootstrap/Navbar";
@@ -19,17 +19,22 @@ export const AppNavbar = () => {
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false);
   const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
   const [user, setUser] = useState<TokenData | null>(null);
+  const userRequestPending = useRef(false);
 
   /**
    * Updates the user upon authentication change.
    */
   useEffect(() => {
     const getUserData = async () => {
+      userRequestPending.current = true;
       const userInfo = await userService.getUserInfo();
       setUser(userInfo);
+      userRequestPending.current = false;
     };
 
-    getUserData();
+    if (!userRequestPending.current) {
+      getUserData();
+    }
   }, [userService.userIsLoggedIn]);
 
   /**

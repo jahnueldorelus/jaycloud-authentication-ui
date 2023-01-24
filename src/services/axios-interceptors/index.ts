@@ -75,6 +75,7 @@ class AxiosInterceptorsService {
         return response;
       },
       async (error: AxiosError) => {
+        console.log("Caught Axios Error:", error);
         /**
          * If the original url wasn't to sign in or refresh the user's tokens
          *   AND
