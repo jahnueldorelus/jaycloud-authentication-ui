@@ -152,7 +152,7 @@ export const ForgotPassword = () => {
             <Card.Body className="px-3 py-4 bg-senary text-white">
               {/* If a reset request hasn't been submitted */}
               {!requestWasSubmitted.current && (
-                <Card.Text className="mb-4 fs-6 text-center text-md-start">
+                <Card.Text className="mb-4 fs-6">
                   To reset your password, please fill the form below.
                   <br />
                   <br />* Required Input
