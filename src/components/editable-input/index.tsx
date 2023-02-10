@@ -112,7 +112,7 @@ export const EditableInput = (props: EditableInputProps) => {
           className="form-model-editable-input border-0"
           required={inputRequired}
           onChange={onSelectChange}
-          defaultValue={inputSelectSelectedOption}
+          value={inputSelectSelectedOption}
           name={inputName}
           aria-disabled={props.disabled}
         >
@@ -142,7 +142,7 @@ export const EditableInput = (props: EditableInputProps) => {
         className="form-model-editable-input w-100 rounded border-0 fs-6 px-2"
         required={inputRequired}
         onInput={onTextAreaChange}
-        defaultValue={inputText}
+        value={inputText}
         aria-disabled={props.disabled}
         readOnly={props.disabled}
       />
@@ -161,7 +161,7 @@ export const EditableInput = (props: EditableInputProps) => {
         className="form-model-editable-input w-100 rounded border-0 fs-6 px-2"
         required={inputRequired}
         onInput={onTextfieldChange}
-        defaultValue={inputText}
+        value={inputText}
         placeholder={inputPlaceholder}
         type={
           inputType === "alpha" ||

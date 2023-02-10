@@ -1,3 +1,4 @@
+import { UserAction } from "@app-types/context/user";
 import {
   ApiAuthTokenResponse,
   RequestRefreshTokenData,
@@ -10,25 +11,28 @@ import {
   TokenData,
   UpdatePasswordRequestInfo,
   UpdatePasswordRequestResponse,
+  UpdateProfileInfo,
+  UpdateProfileInfoResponse,
 } from "@app-types/services/user";
 import { apiService } from "@services/api";
 import { localStorageService } from "@services/local-storage";
 import { isAxiosError } from "axios";
+import { Dispatch } from "react";
 
 export class UserService {
-  private userAccessToken: string | null;
-  private user: TokenData | null;
+  private accessToken: string | null;
+  private userDispatch: Dispatch<UserAction> | null;
 
   constructor() {
-    this.userAccessToken = "";
-    this.user = null;
+    this.accessToken = "";
+    this.userDispatch = null;
   }
 
   /**
    * Retrieves the user's access token.
    */
-  get accessToken() {
-    return this.userAccessToken;
+  get userAccessToken() {
+    return this.accessToken;
   }
 
   /**
@@ -53,7 +57,23 @@ export class UserService {
    * Determines if the user is logged in.
    */
   get userIsLoggedIn() {
-    return this.accessToken && this.userRefreshToken && this.user;
+    return Boolean(this.accessToken && this.userRefreshToken);
+  }
+
+  /**
+   * Sets the user dispatch
+   */
+  set dispatch(userDispatch: Dispatch<UserAction>) {
+    this.userDispatch = userDispatch;
+  }
+
+  /**
+   * Dispatches the new info of the user.
+   */
+  updateUserInfo(userInfo: TokenData | null) {
+    if (this.userDispatch) {
+      this.userDispatch({ type: "setUser", payload: userInfo });
+    }
   }
 
   /**
@@ -71,8 +91,8 @@ export class UserService {
 
     // If a response was returned
     if (!isAxiosError(result)) {
-      this.user = result.data;
-      this.userAccessToken = result.headers["x-acc-token"] || "";
+      this.updateUserInfo(result.data);
+      this.accessToken = result.headers["x-acc-token"] || "";
       this.userRefreshToken = result.headers["x-ref-token"] || "";
 
       return {
@@ -106,8 +126,8 @@ export class UserService {
 
     // If a response was returned
     if (!isAxiosError(result)) {
-      this.user = result.data;
-      this.userAccessToken = result.headers["x-acc-token"] || "";
+      this.updateUserInfo(result.data);
+      this.accessToken = result.headers["x-acc-token"] || "";
       this.userRefreshToken = result.headers["x-ref-token"] || "";
 
       return {
@@ -151,13 +171,13 @@ export class UserService {
           (<ApiAuthTokenResponse>response).headers["x-acc-token"] &&
           (<ApiAuthTokenResponse>response).headers["x-ref-token"]
         ) {
-          this.userAccessToken = (<ApiAuthTokenResponse>response).headers[
+          this.accessToken = (<ApiAuthTokenResponse>response).headers[
             "x-acc-token"
           ];
           this.userRefreshToken = (<ApiAuthTokenResponse>response).headers[
             "x-ref-token"
           ];
-          this.user = response.data;
+          this.updateUserInfo(response.data);
           return Promise.resolve(true);
         } else {
           throw Error();
@@ -168,18 +188,6 @@ export class UserService {
     } else {
       return Promise.resolve(false);
     }
-  }
-
-  /**
-   * Retrieves the user's information.
-   */
-  async getUserInfo(): Promise<TokenData | null> {
-    // Retrieves new user tokens if the access token is missing
-    if (!this.accessToken && this.userRefreshToken) {
-      await this.getNewUserTokens();
-    }
-
-    return this.user;
   }
 
   /**
@@ -253,30 +261,62 @@ export class UserService {
   }
 
   /**
-   * Retrieves the full name of a user.
+   * Attempts to update a user's profile info.
+   * @param requestInfo The info to attach to the api request
    */
-  getUserFullName() {
-    if (this.user) {
-      const firstName =
-        this.user.firstName[0] &&
-        this.user.firstName[0].toUpperCase() + this.user.firstName.slice(1);
+  async updateProfile(
+    requestInfo: UpdateProfileInfo
+  ): Promise<UpdateProfileInfoResponse> {
+    const result = await apiService.request(
+      apiService.routes.post.users.update,
+      {
+        method: "POST",
+        data: requestInfo,
+      }
+    );
 
-      const lastName =
-        this.user.lastName[0] &&
-        this.user.lastName[0].toUpperCase() + this.user.lastName.slice(1);
+    if (isAxiosError(result) || !result.data) {
+      const formSubmitResult: UpdateProfileInfoResponse = {
+        errorMessage: "Failed to update profile info",
+        errorOccurred: true,
+      };
 
-      return `${firstName} ${lastName}`;
+      return formSubmitResult;
     } else {
-      return "";
+      this.updateUserInfo(result.data);
+      this.accessToken = result.headers["x-acc-token"] || "";
+
+      const formSubmitResult: UpdateProfileInfoResponse = {
+        errorMessage: "",
+        errorOccurred: false,
+      };
+
+      return formSubmitResult;
     }
+  }
+
+  /**
+   * Retrieves the full name of a user.
+   * @param user The user's info
+   */
+  getUserFullName(user: TokenData) {
+    const firstName =
+      user.firstName[0] &&
+      user.firstName[0].toUpperCase() + user.firstName.slice(1);
+
+    const lastName =
+      user.lastName[0] &&
+      user.lastName[0].toUpperCase() + user.lastName.slice(1);
+
+    return `${firstName} ${lastName}`;
   }
 
   /**
    * Logs out the user.
    */
   logoutUser() {
-    this.user = null;
-    this.userAccessToken = null;
+    this.updateUserInfo(null);
+    this.accessToken = null;
     this.userRefreshToken = null;
   }
 }

@@ -7,6 +7,7 @@ export type APIRoute = {
     authenticateUserFormModel: string;
     resetPasswordFormModel: string;
     updatePasswordFormModel: string;
+    userProfileFormModel: string;
     services: {
       list: string;
       logo: string;
@@ -19,6 +20,7 @@ export type APIRoute = {
       newRefreshToken: string;
       passwordReset: string;
       updatePassword: string;
+      update: string;
     };
   };
 };

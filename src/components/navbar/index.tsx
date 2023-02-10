@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import JayCloudLogo from "@assets/jaycloud-logo.svg";
 import UserProfile from "@assets/user-profile.svg";
 import Navbar from "react-bootstrap/Navbar";
@@ -10,32 +10,16 @@ import CloseButton from "react-bootstrap/CloseButton";
 import { NavLink } from "react-router-dom";
 import { userService } from "@services/user";
 import { uiRoutes } from "@components/navbar/routes";
+import { useContext } from "react";
+import { userContext } from "@context/user";
 import "./index.scss";
-import { TokenData } from "@app-types/services/user";
 
 export const AppNavbar = () => {
   const mobileNavId = "app-navigation-mobile";
   const desktopUserMenuId = "app-navigation-desktop-user-menu";
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false);
   const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
-  const [user, setUser] = useState<TokenData | null>(null);
-  const userRequestPending = useRef(false);
-
-  /**
-   * Updates the user upon authentication change.
-   */
-  useEffect(() => {
-    const getUserData = async () => {
-      userRequestPending.current = true;
-      const userInfo = await userService.getUserInfo();
-      setUser(userInfo);
-      userRequestPending.current = false;
-    };
-
-    if (!userRequestPending.current) {
-      getUserData();
-    }
-  }, [userService.userIsLoggedIn]);
+  const { user } = useContext(userContext);
 
   /**
    * Click handler for the user menu options toggle.
@@ -85,7 +69,7 @@ export const AppNavbar = () => {
             Logged in as
             <br />
             <span className="text-secondary">
-              <strong>{userService.getUserFullName()}</strong>
+              <strong>{userService.getUserFullName(user)}</strong>
             </span>
           </li>
 
@@ -95,6 +79,35 @@ export const AppNavbar = () => {
     } else {
       return <></>;
     }
+  };
+
+  /**
+   * Retrieves the JSX for a logged in user in the user
+   * menu options dropdown.
+   */
+  const loggedInUserOffCanvasInfo = (): JSX.Element => {
+    return (
+      <Offcanvas.Header className="pb-2 align-items-start bg-senary text-white">
+        <Container className="p-0 me-4">
+          {getUserProfileImgJSX()}
+          <Offcanvas.Title className="mt-2">
+            {user ? "Logged in as" : "Not logged in"}
+            <br />
+            {user && (
+              <span className="text-secondary">
+                <strong>{userService.getUserFullName(user)}</strong>
+              </span>
+            )}
+          </Offcanvas.Title>
+        </Container>
+        <CloseButton
+          className="m-0 bg-light"
+          variant="white"
+          aria-label="Close navigation menu"
+          onClick={onMobileMenuToggle}
+        />
+      </Offcanvas.Header>
+    );
   };
 
   return (
@@ -129,24 +142,7 @@ export const AppNavbar = () => {
           show={isOffcanvasVisible}
           onHide={onMobileMenuToggle}
         >
-          <Offcanvas.Header className="pb-2 align-items-start bg-senary text-white">
-            <Container className="p-0 me-4">
-              {getUserProfileImgJSX()}
-              <Offcanvas.Title className="mt-2">
-                {user ? "Logged in as" : "Not logged in"}
-                <br />
-                <span className="text-secondary">
-                  <strong>{userService.getUserFullName()}</strong>
-                </span>
-              </Offcanvas.Title>
-            </Container>
-            <CloseButton
-              className="m-0 bg-light"
-              variant="white"
-              aria-label="Close navigation menu"
-              onClick={onMobileMenuToggle}
-            />
-          </Offcanvas.Header>
+          {loggedInUserOffCanvasInfo()}
           <Offcanvas.Body>
             <Nav onSelect={onMobileMenuToggle} as="ul">
               {createOffCanvasNavItem(uiRoutes.home, "Home")}

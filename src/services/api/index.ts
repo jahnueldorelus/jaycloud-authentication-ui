@@ -22,6 +22,7 @@ class APIService {
           this.baseApiFormModelPath + "/authenticate-user",
         resetPasswordFormModel: this.baseApiFormModelPath + "/password-reset",
         updatePasswordFormModel: this.baseApiFormModelPath + "/update-password",
+        userProfileFormModel: this.baseApiFormModelPath + "/update-user",
         services: {
           list: this.baseApiServicesPath,
           logo: this.baseApiServicesPath + "/logo",
@@ -34,6 +35,7 @@ class APIService {
           newRefreshToken: this.baseApiUsersPath + "/refresh-token",
           passwordReset: this.baseApiUsersPath + "/password-reset",
           updatePassword: this.baseApiUsersPath + "/update-password",
+          update: this.baseApiUsersPath + "/update",
         },
       },
     };

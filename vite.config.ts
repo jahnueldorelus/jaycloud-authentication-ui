@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@bootstrap": path.resolve(__dirname, "node_modules/bootstrap"),
+      "@context": path.resolve(__dirname, "./src/context"),
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@components": path.resolve(__dirname, "./src/components"),
       "@services": path.resolve(__dirname, "./src/services"),

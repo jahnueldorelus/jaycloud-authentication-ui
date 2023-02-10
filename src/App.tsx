@@ -6,6 +6,10 @@ import { uiRoutes } from "./components/navbar/routes";
 import Container from "react-bootstrap/Container";
 import { ClassName } from "@services/class-name";
 import { appContentHeightService } from "@services/app-content-height";
+import { setupAxiosInterceptors } from "@services/axios-interceptors";
+import { userService } from "@services/user";
+import { userContext } from "@context/user";
+import { useContext } from "react";
 import "./App.scss";
 
 function App() {
@@ -14,6 +18,7 @@ function App() {
   const footerRef = useRef<HTMLElement>(null);
   const backToJayCloudRef = useRef<HTMLDivElement>(null);
   const [minimumContentHeight, setMinimumContentHeight] = useState<number>(0);
+  const hasFetchedNewTokens = useRef(false);
   const isLocationLoadService = location.pathname.includes(
     uiRoutes.loadService
   );
@@ -22,6 +27,7 @@ function App() {
     "overflow-hidden",
     "overflow-auto"
   ).fullClass;
+  const { userDispatch } = useContext(userContext);
 
   /**
    * Handles setting up the app content height service.
@@ -79,6 +85,24 @@ function App() {
         window.removeEventListener("resize", resizeListenerFunction);
       }
     };
+  }, []);
+
+  /**
+   * Sets up the axios interceptors and user service to retrieve
+   * the logged in user's info (if there's a user logged in).
+   */
+  useEffect(() => {
+    setupAxiosInterceptors();
+
+    const retrieveNewTokensForUser = async () => {
+      hasFetchedNewTokens.current = true;
+      userService.dispatch = userDispatch;
+      await userService.getNewUserTokens();
+    };
+
+    if (!hasFetchedNewTokens.current) {
+      retrieveNewTokensForUser();
+    }
   }, []);
 
   /**

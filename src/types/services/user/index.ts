@@ -9,10 +9,13 @@ export type FormSubmitResult = {
 };
 
 export type PasswordResetRequestInfo = Record<string, string>;
+
 export type UpdatePasswordRequestInfo = {
   password?: string;
   token: string;
 };
+
+export type UpdateProfileInfo = Record<string, string>;
 
 export interface PasswordResetRequestResponse extends FormSubmitResult {
   timeBeforeTokenExp: string | null;
@@ -20,8 +23,10 @@ export interface PasswordResetRequestResponse extends FormSubmitResult {
 
 export interface UpdatePasswordRequestResponse extends FormSubmitResult {}
 
+export interface UpdateProfileInfoResponse extends FormSubmitResult {}
+
 export type TokenData = {
-  _id: number;
+  _id: string;
   firstName: string;
   lastName: string;
   email: string;

@@ -27,6 +27,9 @@ import { UpdatePassword } from "@views/update-password";
 import { ForgotPasswordLoaderData } from "@app-types/views/forgot-password";
 import { userService } from "@services/user";
 import "./index.scss";
+import { Profile } from "@views/profile";
+import { ProfileLoaderData } from "@app-types/views/profile";
+import { UserProvider } from "@context/user";
 
 const router = createBrowserRouter([
   {
@@ -88,7 +91,23 @@ const router = createBrowserRouter([
       },
       {
         path: uiRoutes.profile,
-        element: <></>,
+        loader: async (): Promise<ProfileLoaderData> => {
+          const response = await apiService.request(
+            apiService.routes.get.userProfileFormModel,
+            {
+              method: "GET",
+            }
+          );
+
+          if (!response || isAxiosError(response)) {
+            return { formModel: null };
+          } else {
+            return {
+              formModel: response.data,
+            };
+          }
+        },
+        element: <Profile />,
       },
 
       {
@@ -153,6 +172,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>
 );

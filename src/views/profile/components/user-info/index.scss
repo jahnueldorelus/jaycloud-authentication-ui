@@ -1,0 +1,17 @@
+@import "@bootstrap/scss/functions";
+@import "@bootstrap/scss/variables";
+@import "@bootstrap/scss/mixins";
+
+.view-profile-user-info {
+  img {
+    width: 120px;
+
+    @include media-breakpoint-up("md") {
+      width: 100px;
+    }
+
+    @include media-breakpoint-up("xl") {
+      width: 70px;
+    }
+  }
+}

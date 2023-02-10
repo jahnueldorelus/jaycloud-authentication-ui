@@ -1,6 +1,5 @@
 import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from "axios";
 import { apiService } from "@services/api";
-import { HttpStatusCode } from "axios";
 import { userService } from "@services/user";
 
 class AxiosInterceptorsService {
@@ -87,7 +86,7 @@ class AxiosInterceptorsService {
           error.config.url !== apiService.routes.post.users.authenticate &&
           error.config.url !== apiService.routes.post.users.newRefreshToken &&
           error.response &&
-          error.response.status === HttpStatusCode.Unauthorized &&
+          error.response.status === 401 /* Unauthorized */ &&
           !this.retriedAuthRenewal &&
           error.message.toLowerCase().includes("token")
         ) {
@@ -110,4 +109,10 @@ class AxiosInterceptorsService {
   }
 }
 
-export const axiosInterceptorsService = new AxiosInterceptorsService();
+let axiosInterceptorsService: AxiosInterceptorsService | null = null;
+
+export const setupAxiosInterceptors = () => {
+  if (!axiosInterceptorsService) {
+    axiosInterceptorsService = new AxiosInterceptorsService();
+  }
+};
