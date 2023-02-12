@@ -1,22 +1,42 @@
-import { ProfileLoaderData } from "@app-types/views/profile";
 import Container from "react-bootstrap/Container";
-import { useLoaderData } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { UserInfoUpdateForm } from "./components/user-info-update-form";
 import { UserInfo } from "./components/user-info";
+import { useState, useEffect, useRef } from "react";
+import { FormModel } from "@app-types/form-model";
+import { formModelService } from "@services/form-model";
+import { Loader } from "@components/loader";
+import { ClassName } from "@services/class-name";
 
 export const Profile = () => {
-  const loaderData = useLoaderData() as ProfileLoaderData;
+  const loadedInitialData = useRef(false);
+  const [profileUpdateForm, setProfileUpdateForm] = useState<
+    FormModel | null | undefined
+  >(undefined);
 
-  if (loaderData.formModel) {
-    const title = loaderData.formModel.title;
-    const inputs = loaderData.formModel.inputs;
+  /**
+   * Retrieves the update profile form.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getProfileUpdateForm = async () => {
+        loadedInitialData.current = true;
+        setProfileUpdateForm(await formModelService.getProfileUpdateForm());
+      };
 
-    return (
-      <Container className="view-profile my-5">
+      getProfileUpdateForm();
+    }
+  }, []);
+
+  const getProfileContentJSX = () => {
+    if (profileUpdateForm) {
+      const title = profileUpdateForm.title;
+      const inputs = profileUpdateForm.inputs;
+
+      return (
         <Container
           fluid="md"
-          className="login-form p-0 my-2 text-white bg-senary rounded overflow-hidden shadow"
+          className="p-0 my-2 text-white bg-senary rounded overflow-hidden shadow"
         >
           <Container className="px-4 py-2 bg-primary text-center text-md-start">
             <h3 className="m-0">Profile</h3>
@@ -28,9 +48,32 @@ export const Profile = () => {
             <UserInfoUpdateForm formInputs={inputs} formTitle={title} />
           </Container>
         </Container>
-      </Container>
-    );
-  } else {
-    return <UIError />;
-  }
+      );
+    } // Failed to get profile update form from api
+    else if (profileUpdateForm === null) {
+      return <UIError />;
+    }
+    // Page is loading initial data
+    else {
+      return (
+        <Container className="d-flex align-items-center">
+          <Loader />
+        </Container>
+      );
+    }
+  };
+
+  return (
+    <Container
+      className={
+        new ClassName("my-5").addClass(
+          profileUpdateForm === undefined,
+          "d-flex",
+          ""
+        ).fullClass
+      }
+    >
+      {getProfileContentJSX()}
+    </Container>
+  );
 };

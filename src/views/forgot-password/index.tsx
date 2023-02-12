@@ -5,21 +5,25 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import { EditableInput } from "@components/editable-input";
-import { ForgotPasswordLoaderData } from "@app-types/views/forgot-password";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { useEffect, useRef, useState } from "react";
-import { FormModelInputOption } from "@app-types/form-model";
+import { FormModel, FormModelInputOption } from "@app-types/form-model";
 import { userService } from "@services/user";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
-import "./index.scss";
 import { uiRoutes } from "@components/navbar/routes";
+import { formModelService } from "@services/form-model";
+import { Loader } from "@components/loader";
+import "./index.scss";
 
 export const ForgotPassword = () => {
   const navigate = useNavigate();
-  const loaderData = useLoaderData() as ForgotPasswordLoaderData;
+  const loadedInitialData = useRef(false);
+  const [forgotPasswordForm, setForgotPasswordForm] = useState<
+    FormModel | null | undefined
+  >(undefined);
   const requestWasSubmitted = useRef(false);
   const [isApiRequestPending, setApiRequestPending] = useState(false);
   const [passwordResetErrorMessage, setPasswordResetErrorMessage] = useState<
@@ -35,6 +39,20 @@ export const ForgotPassword = () => {
   const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
     {}
   );
+
+  /**
+   * Retrieves the forgot password form.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getForgotPasswordForm = async () => {
+        loadedInitialData.current = true;
+        setForgotPasswordForm(await formModelService.getForgotPasswordForm());
+      };
+
+      getForgotPasswordForm();
+    }
+  }, []);
 
   // Validates the form upon user input
   useEffect(() => {
@@ -98,10 +116,10 @@ export const ForgotPassword = () => {
     const formInputsValidity: Record<string, boolean> = {};
 
     if (
-      loaderData.formModel &&
+      forgotPasswordForm &&
       !objectService.isObjectEmpty(userModifiedInputs)
     ) {
-      const formInputs = loaderData.formModel.inputs;
+      const formInputs = forgotPasswordForm.inputs;
 
       // Validates each form input
       formInputs.forEach((input) => {
@@ -136,9 +154,9 @@ export const ForgotPassword = () => {
    * Retrieves the form model JSX.
    */
   const formModelJSX = (): JSX.Element => {
-    if (loaderData.formModel) {
-      const formModelTitle = loaderData.formModel.title;
-      const formModelInputs = loaderData.formModel.inputs;
+    if (forgotPasswordForm) {
+      const formModelTitle = forgotPasswordForm.title;
+      const formModelInputs = forgotPasswordForm.inputs;
 
       return (
         <Container className="password-reset-form py-5 d-flex justify-content-center">
@@ -267,8 +285,13 @@ export const ForgotPassword = () => {
           </Card>
         </Container>
       );
-    } else {
+    } // Failed to get forgot password form from api
+    else if (forgotPasswordForm === null) {
       return <UIError />;
+    }
+    // Page is loading initial data
+    else {
+      return <Loader />;
     }
   };
 

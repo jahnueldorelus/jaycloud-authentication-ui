@@ -1,7 +1,6 @@
-import { RegisterLoaderData } from "@app-types/views/register";
-import { FormModelInputOption } from "@app-types/form-model";
-import { useEffect, useState } from "react";
-import { useLoaderData, useNavigate } from "react-router";
+import { FormModel, FormModelInputOption } from "@app-types/form-model";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import { EditableInput } from "@components/editable-input";
@@ -9,17 +8,22 @@ import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
 import { userService } from "@services/user";
+import { formModelService } from "@services/form-model";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
 import { NavLink } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { uiRoutes } from "@components/navbar/routes";
+import { Loader } from "@components/loader";
 import "./index.scss";
 
 export const Register = () => {
   const navigate = useNavigate();
-  const loaderData = useLoaderData() as RegisterLoaderData;
+  const loadedInitialData = useRef(false);
+  const [registrationForm, setRegistrationForm] = useState<
+    FormModel | null | undefined
+  >(undefined);
   const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
     {}
   );
@@ -31,6 +35,20 @@ export const Register = () => {
     string | null
   >(null);
   const [isApiRequestPending, setApiRequestPending] = useState(false);
+
+  /**
+   * Retrieves the registration form.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getRegistrationForm = async () => {
+        loadedInitialData.current = true;
+        setRegistrationForm(await formModelService.getRegistrationForm());
+      };
+
+      getRegistrationForm();
+    }
+  }, []);
 
   // Validates the registration form upon user input
   useEffect(() => {
@@ -79,11 +97,8 @@ export const Register = () => {
   const validateForm = () => {
     const formInputsValidity: Record<string, boolean> = {};
 
-    if (
-      loaderData.formModel &&
-      !objectService.isObjectEmpty(userModifiedInputs)
-    ) {
-      const formInputs = loaderData.formModel.inputs;
+    if (registrationForm && !objectService.isObjectEmpty(userModifiedInputs)) {
+      const formInputs = registrationForm.inputs;
 
       // Validates each form input
       formInputs.forEach((input) => {
@@ -115,9 +130,9 @@ export const Register = () => {
   };
 
   const formModelJSX = (): JSX.Element => {
-    if (loaderData.formModel) {
-      const title = loaderData.formModel.title;
-      const inputs = loaderData.formModel.inputs;
+    if (registrationForm) {
+      const title = registrationForm.title;
+      const inputs = registrationForm.inputs;
 
       return (
         <Container
@@ -198,8 +213,14 @@ export const Register = () => {
           </Container>
         </Container>
       );
-    } else {
+    }
+    // Failed to get registration form from api
+    else if (registrationForm === null) {
       return <UIError />;
+    }
+    // Page is loading initial data
+    else {
+      return <Loader />;
     }
   };
 

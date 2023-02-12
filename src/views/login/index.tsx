@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ErrorSVG from "@assets/error-circle.svg";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -7,19 +7,23 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import { ClassName } from "@services/class-name";
 import { EditableInput } from "@components/editable-input";
-import { FormModelInputOption } from "@app-types/form-model";
-import { useLoaderData, useNavigate } from "react-router";
-import { LoginLoaderData } from "@app-types/views/login";
+import { FormModel, FormModelInputOption } from "@app-types/form-model";
+import { useNavigate } from "react-router";
 import { objectService } from "@services/object";
 import { userService } from "@services/user";
+import { formModelService } from "@services/form-model";
 import { NavLink } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { uiRoutes } from "@components/navbar/routes";
+import { Loader } from "@components/loader";
 import "./index.scss";
 
 export const Login = () => {
-  const loaderData = useLoaderData() as LoginLoaderData;
   const navigate = useNavigate();
+  const loadedInitialData = useRef(false);
+  const [authenticationForm, setAuthenticationForm] = useState<
+    FormModel | null | undefined
+  >(undefined);
   const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
     null
   );
@@ -32,7 +36,21 @@ export const Login = () => {
     {}
   );
 
-  // Validates the registration form upon user input
+  /**
+   * Retrieves the authentication form.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getAuthenticationForm = async () => {
+        loadedInitialData.current = true;
+        setAuthenticationForm(await formModelService.getAuthenticationForm());
+      };
+
+      getAuthenticationForm();
+    }
+  }, []);
+
+  // Validates the authentication form upon user input
   useEffect(() => {
     validateForm();
   }, [userModifiedInputs]);
@@ -80,10 +98,10 @@ export const Login = () => {
     const formInputsValidity: Record<string, boolean> = {};
 
     if (
-      loaderData.formModel &&
+      authenticationForm &&
       !objectService.isObjectEmpty(userModifiedInputs)
     ) {
-      const formInputs = loaderData.formModel.inputs;
+      const formInputs = authenticationForm.inputs;
 
       // Validates each form input
       formInputs.forEach((input) => {
@@ -118,9 +136,9 @@ export const Login = () => {
    * Retrieves the form model JSX.
    */
   const formModelJSX = (): JSX.Element => {
-    if (loaderData.formModel) {
-      const title = loaderData.formModel.title;
-      const inputs = loaderData.formModel.inputs;
+    if (authenticationForm) {
+      const title = authenticationForm.title;
+      const inputs = authenticationForm.inputs;
 
       return (
         <Container
@@ -208,8 +226,13 @@ export const Login = () => {
           </Container>
         </Container>
       );
-    } else {
+    } // Failed to get authentication form from api
+    else if (authenticationForm === null) {
       return <UIError />;
+    }
+    // Page is loading initial data
+    else {
+      return <Loader />;
     }
   };
   return (

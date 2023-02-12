@@ -5,22 +5,26 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import { EditableInput } from "@components/editable-input";
-import { ForgotPasswordLoaderData } from "@app-types/views/forgot-password";
-import { NavLink, useLoaderData, useSearchParams } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { useEffect, useRef, useState } from "react";
-import { FormModelInputOption } from "@app-types/form-model";
+import { FormModel, FormModelInputOption } from "@app-types/form-model";
 import { userService } from "@services/user";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
 import { UpdatePasswordRequestInfo } from "@app-types/services/user";
 import { uiRoutes } from "@components/navbar/routes";
+import { formModelService } from "@services/form-model";
+import { Loader } from "@components/loader";
 import "./index.scss";
 
 export const UpdatePassword = () => {
   const [searchParams] = useSearchParams();
-  const loaderData = useLoaderData() as ForgotPasswordLoaderData;
+  const loadedInitialData = useRef(false);
+  const [updatePasswordForm, setUpdatePasswordForm] = useState<
+    FormModel | null | undefined
+  >(undefined);
   const requestWasSubmitted = useRef(false);
   const [isApiRequestPending, setApiRequestPending] = useState(false);
   const [updatePasswordErrorMessage, setUpdatePasswordErrorMessage] = useState<
@@ -33,6 +37,20 @@ export const UpdatePassword = () => {
   const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
     {}
   );
+
+  /**
+   * Retrieves the update password form.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getUpdatePasswordForm = async () => {
+        loadedInitialData.current = true;
+        setUpdatePasswordForm(await formModelService.getUpdatePasswordForm());
+      };
+
+      getUpdatePasswordForm();
+    }
+  }, []);
 
   // Validates the form upon user input
   useEffect(() => {
@@ -90,10 +108,10 @@ export const UpdatePassword = () => {
     const formInputsValidity: Record<string, boolean> = {};
 
     if (
-      loaderData.formModel &&
+      updatePasswordForm &&
       !objectService.isObjectEmpty(userModifiedInputs)
     ) {
-      const formInputs = loaderData.formModel.inputs;
+      const formInputs = updatePasswordForm.inputs;
 
       // Validates each form input
       formInputs.forEach((input) => {
@@ -128,9 +146,9 @@ export const UpdatePassword = () => {
    * Retrieves the form model JSX.
    */
   const formModelJSX = (): JSX.Element => {
-    if (loaderData.formModel) {
-      const formModelTitle = loaderData.formModel.title;
-      const formModelInputs = loaderData.formModel.inputs;
+    if (updatePasswordForm) {
+      const formModelTitle = updatePasswordForm.title;
+      const formModelInputs = updatePasswordForm.inputs;
 
       return (
         <Container className="update-password-form py-5 d-flex justify-content-center">
@@ -236,8 +254,13 @@ export const UpdatePassword = () => {
           </Card>
         </Container>
       );
-    } else {
+    } // Failed to get update password form from api
+    else if (updatePasswordForm === null) {
       return <UIError />;
+    }
+    // Page is loading initial data
+    else {
+      return <Loader />;
     }
   };
 

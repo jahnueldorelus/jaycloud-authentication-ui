@@ -4,27 +4,40 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Placeholder from "react-bootstrap/Placeholder";
 import JayCloudHub from "@assets/jaycloud-home-hub.svg";
-import { useLoaderData } from "react-router";
-import { HomeLoaderData } from "@app-types/views/home";
 import { NavLink } from "react-router-dom";
 import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState, useRef } from "react";
 import { Service } from "@app-types/entities";
 import { uiRoutes } from "@components/navbar/routes";
+import { cloudService } from "@services/cloud-service";
 import "./index.scss";
 
 export const Home = () => {
-  const loaderData = useLoaderData() as HomeLoaderData;
+  const [servicesList, setServicesList] = useState<Service[] | null>(null);
+  const loadedInitialData = useRef(false);
+
+  /**
+   * Retrieves the list of services.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getServicesList = async () => {
+        loadedInitialData.current = true;
+        setServicesList(await cloudService.getServices());
+      };
+
+      getServicesList();
+    }
+  }, []);
 
   const serviceCardJSX = (cardKey: string | number, service?: Service) => {
     let cardImage: string;
     let cardBodyContent: JSX.Element;
 
     if (service) {
-      cardImage =
-        service && service.logo
-          ? URL.createObjectURL(service.logo)
-          : ServiceLogoPlaceholder;
+      cardImage = service.logo
+        ? URL.createObjectURL(service.logo)
+        : ServiceLogoPlaceholder;
 
       cardBodyContent = (
         <Fragment>
@@ -73,8 +86,8 @@ export const Home = () => {
 
   const serviceCardsListJSX = () => {
     // Shows list of services if available
-    if (loaderData.servicesList) {
-      return loaderData.servicesList.map((service) => {
+    if (servicesList) {
+      return servicesList.map((service) => {
         return serviceCardJSX(service._id, service);
       });
     }
