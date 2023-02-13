@@ -1,25 +1,43 @@
-import { ServicesLoaderData } from "@app-types/views/services";
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import Placeholder from "react-bootstrap/Placeholder";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
 import { Service } from "@app-types/entities";
 import { ClassName } from "@services/class-name";
-import { MouseEvent } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { uiRoutes } from "@components/navbar/routes";
+import { cloudService } from "@services/cloud-service";
 import "./index.scss";
+import { UIError } from "@components/ui-error";
 
 export const Services = () => {
-  const loaderData = useLoaderData() as ServicesLoaderData;
+  const loadedInitialData = useRef(false);
+  const [servicesList, setServicesList] = useState<
+    Service[] | null | undefined
+  >(undefined);
+
+  /**
+   * Retrieves the list of services.
+   */
+  useEffect(() => {
+    if (!loadedInitialData.current) {
+      const getServicesList = async () => {
+        loadedInitialData.current = true;
+        setServicesList(await cloudService.getServices());
+      };
+
+      getServicesList();
+    }
+  }, []);
 
   const getListOfServicesJSX = () => {
     // Shows list of services if available
-    if (loaderData.servicesList) {
-      return loaderData.servicesList.map((service) => {
+    if (servicesList) {
+      return servicesList.map((service) => {
         return serviceCardJSX(service._id, service);
       });
     }
@@ -131,12 +149,20 @@ export const Services = () => {
     );
   };
 
-  return (
-    <Container className="view-services my-5">
-      <h3 className="mb-4 text-senary text-decoration-underline">
-        Select a Service Below
-      </h3>
-      <Row lg={3}>{getListOfServicesJSX()}</Row>
-    </Container>
-  );
+  if (servicesList || servicesList === undefined) {
+    return (
+      <Container className="view-services my-5">
+        <h3 className="mb-4 text-senary text-decoration-underline">
+          Select a Service Below
+        </h3>
+        <Row lg={3}>{getListOfServicesJSX()}</Row>
+      </Container>
+    );
+  } else {
+    return (
+      <Container className="my-5">
+        <UIError />
+      </Container>
+    );
+  }
 };

@@ -10,8 +10,6 @@ import { Home } from "@views/home";
 import { ErrorPage } from "@views/error";
 import { Register } from "@views/register";
 import { Login } from "@views/login";
-import { ServicesLoaderData } from "@app-types/views/services";
-import { Service } from "@app-types/entities";
 import { Services } from "@views/services";
 import { uiRoutes } from "./components/navbar/routes";
 import { LoadService } from "@views/load-service";
@@ -68,11 +66,6 @@ const router = createBrowserRouter([
 
       {
         path: uiRoutes.services,
-        loader: async (): Promise<ServicesLoaderData> => {
-          const servicesList: Service[] | null =
-            await cloudService.getServices();
-          return { servicesList };
-        },
         element: <Services />,
       },
       {
