@@ -18,9 +18,10 @@ import { cloudService } from "@services/cloud-service";
 import { ForgotPassword } from "@views/forgot-password";
 import { UpdatePassword } from "@views/update-password";
 import { userService } from "@services/user";
-import { Profile } from "@views/profile";
 import { UserProvider } from "@context/user";
 import "./index.scss";
+import { AuthenticatedView } from "@components/authenticated-view";
+import { Profile } from "@views/profile";
 
 const router = createBrowserRouter([
   {
@@ -50,7 +51,11 @@ const router = createBrowserRouter([
       },
       {
         path: uiRoutes.profile,
-        element: <Profile />,
+        element: (
+          <AuthenticatedView>
+            <Profile />
+          </AuthenticatedView>
+        ),
       },
 
       {

@@ -42,7 +42,7 @@ class AxiosInterceptorsService {
           request.url !== apiService.routes.post.users.newRefreshToken
         ) {
           // The user's access token
-          const userAccessToken = userService.accessToken;
+          const userAccessToken = userService.userAccessToken;
 
           // The user's refresh token
           const userRefreshToken = userService.userRefreshToken;

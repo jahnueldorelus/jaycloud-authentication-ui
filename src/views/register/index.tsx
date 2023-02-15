@@ -12,14 +12,15 @@ import { formModelService } from "@services/form-model";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
-import { NavLink } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { UIError } from "@components/ui-error";
-import { uiRoutes } from "@components/navbar/routes";
+import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import "./index.scss";
 
 export const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const loadedInitialData = useRef(false);
   const [registrationForm, setRegistrationForm] = useState<
     FormModel | null | undefined
@@ -86,7 +87,10 @@ export const Register = () => {
         setCreateUserErrorMessage(result.errorMessage);
       } else {
         setCreateUserErrorMessage(null);
-        navigate("/");
+        const viewToLoad = searchParams.get(uiSearchParams.viewAfterAuth);
+
+        // Navigates to the view that required authentication. Defaults to the home page
+        navigate(viewToLoad || uiRoutes.home);
       }
     }
   };
@@ -129,6 +133,20 @@ export const Register = () => {
     }
   };
 
+  /**
+   * Click handler for the login link.
+   * @param event HTML anchor element mouse event
+   */
+  const onClickLoginLink = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    navigate({
+      pathname: uiRoutes.login,
+      search: searchParams.toString(),
+    });
+  };
+
   const formModelJSX = (): JSX.Element => {
     if (registrationForm) {
       const title = registrationForm.title;
@@ -145,12 +163,13 @@ export const Register = () => {
 
           <Container className="px-4 pt-3">
             <p className="mb-0">Have an account?</p>
-            <NavLink
-              to={uiRoutes.login}
+            <a
+              href={uiRoutes.login}
+              onClick={onClickLoginLink}
               className="text-secondary text-decoration-none"
             >
               Click here to log into your account
-            </NavLink>
+            </a>
           </Container>
 
           <Container className="px-4 pt-4">

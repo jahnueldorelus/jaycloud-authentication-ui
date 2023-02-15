@@ -12,14 +12,15 @@ import { useNavigate } from "react-router";
 import { objectService } from "@services/object";
 import { userService } from "@services/user";
 import { formModelService } from "@services/form-model";
-import { NavLink } from "react-router-dom";
+import { NavLink, useSearchParams } from "react-router-dom";
 import { UIError } from "@components/ui-error";
-import { uiRoutes } from "@components/navbar/routes";
+import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import "./index.scss";
 
 export const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const loadedInitialData = useRef(false);
   const [authenticationForm, setAuthenticationForm] = useState<
     FormModel | null | undefined
@@ -86,7 +87,10 @@ export const Login = () => {
         setLoginErrorMessage(result.errorMessage);
       } else {
         setLoginErrorMessage(null);
-        navigate("/");
+        const viewToLoad = searchParams.get(uiSearchParams.viewAfterAuth);
+
+        // Navigates to the view that required authentication. Defaults to the home page
+        navigate(viewToLoad || uiRoutes.home);
       }
     }
   };
@@ -133,6 +137,21 @@ export const Login = () => {
   };
 
   /**
+   * Click handler for the registration link.
+   * @param event HTML anchor element mouse event
+   */
+  const onClickRegisterLink = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+
+    navigate({
+      pathname: uiRoutes.register,
+      search: searchParams.toString(),
+    });
+  };
+
+  /**
    * Retrieves the form model JSX.
    */
   const formModelJSX = (): JSX.Element => {
@@ -151,12 +170,13 @@ export const Login = () => {
 
           <Container className="px-4 pt-3">
             <p className="mb-0">Don't have an account?</p>
-            <NavLink
-              to={uiRoutes.register}
+            <a
               className="text-secondary text-decoration-none"
+              href={uiRoutes.register}
+              onClick={onClickRegisterLink}
             >
               Click here to create a new account
-            </NavLink>
+            </a>
           </Container>
 
           <Container className="px-4 pt-4">
@@ -191,8 +211,8 @@ export const Login = () => {
               })}
 
               <NavLink
-                to={uiRoutes.forgotPassword}
                 className="text-secondary text-decoration-none"
+                to={uiRoutes.forgotPassword}
               >
                 Forgot password?
               </NavLink>

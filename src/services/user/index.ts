@@ -1,4 +1,4 @@
-import { UserAction } from "@app-types/context/user";
+import { UserActions } from "@app-types/context/user";
 import {
   ApiAuthTokenResponse,
   RequestRefreshTokenData,
@@ -21,7 +21,7 @@ import { Dispatch } from "react";
 
 export class UserService {
   private accessToken: string | null;
-  private userDispatch: Dispatch<UserAction> | null;
+  private userDispatch: Dispatch<UserActions> | null;
 
   constructor() {
     this.accessToken = "";
@@ -63,7 +63,7 @@ export class UserService {
   /**
    * Sets the user dispatch
    */
-  set dispatch(userDispatch: Dispatch<UserAction>) {
+  set dispatch(userDispatch: Dispatch<UserActions>) {
     this.userDispatch = userDispatch;
   }
 
@@ -177,9 +177,12 @@ export class UserService {
           this.userRefreshToken = (<ApiAuthTokenResponse>response).headers[
             "x-ref-token"
           ];
+
           this.updateUserInfo(response.data);
+
           return Promise.resolve(true);
         } else {
+          localStorageService.removeRefreshToken();
           throw Error();
         }
       } catch (error: any) {

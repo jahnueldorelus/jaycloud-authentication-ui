@@ -19,4 +19,8 @@ uiRoutes.profile = uiRoutes.home + "profile";
 uiRoutes.loadService = uiRoutes.home + "load-service";
 uiRoutes.services = uiRoutes.home + "services";
 
-export { uiRoutes };
+const uiSearchParams = {
+  viewAfterAuth: "viewAfterAuth",
+};
+
+export { uiRoutes, uiSearchParams };

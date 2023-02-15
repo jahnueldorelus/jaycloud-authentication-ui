@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Alert from "react-bootstrap/Alert";
 import { EditableInput } from "@components/editable-input";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { useEffect, useRef, useState } from "react";
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
@@ -13,13 +13,13 @@ import { userService } from "@services/user";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
-import { uiRoutes } from "@components/navbar/routes";
 import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
 import "./index.scss";
 
 export const ForgotPassword = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const loadedInitialData = useRef(false);
   const [forgotPasswordForm, setForgotPasswordForm] = useState<
     FormModel | null | undefined
@@ -105,7 +105,7 @@ export const ForgotPassword = () => {
    */
   const goBackAPage = () => {
     if (!isApiRequestPending) {
-      navigate(uiRoutes.login);
+      navigate(-1);
     }
   };
 
@@ -228,7 +228,10 @@ export const ForgotPassword = () => {
                     className="mt-2"
                     type="button"
                     variant="primary"
-                    aria-disabled={isApiRequestPending}
+                    // Disabled if api request is pending or this is the first opened page of the app
+                    aria-disabled={
+                      isApiRequestPending || location.key === "default"
+                    }
                     onClick={goBackAPage}
                   >
                     Cancel

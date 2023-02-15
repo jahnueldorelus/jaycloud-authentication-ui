@@ -1,32 +1,35 @@
 import {
   UserState,
   UserProviderProps,
-  UserAction,
+  UserActions,
 } from "@app-types/context/user";
 import { objectService } from "@services/object";
 import { createContext, useReducer } from "react";
 
 const initialState: UserState = {
   user: null,
-  userDispatch: () => {}, // Temporary function that will be replaced
+  // Temporary function that will be replaced
+  userDispatch: () => {},
 };
 
 const context = createContext(initialState);
 const { Provider } = context;
 
 const UserProvider = (props: UserProviderProps) => {
-  const reducer: React.Reducer<UserState, UserAction> = (
+  const reducer: React.Reducer<UserState, UserActions> = (
     state: UserState,
-    action: UserAction
+    action: UserActions
   ) => {
-    switch (action.type) {
-      case "setUser":
-        const newState = objectService.shallowClone(state);
-        newState.user = action.payload;
-        return newState;
+    // Sets the user's info
+    if (action.type === "setUser") {
+      const newState = objectService.shallowClone(state);
+      newState.user = action.payload;
+      return newState;
+    }
 
-      default:
-        return state;
+    // Returns the original state
+    else {
+      return state;
     }
   };
 
