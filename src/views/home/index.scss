@@ -25,11 +25,10 @@
   }
 
   .section-three-divider {
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-
     svg {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
       max-width: 5rem;
 
       .shape-fill {

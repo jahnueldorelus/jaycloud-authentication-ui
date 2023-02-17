@@ -142,7 +142,7 @@ export const Home = () => {
       </Container>
 
       <Container className="pb-2 bg-tertiary" fluid>
-        <div className="section-three-divider d-flex justify-content-center">
+        <div className="section-three-divider">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 0 2 1">
             <path className="shape-fill" d="M 0 0 L 0 0 H 1 L 0 1 L -1 0 H 0" />
           </svg>
