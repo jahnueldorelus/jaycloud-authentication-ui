@@ -3,6 +3,7 @@ import UserIcon from "@assets/user-profile.svg";
 import { userService } from "@services/user";
 import { useContext } from "react";
 import { userContext } from "@context/user";
+import Placeholder from "react-bootstrap/Placeholder";
 import "./index.scss";
 
 export const UserInfo = () => {
@@ -31,6 +32,7 @@ export const UserInfo = () => {
     const id = user._id;
     const email = user.email;
 
+    // Displays user's info
     return (
       <Container className="view-profile-user-info px-0 pt-4 d-flex flex-column flex-md-row text-white">
         <Container className="px-0 w-fit d-flex align-items-center">
@@ -41,6 +43,25 @@ export const UserInfo = () => {
           {createUserInfoJSX("Email", email)}
           {createUserInfoJSX("Created On", createdOnText)}
           {createUserInfoJSX("User ID", id)}
+        </Container>
+      </Container>
+    );
+  }
+  // Displays loader
+  else if (!userService.refreshUserAttempted) {
+    return (
+      <Container className="view-profile-user-info px-0 pt-4 d-flex flex-column flex-md-row">
+        <Container className="px-0 me-md-3 w-fit d-flex align-items-center">
+          <img src={UserIcon} />
+        </Container>
+        <Container className="px-0 mt-2 mt-md-0">
+          <Placeholder animation="glow">
+            <Placeholder xs={6} />
+          </Placeholder>
+          <Placeholder className="mb-0" animation="glow">
+            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />
+            <Placeholder xs={6} /> <Placeholder xs={8} />
+          </Placeholder>
         </Container>
       </Container>
     );
