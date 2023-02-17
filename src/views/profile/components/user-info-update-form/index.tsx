@@ -81,6 +81,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
     });
     // Determines if all inputs are valid
     const formIsValid =
+      Object.values(userModifiedInputs).some((input) => input.length > 0) &&
       Object.keys(formInputsValidity).length > 0 &&
       Object.values(formInputsValidity).every((value) => value === true);
 
