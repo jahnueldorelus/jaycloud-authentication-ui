@@ -200,6 +200,7 @@ export class UserService {
         this.attemptedToRefreshUser = true;
       }
     } else {
+      this.attemptedToRefreshUser = true;
       return Promise.resolve(false);
     }
   }
