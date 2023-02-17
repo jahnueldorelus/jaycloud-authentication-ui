@@ -51,9 +51,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
 
   // Validates the registration form upon user input
   useEffect(() => {
-    if (!objectService.isObjectEmpty(userModifiedInputs)) {
-      validateForm();
-    }
+    validateForm();
   }, [userModifiedInputs]);
 
   /**
@@ -81,7 +79,6 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
         });
       }
     });
-
     // Determines if all inputs are valid
     const formIsValid =
       Object.keys(formInputsValidity).length > 0 &&

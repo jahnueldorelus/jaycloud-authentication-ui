@@ -19,7 +19,7 @@ export const AuthenticatedView = (props: AuthenticatedViewProps) => {
    * to navigate to after the user authenticates successfully.
    */
   useEffect(() => {
-    if (!userService.userIsLoggedIn) {
+    if (!userService.userIsLoggedIn && userService.refreshUserAttempted) {
       navigate({
         pathname: uiRoutes.login,
         search: new URLSearchParams({

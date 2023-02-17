@@ -19,9 +19,9 @@ import { ForgotPassword } from "@views/forgot-password";
 import { UpdatePassword } from "@views/update-password";
 import { userService } from "@services/user";
 import { UserProvider } from "@context/user";
-import "./index.scss";
 import { AuthenticatedView } from "@components/authenticated-view";
 import { Profile } from "@views/profile";
+import "./index.scss";
 
 const router = createBrowserRouter([
   {

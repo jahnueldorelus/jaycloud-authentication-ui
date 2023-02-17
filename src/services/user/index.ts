@@ -22,10 +22,19 @@ import { Dispatch } from "react";
 export class UserService {
   private accessToken: string | null;
   private userDispatch: Dispatch<UserActions> | null;
+  private attemptedToRefreshUser: boolean;
 
   constructor() {
     this.accessToken = "";
     this.userDispatch = null;
+    this.attemptedToRefreshUser = false;
+  }
+
+  /**
+   * Determines if an attempt has been made to refresh the user's tokens.
+   */
+  get refreshUserAttempted() {
+    return this.attemptedToRefreshUser;
   }
 
   /**
@@ -187,6 +196,8 @@ export class UserService {
         }
       } catch (error: any) {
         return Promise.resolve(false);
+      } finally {
+        this.attemptedToRefreshUser = true;
       }
     } else {
       return Promise.resolve(false);
