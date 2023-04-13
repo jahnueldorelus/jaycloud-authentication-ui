@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import ErrorSVG from "@assets/error-circle.svg";
 import Container from "react-bootstrap/Container";
 import Alert from "react-bootstrap/Alert";
@@ -17,10 +17,12 @@ import { UIError } from "@components/ui-error";
 import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import "./index.scss";
+import { userContext } from "@context/user";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const userInfo = useContext(userContext);
   const loadedInitialData = useRef(false);
   const [authenticationForm, setAuthenticationForm] = useState<
     FormModel | null | undefined
@@ -56,6 +58,22 @@ export const Login = () => {
     validateForm();
   }, [userModifiedInputs]);
 
+  // Navigates to the appropriate page upon logging in
+  useEffect(() => {
+    if (userInfo.user) {
+      const viewToLoad = searchParams.get(uiSearchParams.viewAfterAuth);
+      const isSSOLogin = searchParams.get(uiSearchParams.sso);
+
+      // Handles SSO authentication if that's what was requested
+      if (isSSOLogin && isSSOLogin === "true") {
+        userService.ssoRedirect();
+      } else {
+        // Navigates to the view that required authentication. Defaults to the home page
+        navigate(viewToLoad || uiRoutes.home);
+      }
+    }
+  }, [userInfo.user]);
+
   /**
    * Handles the change of the text for an input.
    * @param formModelInput The form model input option
@@ -87,10 +105,6 @@ export const Login = () => {
         setLoginErrorMessage(result.errorMessage);
       } else {
         setLoginErrorMessage(null);
-        const viewToLoad = searchParams.get(uiSearchParams.viewAfterAuth);
-
-        // Navigates to the view that required authentication. Defaults to the home page
-        navigate(viewToLoad || uiRoutes.home);
       }
     }
   };

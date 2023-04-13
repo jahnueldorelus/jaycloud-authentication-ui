@@ -8,6 +8,7 @@ const uiRoutes = {
   profile: "",
   loadService: "",
   services: "",
+  ssoFailed: "",
 };
 
 uiRoutes.register = uiRoutes.home + "register";
@@ -18,9 +19,11 @@ uiRoutes.updatePassword = uiRoutes.home + "update-password";
 uiRoutes.profile = uiRoutes.home + "profile";
 uiRoutes.loadService = uiRoutes.home + "load-service";
 uiRoutes.services = uiRoutes.home + "services";
+uiRoutes.ssoFailed = uiRoutes.home + "sso-failed";
 
 const uiSearchParams = {
   viewAfterAuth: "viewAfterAuth",
+  sso: "sso",
 };
 
 export { uiRoutes, uiSearchParams };

@@ -21,6 +21,7 @@ export type APIRoute = {
       passwordReset: string;
       updatePassword: string;
       update: string;
+      ssoRedirect: string;
     };
   };
 };

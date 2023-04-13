@@ -36,6 +36,7 @@ class APIService {
           passwordReset: this.baseApiUsersPath + "/password-reset",
           updatePassword: this.baseApiUsersPath + "/update-password",
           update: this.baseApiUsersPath + "/update",
+          ssoRedirect: this.baseApiUsersPath + "/sso-redirect",
         },
       },
     };
