@@ -12,6 +12,7 @@ class APIService {
   private baseApiUsersPath = "/users";
   private baseApiFormModelPath = this.baseApiUsersPath + "/form-models";
   private baseApiServicesPath = "/services";
+  private baseApiSSOPath = "/sso";
 
   get routes(): APIRoute {
     return {
@@ -36,7 +37,7 @@ class APIService {
           passwordReset: this.baseApiUsersPath + "/password-reset",
           updatePassword: this.baseApiUsersPath + "/update-password",
           update: this.baseApiUsersPath + "/update",
-          ssoRedirect: this.baseApiUsersPath + "/sso-redirect",
+          ssoRedirect: this.baseApiSSOPath + "/sso-redirect",
         },
       },
     };
