@@ -8,12 +8,14 @@ import {
   FormSubmitResult,
   PasswordResetRequestInfo,
   PasswordResetRequestResponse,
+  SSOResponse,
   TokenData,
   UpdatePasswordRequestInfo,
   UpdatePasswordRequestResponse,
   UpdateProfileInfo,
   UpdateProfileInfoResponse,
 } from "@app-types/services/user";
+import { uiRoutes } from "@components/navbar/routes";
 import { apiService } from "@services/api";
 import { localStorageService } from "@services/local-storage";
 import { isAxiosError } from "axios";
@@ -152,6 +154,23 @@ export class UserService {
         errorMessage,
         errorOccurred: true,
       };
+    }
+  }
+
+  /**
+   * Attempts to do an SSO redirect.
+   */
+  async ssoRedirect() {
+    const result = await apiService.request(
+      apiService.routes.post.users.ssoRedirect,
+      { method: "POST", withCredentials: true }
+    );
+
+    if (isAxiosError(result)) {
+      location.replace(location.origin + uiRoutes.ssoFailed);
+    } else {
+      const data = <SSOResponse>result.data;
+      location.replace(data.serviceUrl);
     }
   }
 

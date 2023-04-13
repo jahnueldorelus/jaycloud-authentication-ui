@@ -22,6 +22,7 @@ import { UserProvider } from "@context/user";
 import { AuthenticatedView } from "@components/authenticated-view";
 import { Profile } from "@views/profile";
 import "./index.scss";
+import { SSOFailed } from "@views/sso-failed";
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: uiRoutes.updatePassword,
         element: <UpdatePassword />,
+      },
+      {
+        path: uiRoutes.ssoFailed,
+        element: <SSOFailed />,
       },
     ],
   },

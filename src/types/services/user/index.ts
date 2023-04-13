@@ -32,3 +32,7 @@ export type TokenData = {
   email: string;
   createdAt: string;
 };
+
+export type SSOResponse = {
+  serviceUrl: string;
+};
