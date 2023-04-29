@@ -17,7 +17,7 @@ export const UserInfo = () => {
   const createUserInfoJSX = (label: string, content: string) => {
     return (
       <div className="px-sm-0 px-md-3 py-2">
-        <h3 className="fs-5 text-secondary">{label}</h3>
+        <h3 className="fs-5 text-primary">{label}</h3>
         <h3 className="fs-6">{content}</h3>
       </div>
     );
@@ -34,9 +34,9 @@ export const UserInfo = () => {
 
     // Displays user's info
     return (
-      <Container className="view-profile-user-info px-0 pt-4 d-flex flex-column flex-md-row text-white">
+      <Container className="view-profile-user-info px-0 py-2 d-flex flex-column flex-md-row text-senary">
         <Container className="px-0 w-fit d-flex align-items-center">
-          <img src={UserIcon} />
+          <img className="mx-3" src={UserIcon} />
         </Container>
         <Container className="px-0 d-flex flex-wrap flex-column flex-md-row align-items-md-center">
           {createUserInfoJSX("Name", userService.getUserFullName(user))}
@@ -50,7 +50,7 @@ export const UserInfo = () => {
   // Displays loader
   else if (!userService.refreshUserAttempted) {
     return (
-      <Container className="view-profile-user-info px-0 pt-4 d-flex flex-column flex-md-row">
+      <Container className="view-profile-user-info px-0 py-2 d-flex flex-column flex-md-row">
         <Container className="px-0 me-md-3 w-fit d-flex align-items-center">
           <img src={UserIcon} />
         </Container>

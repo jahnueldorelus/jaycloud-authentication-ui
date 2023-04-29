@@ -16,7 +16,6 @@ import Alert from "react-bootstrap/Alert";
 
 type UserInfoUpdateFormProps = {
   formInputs: FormModelInputOption[];
-  formTitle: string;
 };
 
 export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
@@ -147,30 +146,30 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
 
   return (
     <Form>
-      <Container className="px-0">
-        <h3 className="px-2 py-1 mb-3 bg-primary w-fit rounded">
-          {props.formTitle}
-        </h3>
-
+      <Container className="px-0 pt-4">
         {/* An alert to show if updating the user's profile fails */}
-        {updateErrorMessage && (
-          <Alert className="py-2 d-flex w-fit" variant="danger">
-            <img src={ErrorSVG} alt={"A red X in a circle"} width={20} />
-            <p className="m-0 ms-2">{updateErrorMessage}</p>
-          </Alert>
-        )}
+        <Alert
+          className="py-2 d-flex w-fit"
+          variant="danger"
+          show={!!updateErrorMessage}
+        >
+          <img src={ErrorSVG} alt={"A red X in a circle"} width={20} />
+          <p className="m-0 ms-2">{updateErrorMessage}</p>
+        </Alert>
 
         {/* An alert to show if updating the user's profile passes */}
-        {updateSuccessMessage && (
-          <Alert className="py-2 d-flex w-fit" variant="success">
-            <img
-              src={SuccessSVG}
-              alt={"A green checkmark in a circle"}
-              width={20}
-            />
-            <p className="m-0 ms-2">{updateSuccessMessage}</p>
-          </Alert>
-        )}
+        <Alert
+          className="py-2 d-flex w-fit"
+          variant="success"
+          show={!!updateSuccessMessage}
+        >
+          <img
+            src={SuccessSVG}
+            alt={"A green checkmark in a circle"}
+            width={20}
+          />
+          <p className="m-0 ms-2">{updateSuccessMessage}</p>
+        </Alert>
       </Container>
 
       <Row xs={1} md={2} lg={3}>
@@ -187,7 +186,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
                 inputText={inputText}
                 isInputValid={isInputValid}
                 placeholder={`Enter your new ${modelInput.label.toLowerCase()}`}
-                labelClassName="text-white"
+                labelClassName="text-primary"
                 invalidMessageClassName="mt-1 text-warning"
                 onTextChange={onInputChange(modelInput)}
                 disabled={isApiRequestPending}
@@ -197,7 +196,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
         })}
       </Row>
 
-      <Container className="px-0 my-4 d-flex justify-content-center justify-content-md-end">
+      <Container className="px-0 mb-3 d-flex justify-content-center justify-content-md-end">
         <Button
           className="mt-2"
           type="submit"

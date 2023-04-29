@@ -2,7 +2,7 @@ import Container from "react-bootstrap/Container";
 import { UIError } from "@components/ui-error";
 import { UserInfoUpdateForm } from "./components/user-info-update-form";
 import { UserInfo } from "./components/user-info";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { FormModel } from "@app-types/form-model";
 import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
@@ -34,20 +34,33 @@ export const Profile = () => {
       const inputs = profileUpdateForm.inputs;
 
       return (
+        <Fragment>
         <Container
           fluid="md"
-          className="p-0 my-2 text-white bg-senary rounded overflow-hidden shadow"
+          className="p-0 mt-2 mb-5 text-white border border-primary rounded overflow-hidden"
         >
-          <Container className="px-4 py-2 bg-primary text-center text-md-start">
+          <Container className="px-4 py-2 bg-primary text-md-start">
             <h3 className="m-0">Profile</h3>
           </Container>
 
           <Container className="px-4 py-0">
             <UserInfo />
-            <hr className="bg-white" />
-            <UserInfoUpdateForm formInputs={inputs} formTitle={title} />
           </Container>
         </Container>
+
+        <Container
+          fluid="md"
+          className="p-0 my-2 text-white border border-primary rounded overflow-hidden"
+        >
+          <Container className="px-4 py-2 bg-primary text-md-start">
+            <h3 className="m-0">{title}</h3>
+          </Container>
+
+          <Container className="px-4 py-0">
+            <UserInfoUpdateForm formInputs={inputs} />
+          </Container>
+        </Container>
+        </Fragment>
       );
     } // Failed to get profile update form from api
     else if (profileUpdateForm === null) {
