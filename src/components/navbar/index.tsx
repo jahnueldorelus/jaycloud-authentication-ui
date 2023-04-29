@@ -42,9 +42,9 @@ export const AppNavbar = () => {
    */
   const createOffCanvasNavItem = (itemLink: string, itemName: string) => {
     return (
-      <Nav.Item className="py-1 px-2 fs-5" as="li">
-        <NavLink className="rounded" to={itemLink} onClick={onMobileMenuToggle}>
-          <p className="mb-0"> {itemName}</p>
+      <Nav.Item className="py-1 fs-5" as="li">
+        <NavLink className="text-decoration-none" to={itemLink} onClick={onMobileMenuToggle}>
+          <p className="px-3 mb-0 rounded"> {itemName}</p>
         </NavLink>
       </Nav.Item>
     );

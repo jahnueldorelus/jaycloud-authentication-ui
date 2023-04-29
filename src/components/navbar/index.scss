@@ -3,23 +3,24 @@
 */
 .app-navbar {
   .desktop-nav {
-    // Navigation links
+    // Navigation link
     a {
       border-radius: 0.4rem;
       text-decoration: none;
       color: var(--bs-white);
 
+      &:hover {
+        color: var(--bs-tertiary);
+      }
+
       // Styles of active nav link
       &.active {
         background-color: var(--bs-senary);
 
+        // Styles of hovered, non-active nav link
         &:hover {
           color: var(--bs-white);
         }
-      }
-
-      &:hover {
-        color: var(--bs-tertiary);
       }
     }
 
@@ -32,10 +33,10 @@
             color: var(--bs-white);
           }
 
-          // Styles of hovered dropdown nav link
+          // Styles of hovered, non-active dropdown nav link
           &:hover p {
             color: var(--bs-primary);
-            background-color:  var(--bs-tertiary);
+            background-color: var(--bs-tertiary);
           }
 
           // Styles of active dropdown nav link
@@ -64,20 +65,23 @@
   max-width: 15rem !important;
 
   .nav-item {
-    // Navigation links
     a {
-      &.active p {
-        background-color: var(--bs-senary);
-        color: var(--bs-text-white);
-      }
-
+      // Styles of regular nav link
       p {
         padding: 0.25rem 0.75rem;
         color: var(--bs-primary);
 
+        // Styles of hovered, non active nav link
         &:hover {
-          color: var(--bs-quaternary);
+          color: var(--bs-primary);
+          background-color: var(--bs-tertiary);
         }
+      }
+
+      // Styles of active nav link
+      &.active p {
+        background-color: var(--bs-senary);
+        color: var(--bs-white);
       }
     }
   }
