@@ -6,15 +6,17 @@ import Placeholder from "react-bootstrap/Placeholder";
 import JayCloudHub from "@assets/jaycloud-home-hub.svg";
 import { NavLink } from "react-router-dom";
 import ServiceLogoPlaceholder from "@assets/service-logo-placeholder.svg";
-import { Fragment, useEffect, useState, useRef } from "react";
+import { Fragment, useEffect, useState, useRef, useContext } from "react";
 import { Service } from "@app-types/entities";
 import { uiRoutes } from "@components/navbar/routes";
 import { cloudService } from "@services/cloud-service";
+import { userContext } from "@context/user";
 import "./index.scss";
 
 export const Home = () => {
   const [servicesList, setServicesList] = useState<Service[] | null>(null);
   const loadedInitialData = useRef(false);
+  const userConsumer = useContext(userContext);
 
   /**
    * Retrieves the list of services.
@@ -141,7 +143,7 @@ export const Home = () => {
         </Container>
       </Container>
 
-      <Container className="pb-2 bg-tertiary" fluid>
+      {!userConsumer.user && <Container className="pb-2 bg-tertiary" fluid>
         <div className="section-three-divider">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 0 2 1">
             <path className="shape-fill" d="M 0 0 L 0 0 H 1 L 0 1 L -1 0 H 0" />
@@ -158,7 +160,7 @@ export const Home = () => {
           </NavLink>
           .
         </h3>
-      </Container>
+      </Container> }
     </Container>
   );
 };
