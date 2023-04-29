@@ -43,10 +43,25 @@ export const AppNavbar = () => {
   const createOffCanvasNavItem = (itemLink: string, itemName: string) => {
     return (
       <Nav.Item className="py-1 px-2 fs-5" as="li">
-        <NavLink to={itemLink} onClick={onMobileMenuToggle}>
-          {itemName}
+        <NavLink className="rounded" to={itemLink} onClick={onMobileMenuToggle}>
+          <p className="mb-0"> {itemName}</p>
         </NavLink>
       </Nav.Item>
+    );
+  };
+
+  /**
+   * Creates a user dropdown nav item.
+   * @param itemLink The path to link the nav item to
+   * @param itemName The name of the nav item
+   */
+  const createUserDropdownNavItem = (itemLink: string, itemName: string) => {
+    return (
+      <Dropdown.Item className="user-dropdown-menu-item px-1" as="li">
+        <NavLink to={itemLink}>
+          <p className="px-3 py-1 mb-0 fs-5 rounded">{itemName}</p>
+        </NavLink>
+      </Dropdown.Item>
     );
   };
 
@@ -112,7 +127,7 @@ export const AppNavbar = () => {
 
   return (
     <Navbar className="app-navbar py-1" bg="primary" expand="md">
-      <Container className="flex-row-reverse flex-md-row" fluid="md">
+      <Container className="flex-md-row" fluid="md">
         <Navbar.Brand>
           <NavLink
             className="me-0 d-flex align-items-center text-white text-decoration-none fs-3"
@@ -138,7 +153,7 @@ export const AppNavbar = () => {
         <Offcanvas
           backdropClassName="bg-primary"
           id={mobileNavId}
-          placement="start"
+          placement="end"
           show={isOffcanvasVisible}
           onHide={onMobileMenuToggle}
         >
@@ -157,12 +172,13 @@ export const AppNavbar = () => {
         </Offcanvas>
 
         {/* Desktop Navigation */}
-        <Nav className="d-none d-md-flex flex-row">
+        <Nav className="desktop-nav d-none d-md-flex flex-row">
           <Nav.Item className="d-flex align-items-center">
             <NavLink className="px-2 py-1 fs-5" to={uiRoutes.home}>
               Home
             </NavLink>
           </Nav.Item>
+
           <Nav.Item className="d-flex align-items-center">
             <NavLink className="px-2 py-1 ms-3 fs-5" to={uiRoutes.services}>
               Services
@@ -189,20 +205,12 @@ export const AppNavbar = () => {
               as="ul"
             >
               {loggedInUserDropdownInfo()}
-              <li>
-                <NavLink to={uiRoutes.profile}>
-                  <Dropdown.Item className="py-2 mb-1 fs-5" as="h2">
-                    Profile
-                  </Dropdown.Item>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={user ? uiRoutes.logout : uiRoutes.login}>
-                  <Dropdown.Item className="py-2 m-0 fs-5" as="h2">
-                    {user ? "Log Out" : "Log In"}
-                  </Dropdown.Item>
-                </NavLink>
-              </li>
+
+              {createUserDropdownNavItem(uiRoutes.profile, "Profile")}
+              {createUserDropdownNavItem(
+                user ? uiRoutes.logout : uiRoutes.login,
+                user ? "Log Out" : "Log In"
+              )}
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

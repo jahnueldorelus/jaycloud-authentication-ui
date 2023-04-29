@@ -1,64 +1,56 @@
-$navLinkColor: white;
-$navLinkBorderRadius: 0.4rem;
-
-@mixin navLink {
-  color: $navLinkColor;
-  border-radius: $navLinkBorderRadius;
-  text-decoration: none;
-}
-
+/**
+* DESKTOP NAVIGATION STYLES
+*/
 .app-navbar {
-  /**
-  * DESKTOP NAVIGATION STYLES
-  */
-  .nav-item {
-    $navLinkHoverColor: var(--bs-tertiary);
-
+  .desktop-nav {
     // Navigation links
     a {
-      @include navLink;
+      border-radius: 0.4rem;
+      text-decoration: none;
+      color: var(--bs-white);
 
-      .nav-link {
-        padding: 0.25rem 0.5rem;
-        @include navLink;
+      // Styles of active nav link
+      &.active {
+        background-color: var(--bs-senary);
 
         &:hover {
-          color: $navLinkHoverColor;
+          color: var(--bs-white);
         }
       }
 
-      &.active {
-        background-color: var(--bs-senary);
-        color: $navLinkColor;
-
-        *:hover {
-          color: $navLinkColor;
-        }
+      &:hover {
+        color: var(--bs-tertiary);
       }
     }
 
     // User dropdown menu
     .user-dropdown-menu {
-      a {
-        $linkSelector: &;
-        text-decoration: none;
+      .user-dropdown-menu-item {
+        a {
+          // Styles of dropdown nav link
+          p {
+            color: var(--bs-white);
+          }
 
-        .dropdown-item {
-          $dropdownItem: &;
-          background-color: inherit;
-          @include navLink;
+          // Styles of hovered dropdown nav link
+          &:hover p {
+            color: var(--bs-primary);
+            background-color:  var(--bs-tertiary);
+          }
 
-          &:hover {
-            color: $navLinkHoverColor;
+          // Styles of active dropdown nav link
+          &.active p {
+            background-color: var(--bs-primary);
+
+            &:hover {
+              color: var(--bs-white);
+            }
           }
         }
 
-        &.active {
-          background-color: var(--bs-primary);
-
-          *:hover {
-            color: $navLinkColor;
-          }
+        // Prevents bootstrap from overriding style
+        &:hover {
+          background-color: transparent;
         }
       }
     }
@@ -74,16 +66,18 @@ $navLinkBorderRadius: 0.4rem;
   .nav-item {
     // Navigation links
     a {
-      padding: 0.25rem 0.75rem;
-      @include navLink;
-      color: var(--bs-primary);
-
-      &:hover {
-        color: var(--bs-quaternary);
-      }
-      &.active {
+      &.active p {
         background-color: var(--bs-senary);
-        color: $navLinkColor;
+        color: var(--bs-text-white);
+      }
+
+      p {
+        padding: 0.25rem 0.75rem;
+        color: var(--bs-primary);
+
+        &:hover {
+          color: var(--bs-quaternary);
+        }
       }
     }
   }
