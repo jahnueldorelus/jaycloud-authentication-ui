@@ -4,7 +4,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { AppFooter } from "@components/footer";
 import { uiRoutes } from "./components/navbar/routes";
 import Container from "react-bootstrap/Container";
-import { ClassName } from "@services/class-name";
 import { appContentHeightService } from "@services/app-content-height";
 import { setupAxiosInterceptors } from "@services/axios-interceptors";
 import { userService } from "@services/user";
@@ -22,11 +21,6 @@ function App() {
   const isLocationLoadService = location.pathname.includes(
     uiRoutes.loadService
   );
-  const appBodyClass = new ClassName("app").addClass(
-    isLocationLoadService,
-    "overflow-hidden",
-    "overflow-auto"
-  ).fullClass;
   const { userDispatch } = useContext(userContext);
 
   /**
@@ -114,7 +108,11 @@ function App() {
     if (!isLocationLoadService) {
       return (
         <Fragment>
-          <header ref={headerRef}>
+          <header
+            className="position-sticky top-0"
+            style={{ zIndex: 1 }}
+            ref={headerRef}
+          >
             <AppNavbar />
           </header>
           <main className="d-flex" style={{ minHeight: minimumContentHeight }}>
@@ -165,7 +163,7 @@ function App() {
     }
   };
 
-  return <div className={appBodyClass}>{getAppBodyJSX()}</div>;
+  return <div>{getAppBodyJSX()}</div>;
 }
 
 export default App;
