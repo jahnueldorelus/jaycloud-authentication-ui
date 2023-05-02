@@ -48,7 +48,7 @@ export const UserInfo = () => {
     );
   }
   // Displays loader
-  else if (!userService.refreshUserAttempted) {
+  else {
     return (
       <Container className="view-profile-user-info px-0 py-2 d-flex flex-column flex-md-row">
         <Container className="px-0 me-md-3 w-fit d-flex align-items-center">
@@ -65,7 +65,5 @@ export const UserInfo = () => {
         </Container>
       </Container>
     );
-  } else {
-    return <></>;
   }
 };

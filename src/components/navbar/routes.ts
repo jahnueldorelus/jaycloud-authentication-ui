@@ -3,6 +3,8 @@ const uiRoutes = {
   register: "",
   login: "",
   logout: "",
+  loggedOutUserSSORedirect: "",
+  logoutError: "",
   forgotPassword: "",
   updatePassword: "",
   profile: "",
@@ -14,6 +16,8 @@ const uiRoutes = {
 uiRoutes.register = uiRoutes.home + "register";
 uiRoutes.login = uiRoutes.home + "login";
 uiRoutes.logout = uiRoutes.home + "logout";
+uiRoutes.loggedOutUserSSORedirect = uiRoutes.home + "logout-sso";
+uiRoutes.logoutError = uiRoutes.home + "logout-error";
 uiRoutes.forgotPassword = uiRoutes.home + "forgot-password";
 uiRoutes.updatePassword = uiRoutes.home + "update-password";
 uiRoutes.profile = uiRoutes.home + "profile";

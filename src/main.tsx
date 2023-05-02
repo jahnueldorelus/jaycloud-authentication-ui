@@ -21,8 +21,9 @@ import { userService } from "@services/user";
 import { UserProvider } from "@context/user";
 import { AuthenticatedView } from "@components/authenticated-view";
 import { Profile } from "@views/profile";
-import "./index.scss";
 import { SSOFailed } from "@views/sso-failed";
+import { LogoutError } from "@views/logout-error";
+import "./index.scss";
 
 const router = createBrowserRouter([
   {
@@ -45,10 +46,26 @@ const router = createBrowserRouter([
       },
       {
         path: uiRoutes.logout,
-        loader: () => {
-          userService.logoutUser();
-          return redirect("/");
+        loader: async () => {
+          const userSignedOut = await userService.logoutUser();
+
+          if (userSignedOut) {
+            return redirect(uiRoutes.loggedOutUserSSORedirect);
+          } else {
+            return redirect(uiRoutes.logoutError);
+          }
         },
+      },
+      {
+        path: uiRoutes.loggedOutUserSSORedirect,
+        loader: async () => {
+          await userService.loggedOutUserSSORedirect();
+          return redirect(uiRoutes.login);
+        },
+      },
+      {
+        path: uiRoutes.logoutError,
+        element: <LogoutError />,
       },
       {
         path: uiRoutes.profile,

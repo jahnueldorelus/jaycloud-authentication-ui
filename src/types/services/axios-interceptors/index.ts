@@ -10,5 +10,5 @@ export interface ApiAuthTokenResponse extends AxiosResponse {
 
 // A user's refresh token request
 export type RequestRefreshTokenData = {
-  token: string;
+  refreshToken: string;
 };

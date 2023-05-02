@@ -1,13 +1,8 @@
 import { AppFooter } from "@components/footer";
 import { AppNavbar } from "@components/navbar";
 import { Fragment, useRef, useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
 import { appContentHeightService } from "@services/app-content-height";
-import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import { uiRoutes } from "@components/navbar/routes";
-import NotFoundDoggy from "@assets/404-doggy.svg";
+import { ErrorCard } from "@views/error/components/error-card";
 
 export const ErrorPage = () => {
   const headerRef = useRef<HTMLElement>(null);
@@ -46,23 +41,7 @@ export const ErrorPage = () => {
         className="py-5 d-flex justify-content-center align-items-start"
         style={{ minHeight: minimumContentHeight }}
       >
-        <Container className="d-flex justify-content-center">
-          <Card className="w-fit rounded overflow-hidden border border-primary">
-            <Card.Header className="px-3 py-2 bg-primary text-white fs-3">
-              <h3 className="m-0">Uh-oh! JayDog was found!</h3>
-            </Card.Header>
-            <Card.Body className="px-3 py-4 d-flex flex-column align-items-center">
-              <Card.Img src={NotFoundDoggy} width="100" />
-              <Card.Text className="mt-4 fs-5 text-center text-md-start">
-                "Woof! Sorry my good human, looks like you got lost! Navigate to
-                the home page and try again."
-              </Card.Text>
-              <NavLink className="mt-3" to={uiRoutes.home}>
-                <Button variant="primary">Return Home</Button>
-              </NavLink>
-            </Card.Body>
-          </Card>
-        </Container>
+        <ErrorCard />
       </main>
       <footer ref={footerRef}>
         <AppFooter />

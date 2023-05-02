@@ -38,6 +38,9 @@ class APIService {
           updatePassword: this.baseApiUsersPath + "/update-password",
           update: this.baseApiUsersPath + "/update",
           ssoRedirect: this.baseApiSSOPath + "/sso-redirect",
+          signOut: this.baseApiSSOPath + "/sign-out",
+          ssoSignOut: this.baseApiSSOPath + "/sign-out-service-redirect",
+          ssoToken: this.baseApiSSOPath + "/sso-token",
         },
       },
     };

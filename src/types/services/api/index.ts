@@ -22,6 +22,9 @@ export type APIRoute = {
       updatePassword: string;
       update: string;
       ssoRedirect: string;
+      signOut: string;
+      ssoSignOut: string;
+      ssoToken: string;
     };
   };
 };
