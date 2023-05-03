@@ -39,7 +39,8 @@ export const Login = () => {
   );
 
   /**
-   * Retrieves the authentication form.
+   * Retrieves the authentication form and deletes any session information that
+   * determines the view to display after the user successfully authenticates.
    */
   useEffect(() => {
     if (!loadedInitialData.current) {
@@ -70,8 +71,6 @@ export const Login = () => {
       // Navigates to the view that required authentication. Defaults to the home page
       else {
         const viewToLoad = sessionStorageService.getViewBeforeAuth();
-        sessionStorageService.removeViewBeforeAuth();
-
         navigate(viewToLoad || uiRoutes.home);
       }
     }
@@ -160,7 +159,10 @@ export const Login = () => {
   ) => {
     event.preventDefault();
 
-    navigate(uiRoutes.register);
+    navigate({
+      pathname: uiRoutes.register,
+      search: searchParams.toString(),
+    });
   };
 
   /**

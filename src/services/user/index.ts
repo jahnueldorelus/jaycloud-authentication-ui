@@ -74,6 +74,7 @@ export class UserService {
       {
         data: requestBody,
         method: "POST",
+        withCredentials: true,
       }
     );
 

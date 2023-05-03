@@ -61,8 +61,6 @@ export const Register = () => {
   useEffect(() => {
     if (userConsumer.state.user) {
       const viewToLoad = sessionStorageService.getViewBeforeAuth();
-      sessionStorageService.removeViewBeforeAuth();
-
       const isSSOLogin = searchParams.get(uiSearchParams.sso);
 
       // Handles SSO authentication if that's what was requested
@@ -156,7 +154,11 @@ export const Register = () => {
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     event.preventDefault();
-    navigate(uiRoutes.login);
+
+    navigate({
+      pathname: uiRoutes.login,
+      search: searchParams.toString(),
+    });
   };
 
   const formModelJSX = (): JSX.Element => {

@@ -21,12 +21,10 @@ uiRoutes.logoutError = uiRoutes.home + "logout-error";
 uiRoutes.forgotPassword = uiRoutes.home + "forgot-password";
 uiRoutes.updatePassword = uiRoutes.home + "update-password";
 uiRoutes.profile = uiRoutes.home + "profile";
-uiRoutes.loadService = uiRoutes.home + "load-service";
 uiRoutes.services = uiRoutes.home + "services";
 uiRoutes.ssoFailed = uiRoutes.home + "sso-failed";
 
 const uiSearchParams = {
-  viewAfterAuth: "viewAfterAuth",
   sso: "sso",
 };
 
