@@ -1,35 +1,28 @@
-import { UserActions } from "@app-types/context/user";
 import {
   ApiAuthTokenResponse,
   RequestRefreshTokenData,
 } from "@app-types/services/axios-interceptors";
 import {
-  CreateUserResult,
-  FormSubmitResult,
-  PasswordResetRequestInfo,
+  APIUserResponseWithData,
+  APIUserResponseWithoutData,
   PasswordResetRequestResponse,
-  SSOResponse,
+  APIUserRequestInfo,
+  ServiceRedirectUrl,
   TokenData,
   UpdatePasswordRequestInfo,
-  UpdatePasswordRequestResponse,
-  UpdateProfileInfo,
-  UpdateProfileInfoResponse,
 } from "@app-types/services/user";
 import { uiRoutes } from "@components/navbar/routes";
 import { apiService } from "@services/api";
 import { localStorageService } from "@services/local-storage";
 import { isAxiosError } from "axios";
-import { Dispatch } from "react";
 
 export class UserService {
   private accessToken: string | null;
   private ssoToken: string | null;
-  private userDispatch: Dispatch<UserActions> | null;
 
   constructor() {
     this.accessToken = "";
     this.ssoToken = "";
-    this.userDispatch = null;
   }
 
   /**
@@ -72,26 +65,10 @@ export class UserService {
   }
 
   /**
-   * Sets the user dispatch
-   */
-  set dispatch(userDispatch: Dispatch<UserActions>) {
-    this.userDispatch = userDispatch;
-  }
-
-  /**
-   * Dispatches the new info of the user.
-   */
-  updateUserInfo(userInfo: TokenData | null) {
-    if (this.userDispatch) {
-      this.userDispatch({ type: "setUser", payload: userInfo });
-    }
-  }
-
-  /**
    * Attempts to create a new user.
    * @param requestBody The data to send with the request
    */
-  async createUser(requestBody: object): Promise<CreateUserResult> {
+  async createUser(requestBody: object): Promise<APIUserResponseWithData> {
     const result = await apiService.request(
       apiService.routes.post.users.create,
       {
@@ -102,11 +79,11 @@ export class UserService {
 
     // If a response was returned
     if (!isAxiosError(result)) {
-      this.updateUserInfo(result.data);
       this.accessToken = result.headers["x-acc-token"] || "";
       this.userRefreshToken = result.headers["x-ref-token"] || "";
 
       return {
+        data: result.data,
         errorMessage: "",
         errorOccurred: false,
       };
@@ -116,6 +93,7 @@ export class UserService {
       const errorMessage: string = result.response ? result.response.data : "";
 
       return {
+        data: null,
         errorMessage,
         errorOccurred: true,
       };
@@ -126,7 +104,9 @@ export class UserService {
    * Attempts to authenticate a user.
    * @param requestBody The data to send with the request
    */
-  async authenticateUser(requestBody: object): Promise<FormSubmitResult> {
+  async authenticateUser(
+    requestBody: object
+  ): Promise<APIUserResponseWithData> {
     const result = await apiService.request(
       apiService.routes.post.users.authenticate,
       {
@@ -138,12 +118,11 @@ export class UserService {
 
     // If a response was returned
     if (!isAxiosError(result)) {
-      this.updateUserInfo(result.data);
       this.accessToken = result.headers["x-acc-token"] || "";
       this.userRefreshToken = result.headers["x-ref-token"] || "";
-      await this.ssoRedirect();
 
       return {
+        data: result.data,
         errorMessage: "",
         errorOccurred: false,
       };
@@ -153,6 +132,7 @@ export class UserService {
       const errorMessage: string = result.response ? result.response.data : "";
 
       return {
+        data: null,
         errorMessage,
         errorOccurred: true,
       };
@@ -160,18 +140,18 @@ export class UserService {
   }
 
   /**
-   * Attempts to do an SSO redirect.
+   * Attempts to do an SSO redirect back to the previous service
+   * the user may have came from to authenticate.
    */
-  async ssoRedirect() {
+  async redirectToPreviousService() {
     const result = await apiService.request(
       apiService.routes.post.users.ssoRedirect,
       { method: "POST", withCredentials: true }
     );
-
     if (isAxiosError(result)) {
       location.replace(location.origin + uiRoutes.ssoFailed);
     } else {
-      const data = <SSOResponse>result.data;
+      const data = <ServiceRedirectUrl>result.data;
 
       if (data.serviceUrl) {
         location.replace(data.serviceUrl);
@@ -205,10 +185,10 @@ export class UserService {
   }
 
   /**
-   * Attemps to retrieve a new access and refresh token if a refresh token
+   * Attemps to retrieve a new access and refresh tokens if a refresh token
    * is available.
    */
-  async getNewUserTokens(): Promise<boolean> {
+  async getUserReauthorized(): Promise<TokenData | null> {
     // Retrieves the user's SSO token to authrorize retrieving a new refresh token
     await this.getSSOToken();
 
@@ -239,16 +219,14 @@ export class UserService {
           "x-ref-token"
         ];
 
-        this.updateUserInfo(response.data);
-
-        return Promise.resolve(true);
+        return <TokenData>response.data;
       } else {
         localStorageService.removeRefreshToken();
         this.ssoToken = null;
         throw Error();
       }
     } catch (error: any) {
-      return Promise.resolve(false);
+      return null;
     }
   }
 
@@ -257,7 +235,7 @@ export class UserService {
    * @param requestInfo The info to attach to the api request
    */
   async resetPassword(
-    requestInfo: PasswordResetRequestInfo
+    requestInfo: APIUserRequestInfo
   ): Promise<PasswordResetRequestResponse> {
     const result = await apiService.request(
       apiService.routes.post.users.passwordReset,
@@ -270,21 +248,18 @@ export class UserService {
     if (isAxiosError(result) || !result.data) {
       const errorMessage: string =
         isAxiosError(result) && result.response ? result.response.data : "";
-      const formSubmitResult: PasswordResetRequestResponse = {
+
+      return {
         errorMessage,
         errorOccurred: true,
         timeBeforeTokenExp: null,
       };
-
-      return formSubmitResult;
     } else {
-      const formSubmitResult: PasswordResetRequestResponse = {
+      return {
         errorMessage: "",
         errorOccurred: false,
         timeBeforeTokenExp: result.data,
       };
-
-      return formSubmitResult;
     }
   }
 
@@ -294,7 +269,7 @@ export class UserService {
    */
   async updatePassword(
     requestInfo: UpdatePasswordRequestInfo
-  ): Promise<UpdatePasswordRequestResponse> {
+  ): Promise<APIUserResponseWithoutData> {
     const result = await apiService.request(
       apiService.routes.post.users.updatePassword,
       {
@@ -306,19 +281,16 @@ export class UserService {
     if (isAxiosError(result) || !result.data) {
       const errorMessage: string =
         isAxiosError(result) && result.response ? result.response.data : "";
-      const formSubmitResult: UpdatePasswordRequestResponse = {
+
+      return {
         errorMessage,
         errorOccurred: true,
       };
-
-      return formSubmitResult;
     } else {
-      const formSubmitResult: UpdatePasswordRequestResponse = {
+      return {
         errorMessage: "",
         errorOccurred: false,
       };
-
-      return formSubmitResult;
     }
   }
 
@@ -327,8 +299,8 @@ export class UserService {
    * @param requestInfo The info to attach to the api request
    */
   async updateProfile(
-    requestInfo: UpdateProfileInfo
-  ): Promise<UpdateProfileInfoResponse> {
+    requestInfo: APIUserRequestInfo
+  ): Promise<APIUserResponseWithData> {
     const result = await apiService.request(
       apiService.routes.post.users.update,
       {
@@ -338,39 +310,20 @@ export class UserService {
     );
 
     if (isAxiosError(result) || !result.data) {
-      const formSubmitResult: UpdateProfileInfoResponse = {
+      return {
+        data: null,
         errorMessage: "Failed to update profile info",
         errorOccurred: true,
       };
-
-      return formSubmitResult;
     } else {
-      this.updateUserInfo(result.data);
       this.accessToken = result.headers["x-acc-token"] || "";
 
-      const formSubmitResult: UpdateProfileInfoResponse = {
+      return {
+        data: <TokenData>result.data,
         errorMessage: "",
         errorOccurred: false,
       };
-
-      return formSubmitResult;
     }
-  }
-
-  /**
-   * Retrieves the full name of a user.
-   * @param user The user's info
-   */
-  getUserFullName(user: TokenData) {
-    const firstName =
-      user.firstName[0] &&
-      user.firstName[0].toUpperCase() + user.firstName.slice(1);
-
-    const lastName =
-      user.lastName[0] &&
-      user.lastName[0].toUpperCase() + user.lastName.slice(1);
-
-    return `${firstName} ${lastName}`;
   }
 
   /**
@@ -391,7 +344,6 @@ export class UserService {
     );
 
     if (!isAxiosError(response)) {
-      this.updateUserInfo(null);
       this.accessToken = null;
       this.userRefreshToken = null;
 

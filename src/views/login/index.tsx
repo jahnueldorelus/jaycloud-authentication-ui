@@ -10,19 +10,19 @@ import { EditableInput } from "@components/editable-input";
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
 import { useNavigate } from "react-router";
 import { objectService } from "@services/object";
-import { userService } from "@services/user";
 import { formModelService } from "@services/form-model";
 import { NavLink, useSearchParams } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
-import "./index.scss";
 import { userContext } from "@context/user";
+import "./index.scss";
+import { sessionStorageService } from "@services/session-storage";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const userInfo = useContext(userContext);
+  const userConsumer = useContext(userContext);
   const loadedInitialData = useRef(false);
   const [authenticationForm, setAuthenticationForm] = useState<
     FormModel | null | undefined
@@ -30,7 +30,6 @@ export const Login = () => {
   const [loginErrorMessage, setLoginErrorMessage] = useState<string | null>(
     null
   );
-  const [isApiRequestPending, setApiRequestPending] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [userModifiedInputs, setUserModifiedInputs] = useState<
     Record<string, string>
@@ -60,19 +59,23 @@ export const Login = () => {
 
   // Navigates to the appropriate page upon logging in
   useEffect(() => {
-    if (userInfo.user) {
-      const viewToLoad = searchParams.get(uiSearchParams.viewAfterAuth);
+    if (userConsumer.state.user) {
       const isSSOLogin = searchParams.get(uiSearchParams.sso);
 
       // Handles SSO authentication if that's what was requested
       if (isSSOLogin && isSSOLogin === "true") {
-        userService.ssoRedirect();
-      } else {
-        // Navigates to the view that required authentication. Defaults to the home page
+        userConsumer.methods.serviceRedirectAfterLogin();
+      }
+
+      // Navigates to the view that required authentication. Defaults to the home page
+      else {
+        const viewToLoad = sessionStorageService.getViewBeforeAuth();
+        sessionStorageService.removeViewBeforeAuth();
+
         navigate(viewToLoad || uiRoutes.home);
       }
     }
-  }, [userInfo.user]);
+  }, [userConsumer.state.user]);
 
   /**
    * Handles the change of the text for an input.
@@ -97,9 +100,7 @@ export const Login = () => {
     event.preventDefault();
 
     if (isFormValid) {
-      setApiRequestPending(true);
-      const result = await userService.authenticateUser(userModifiedInputs);
-      setApiRequestPending(false);
+      const result = await userConsumer.methods.signInUser(userModifiedInputs);
 
       if (result.errorOccurred) {
         setLoginErrorMessage(result.errorMessage);
@@ -159,10 +160,7 @@ export const Login = () => {
   ) => {
     event.preventDefault();
 
-    navigate({
-      pathname: uiRoutes.register,
-      search: searchParams.toString(),
-    });
+    navigate(uiRoutes.register);
   };
 
   /**
@@ -218,7 +216,7 @@ export const Login = () => {
                       labelClassName="text-white"
                       invalidMessageClassName="mt-1 text-warning"
                       onTextChange={onInputChange(modelInput)}
-                      disabled={isApiRequestPending}
+                      disabled={userConsumer.state.authReqProcessing}
                     />
                   </Form.Group>
                 );
@@ -242,7 +240,7 @@ export const Login = () => {
                   <Spinner
                     className={
                       new ClassName("me-2").addClass(
-                        isApiRequestPending,
+                        userConsumer.state.authReqProcessing,
                         "d-inline-block",
                         "d-none"
                       ).fullClass
@@ -253,7 +251,7 @@ export const Login = () => {
                     aria-hidden="true"
                     as="span"
                   />
-                  {isApiRequestPending ? "Loading" : "Login"}
+                  {userConsumer.state.authReqProcessing ? "Loading" : "Login"}
                 </Button>
               </Container>
             </Form>

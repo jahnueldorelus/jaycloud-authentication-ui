@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,11 +8,11 @@ import Col from "react-bootstrap/Col";
 import { FormModelInputOption } from "@app-types/form-model";
 import { EditableInput } from "@components/editable-input";
 import { ClassName } from "@services/class-name";
-import { userService } from "@services/user";
 import { objectService } from "@services/object";
 import ErrorSVG from "@assets/error-circle.svg";
 import SuccessSVG from "@assets/success-circle.svg";
 import Alert from "react-bootstrap/Alert";
+import { userContext } from "@context/user";
 
 type UserInfoUpdateFormProps = {
   formInputs: FormModelInputOption[];
@@ -25,7 +25,6 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
   const [updateSuccessMessage, setUpdateSuccessMessage] = useState<
     string | null
   >(null);
-  const [isApiRequestPending, setApiRequestPending] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [userModifiedInputs, setUserModifiedInputs] = useState<
     Record<string, string>
@@ -34,6 +33,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
     {}
   );
   const alertTimeout = useRef<NodeJS.Timeout | null>(null);
+  const userConsumer = useContext(userContext);
 
   // Manages a timer for showing an alert for the api response of updating a user
   useEffect(() => {
@@ -127,9 +127,9 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
 
     if (isFormValid) {
       resetAlertMessages();
-      setApiRequestPending(true);
-      const result = await userService.updateProfile(userModifiedInputs);
-      setApiRequestPending(false);
+      const result = await userConsumer.methods.updateUserProfile(
+        userModifiedInputs
+      );
 
       if (result.errorOccurred) {
         setUpdateErrorMessage(result.errorMessage);
@@ -177,6 +177,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
           const inputName = modelInput.name;
           const inputText = userModifiedInputs[inputName] || "";
           const isInputValid = !!inputsValidity[modelInput.name];
+          const authReqProcessing = userConsumer.state.authReqProcessing
 
           return (
             <Col key={index}>
@@ -189,7 +190,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
                 labelClassName="text-primary"
                 invalidMessageClassName="mt-1 text-warning"
                 onTextChange={onInputChange(modelInput)}
-                disabled={isApiRequestPending}
+                disabled={authReqProcessing}
               />
             </Col>
           );
@@ -207,7 +208,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
           <Spinner
             className={
               new ClassName("me-2").addClass(
-                isApiRequestPending,
+                userConsumer.state.authReqProcessing,
                 "d-inline-block",
                 "d-none"
               ).fullClass
@@ -218,7 +219,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
             aria-hidden="true"
             as="span"
           />
-          {isApiRequestPending ? "Loading" : "Update Profile"}
+          {userConsumer.state.authReqProcessing ? "Loading" : "Update Profile"}
         </Button>
       </Container>
     </Form>

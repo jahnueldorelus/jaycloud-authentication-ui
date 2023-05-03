@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
-  redirect,
   RouterProvider,
 } from "react-router-dom";
 import App from "./App";
@@ -17,13 +16,14 @@ import { LoadServiceLoaderData } from "@app-types/views/load-service";
 import { cloudService } from "@services/cloud-service";
 import { ForgotPassword } from "@views/forgot-password";
 import { UpdatePassword } from "@views/update-password";
-import { userService } from "@services/user";
 import { UserProvider } from "@context/user";
 import { AuthenticatedView } from "@components/authenticated-view";
 import { Profile } from "@views/profile";
 import { SSOFailed } from "@views/sso-failed";
 import { LogoutError } from "@views/logout-error";
 import "./index.scss";
+import { Logout } from "@views/logout";
+import { LogoutSSOServiceRedirect } from "@views/logout-sso-service-redirect";
 
 const router = createBrowserRouter([
   {
@@ -46,22 +46,11 @@ const router = createBrowserRouter([
       },
       {
         path: uiRoutes.logout,
-        loader: async () => {
-          const userSignedOut = await userService.logoutUser();
-
-          if (userSignedOut) {
-            return redirect(uiRoutes.loggedOutUserSSORedirect);
-          } else {
-            return redirect(uiRoutes.logoutError);
-          }
-        },
+        element: <Logout />,
       },
       {
         path: uiRoutes.loggedOutUserSSORedirect,
-        loader: async () => {
-          await userService.loggedOutUserSSORedirect();
-          return redirect(uiRoutes.login);
-        },
+        element: <LogoutSSOServiceRedirect />,
       },
       {
         path: uiRoutes.logoutError,

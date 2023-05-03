@@ -143,24 +143,29 @@ export const Home = () => {
         </Container>
       </Container>
 
-      {!userConsumer.user && <Container className="pb-2 bg-tertiary" fluid>
-        <div className="section-three-divider">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 0 2 1">
-            <path className="shape-fill" d="M 0 0 L 0 0 H 1 L 0 1 L -1 0 H 0" />
-          </svg>
-        </div>
-        <h3 className="py-5 mb-0 text-center">
-          To get started, create an&nbsp;
-          <NavLink className="text-senary" to={uiRoutes.register}>
-            account
-          </NavLink>
-          &nbsp;or&nbsp;
-          <NavLink className="text-senary" to={uiRoutes.login}>
-            login
-          </NavLink>
-          .
-        </h3>
-      </Container> }
+      {!userConsumer.state.user && (
+        <Container className="pb-2 bg-tertiary" fluid>
+          <div className="section-three-divider">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 0 2 1">
+              <path
+                className="shape-fill"
+                d="M 0 0 L 0 0 H 1 L 0 1 L -1 0 H 0"
+              />
+            </svg>
+          </div>
+          <h3 className="py-5 mb-0 text-center">
+            To get started, create an&nbsp;
+            <NavLink className="text-senary" to={uiRoutes.register}>
+              account
+            </NavLink>
+            &nbsp;or&nbsp;
+            <NavLink className="text-senary" to={uiRoutes.login}>
+              login
+            </NavLink>
+            .
+          </h3>
+        </Container>
+      )}
     </Container>
   );
 };

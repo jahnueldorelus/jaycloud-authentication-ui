@@ -7,9 +7,8 @@ import Alert from "react-bootstrap/Alert";
 import { EditableInput } from "@components/editable-input";
 import { NavLink, useSearchParams } from "react-router-dom";
 import { UIError } from "@components/ui-error";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
-import { userService } from "@services/user";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
@@ -17,6 +16,7 @@ import { UpdatePasswordRequestInfo } from "@app-types/services/user";
 import { uiRoutes } from "@components/navbar/routes";
 import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
+import { userContext } from "@context/user";
 import "./index.scss";
 
 export const UpdatePassword = () => {
@@ -26,7 +26,6 @@ export const UpdatePassword = () => {
     FormModel | null | undefined
   >(undefined);
   const requestWasSubmitted = useRef(false);
-  const [isApiRequestPending, setApiRequestPending] = useState(false);
   const [updatePasswordErrorMessage, setUpdatePasswordErrorMessage] = useState<
     string | null
   >(null);
@@ -37,6 +36,7 @@ export const UpdatePassword = () => {
   const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
     {}
   );
+  const userConsumer = useContext(userContext);
 
   /**
    * Retrieves the update password form.
@@ -87,8 +87,7 @@ export const UpdatePassword = () => {
     };
 
     if (isFormValid) {
-      setApiRequestPending(true);
-      const result = await userService.updatePassword(requestInfo);
+      const result = await userConsumer.methods.updateUserPassword(requestInfo);
 
       if (result.errorOccurred) {
         setUpdatePasswordErrorMessage(result.errorMessage);
@@ -96,8 +95,6 @@ export const UpdatePassword = () => {
         setUpdatePasswordErrorMessage(null);
         requestWasSubmitted.current = true;
       }
-
-      setApiRequestPending(false);
     }
   };
 
@@ -196,7 +193,7 @@ export const UpdatePassword = () => {
                         invalidMessageClassName="mt-1 text-warning"
                         onTextChange={onInputChange(modelInput)}
                         disabled={
-                          isApiRequestPending || requestWasSubmitted.current
+                          userConsumer.state.authReqProcessing || requestWasSubmitted.current
                         }
                       />
                     </Form.Group>
@@ -216,13 +213,13 @@ export const UpdatePassword = () => {
                     className="mt-2"
                     type="submit"
                     variant="primary"
-                    aria-disabled={!isFormValid || isApiRequestPending}
+                    aria-disabled={!isFormValid || userConsumer.state.authReqProcessing}
                     onClick={onFormSubmit}
                   >
                     <Spinner
                       className={
                         new ClassName("me-2").addClass(
-                          isApiRequestPending,
+                          userConsumer.state.authReqProcessing,
                           "d-inline-block",
                           "d-none"
                         ).fullClass
@@ -233,7 +230,7 @@ export const UpdatePassword = () => {
                       aria-hidden="true"
                       as="span"
                     />
-                    {isApiRequestPending ? "Loading" : "Submit"}
+                    {userConsumer.state.authReqProcessing ? "Loading" : "Submit"}
                   </Button>
                 </Container>
 

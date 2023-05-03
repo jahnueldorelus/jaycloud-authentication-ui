@@ -8,7 +8,6 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import CloseButton from "react-bootstrap/CloseButton";
 import { NavLink } from "react-router-dom";
-import { userService } from "@services/user";
 import { uiRoutes } from "@components/navbar/routes";
 import { useContext } from "react";
 import { userContext } from "@context/user";
@@ -19,7 +18,7 @@ export const AppNavbar = () => {
   const desktopUserMenuId = "app-navigation-desktop-user-menu";
   const [isUserDropdownVisible, setIsUserDropdownVisible] = useState(false);
   const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
-  const { user } = useContext(userContext);
+  const userConsumer = useContext(userContext);
 
   /**
    * Click handler for the user menu options toggle.
@@ -43,7 +42,11 @@ export const AppNavbar = () => {
   const createOffCanvasNavItem = (itemLink: string, itemName: string) => {
     return (
       <Nav.Item className="py-1 fs-5" as="li">
-        <NavLink className="text-decoration-none" to={itemLink} onClick={onMobileMenuToggle}>
+        <NavLink
+          className="text-decoration-none"
+          to={itemLink}
+          onClick={onMobileMenuToggle}
+        >
           <p className="px-3 mb-0 rounded"> {itemName}</p>
         </NavLink>
       </Nav.Item>
@@ -77,6 +80,8 @@ export const AppNavbar = () => {
    * menu options dropdown.
    */
   const loggedInUserDropdownInfo = (): JSX.Element => {
+    const user = userConsumer.state.user;
+
     if (user) {
       return (
         <Fragment>
@@ -84,7 +89,7 @@ export const AppNavbar = () => {
             Logged in as
             <br />
             <span className="text-secondary">
-              <strong>{userService.getUserFullName(user)}</strong>
+              <strong>{userConsumer.methods.getUserFullName(user)}</strong>
             </span>
           </li>
 
@@ -101,28 +106,34 @@ export const AppNavbar = () => {
    * menu options dropdown.
    */
   const loggedInUserOffCanvasInfo = (): JSX.Element => {
-    return (
-      <Offcanvas.Header className="pb-2 align-items-start bg-senary text-white">
-        <Container className="p-0 me-4">
-          {getUserProfileImgJSX()}
-          <Offcanvas.Title className="mt-2">
-            {user ? "Logged in as" : "Not logged in"}
-            <br />
-            {user && (
-              <span className="text-secondary">
-                <strong>{userService.getUserFullName(user)}</strong>
-              </span>
-            )}
-          </Offcanvas.Title>
-        </Container>
-        <CloseButton
-          className="m-0 bg-light"
-          variant="white"
-          aria-label="Close navigation menu"
-          onClick={onMobileMenuToggle}
-        />
-      </Offcanvas.Header>
-    );
+    const user = userConsumer.state.user;
+
+    if (user) {
+      return (
+        <Offcanvas.Header className="pb-2 align-items-start bg-senary text-white">
+          <Container className="p-0 me-4">
+            {getUserProfileImgJSX()}
+            <Offcanvas.Title className="mt-2">
+              {user ? "Logged in as" : "Not logged in"}
+              <br />
+              {user && (
+                <span className="text-secondary">
+                  <strong>{userConsumer.methods.getUserFullName(user)}</strong>
+                </span>
+              )}
+            </Offcanvas.Title>
+          </Container>
+          <CloseButton
+            className="m-0 bg-light"
+            variant="white"
+            aria-label="Close navigation menu"
+            onClick={onMobileMenuToggle}
+          />
+        </Offcanvas.Header>
+      );
+    } else {
+      return <></>;
+    }
   };
 
   return (
@@ -164,8 +175,8 @@ export const AppNavbar = () => {
               {createOffCanvasNavItem(uiRoutes.services, "Services")}
               {createOffCanvasNavItem(uiRoutes.profile, "Profile")}
               {createOffCanvasNavItem(
-                user ? uiRoutes.logout : uiRoutes.login,
-                user ? "Logout" : "Login"
+                userConsumer.state.user ? uiRoutes.logout : uiRoutes.login,
+                userConsumer.state.user ? "Logout" : "Login"
               )}
             </Nav>
           </Offcanvas.Body>
@@ -208,8 +219,8 @@ export const AppNavbar = () => {
 
               {createUserDropdownNavItem(uiRoutes.profile, "Profile")}
               {createUserDropdownNavItem(
-                user ? uiRoutes.logout : uiRoutes.login,
-                user ? "Log Out" : "Log In"
+                userConsumer.state.user ? uiRoutes.logout : uiRoutes.login,
+                userConsumer.state.user ? "Log Out" : "Log In"
               )}
             </Dropdown.Menu>
           </Dropdown>

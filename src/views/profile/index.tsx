@@ -35,31 +35,31 @@ export const Profile = () => {
 
       return (
         <Fragment>
-        <Container
-          fluid="md"
-          className="p-0 mt-2 mb-5 text-white border border-primary rounded overflow-hidden"
-        >
-          <Container className="px-4 py-2 bg-primary text-md-start">
-            <h3 className="m-0">Profile</h3>
+          <Container
+            fluid="md"
+            className="p-0 mt-2 mb-5 text-white border border-primary rounded overflow-hidden"
+          >
+            <Container className="px-4 py-2 bg-primary text-md-start">
+              <h3 className="m-0">Profile</h3>
+            </Container>
+
+            <Container className="px-4 py-0">
+              <UserInfo />
+            </Container>
           </Container>
 
-          <Container className="px-4 py-0">
-            <UserInfo />
-          </Container>
-        </Container>
+          <Container
+            fluid="md"
+            className="p-0 my-2 text-white border border-primary rounded overflow-hidden"
+          >
+            <Container className="px-4 py-2 bg-primary text-md-start">
+              <h3 className="m-0">{title}</h3>
+            </Container>
 
-        <Container
-          fluid="md"
-          className="p-0 my-2 text-white border border-primary rounded overflow-hidden"
-        >
-          <Container className="px-4 py-2 bg-primary text-md-start">
-            <h3 className="m-0">{title}</h3>
+            <Container className="px-4 py-0">
+              <UserInfoUpdateForm formInputs={inputs} />
+            </Container>
           </Container>
-
-          <Container className="px-4 py-0">
-            <UserInfoUpdateForm formInputs={inputs} />
-          </Container>
-        </Container>
         </Fragment>
       );
     } // Failed to get profile update form from api

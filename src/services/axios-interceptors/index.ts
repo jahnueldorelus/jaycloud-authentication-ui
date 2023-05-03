@@ -1,14 +1,17 @@
 import axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from "axios";
 import { apiService } from "@services/api";
 import { userService } from "@services/user";
+import { UserConsumerMethods } from "@app-types/context/user";
 
 class AxiosInterceptorsService {
   private retriedAuthRenewal = false;
+  private userMethods: UserConsumerMethods;
 
-  constructor() {
+  constructor(userConsumerMethods: UserConsumerMethods) {
     this.retriedAuthRenewal = false;
     this.setupRequestInterceptors();
     this.setupResponseInterceptors();
+    this.userMethods = userConsumerMethods;
   }
 
   /**
@@ -17,9 +20,9 @@ class AxiosInterceptorsService {
    * @returns A promise that resolves with the original request's response or an error
    */
   private async retrieveNewTokens(originalRequest: AxiosRequestConfig) {
-    const receivedNewTokens = await userService.getNewUserTokens();
+    const userIsReauthorized = await this.userMethods.reauthorizeUser();
 
-    if (receivedNewTokens) {
+    if (userIsReauthorized) {
       /**
        * Does a redo of the original request that failed due
        * to it not being unauthorized
@@ -111,8 +114,8 @@ class AxiosInterceptorsService {
 
 let axiosInterceptorsService: AxiosInterceptorsService | null = null;
 
-export const setupAxiosInterceptors = () => {
+export const setupAxiosInterceptors = (userConsumerMethods: UserConsumerMethods) => {
   if (!axiosInterceptorsService) {
-    axiosInterceptorsService = new AxiosInterceptorsService();
+    axiosInterceptorsService = new AxiosInterceptorsService(userConsumerMethods);
   }
 };

@@ -1,14 +1,57 @@
-import { TokenData } from "@app-types/services/user";
+import {
+  APIUserRequestInfo,
+  APIUserResponseWithData,
+  UpdatePasswordRequestInfo,
+  APIUserResponseWithoutData,
+  PasswordResetRequestResponse,
+  TokenData,
+} from "@app-types/services/user";
 
-export type UserState = {
+export type UserConsumerState = {
   user: TokenData | null;
-  userDispatch: React.Dispatch<UserActions>;
+  authReqProcessing: boolean;
+  reauthorizedUserAtLeastOnce: boolean;
 };
 
-type StoreAction<T extends string, K> = { type: T; payload: K };
-type NewUserInfoAction = StoreAction<"setUser", TokenData | null>;
-export type UserActions = NewUserInfoAction;
+export type UserConsumerMethods = {
+  setUser: React.Dispatch<React.SetStateAction<TokenData | null>>;
+
+  createNewUser: (
+    requestData: APIUserRequestInfo
+  ) => Promise<APIUserResponseWithData>;
+
+  signInUser: (
+    requestData: APIUserRequestInfo
+  ) => Promise<APIUserResponseWithData>;
+
+  signOutUser: () => Promise<boolean>;
+
+  reauthorizeUser: () => Promise<boolean>;
+
+  serviceRedirectAfterLogin: () => Promise<void>;
+
+  serviceRedirectAfterLogout: () => Promise<void>;
+
+  resetUserPassword: (
+    requestData: APIUserRequestInfo
+  ) => Promise<PasswordResetRequestResponse>;
+
+  updateUserPassword: (
+    requestData: UpdatePasswordRequestInfo
+  ) => Promise<APIUserResponseWithoutData>;
+
+  updateUserProfile: (
+    requestData: APIUserRequestInfo
+  ) => Promise<APIUserResponseWithData>;
+
+  getUserFullName: (user: TokenData) => string;
+};
+
+export type UserConsumer = {
+  state: UserConsumerState;
+  methods: UserConsumerMethods;
+};
 
 export type UserProviderProps = {
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
 };

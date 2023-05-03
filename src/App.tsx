@@ -1,15 +1,13 @@
 import { AppNavbar } from "@components/navbar";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { AppFooter } from "@components/footer";
 import { uiRoutes } from "./components/navbar/routes";
 import Container from "react-bootstrap/Container";
 import { appContentHeightService } from "@services/app-content-height";
 import { setupAxiosInterceptors } from "@services/axios-interceptors";
-import { userService } from "@services/user";
-import { userContext } from "@context/user";
-import { useContext } from "react";
 import "./App.scss";
+import { userContext } from "@context/user";
 
 function App() {
   const location = useLocation();
@@ -17,11 +15,10 @@ function App() {
   const footerRef = useRef<HTMLElement>(null);
   const backToJayCloudRef = useRef<HTMLDivElement>(null);
   const [minimumContentHeight, setMinimumContentHeight] = useState<number>(0);
-  const hasFetchedNewTokens = useRef(false);
   const isLocationLoadService = location.pathname.includes(
     uiRoutes.loadService
   );
-  const { userDispatch } = useContext(userContext);
+  const userConsumer = useContext(userContext);
 
   /**
    * Handles setting up the app content height service.
@@ -82,21 +79,10 @@ function App() {
   }, []);
 
   /**
-   * Sets up the axios interceptors and user service to retrieve
-   * the logged in user's info (if there's a user logged in).
+   * Sets up the axios interceptors.
    */
   useEffect(() => {
-    setupAxiosInterceptors();
-
-    const retrieveNewTokensForUser = async () => {
-      hasFetchedNewTokens.current = true;
-      userService.dispatch = userDispatch;
-      await userService.getNewUserTokens();
-    };
-
-    if (!hasFetchedNewTokens.current) {
-      retrieveNewTokensForUser();
-    }
+    setupAxiosInterceptors(userConsumer.methods);
   }, []);
 
   /**

@@ -7,7 +7,6 @@ import { EditableInput } from "@components/editable-input";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import Spinner from "react-bootstrap/Spinner";
-import { userService } from "@services/user";
 import { formModelService } from "@services/form-model";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
@@ -17,12 +16,13 @@ import { UIError } from "@components/ui-error";
 import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
+import { sessionStorageService } from "@services/session-storage";
 import "./index.scss";
 
 export const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const userInfo = useContext(userContext);
+  const userConsumer = useContext(userContext);
   const loadedInitialData = useRef(false);
   const [registrationForm, setRegistrationForm] = useState<
     FormModel | null | undefined
@@ -37,7 +37,6 @@ export const Register = () => {
   const [createUserErrorMessage, setCreateUserErrorMessage] = useState<
     string | null
   >(null);
-  const [isApiRequestPending, setApiRequestPending] = useState(false);
 
   /**
    * Retrieves the registration form.
@@ -60,19 +59,21 @@ export const Register = () => {
 
   // Navigates to the appropriate page upon logging in
   useEffect(() => {
-    if (userInfo.user) {
-      const viewToLoad = searchParams.get(uiSearchParams.viewAfterAuth);
+    if (userConsumer.state.user) {
+      const viewToLoad = sessionStorageService.getViewBeforeAuth();
+      sessionStorageService.removeViewBeforeAuth();
+
       const isSSOLogin = searchParams.get(uiSearchParams.sso);
 
       // Handles SSO authentication if that's what was requested
       if (isSSOLogin && isSSOLogin === "true") {
-        userService.ssoRedirect();
+        userConsumer.methods.serviceRedirectAfterLogin();
       } else {
         // Navigates to the view that required authentication. Defaults to the home page
         navigate(viewToLoad || uiRoutes.home);
       }
     }
-  }, [userInfo.user]);
+  }, [userConsumer.state.user]);
 
   /**
    * Handles the change of the text for an input.
@@ -97,9 +98,9 @@ export const Register = () => {
     event.preventDefault();
 
     if (isFormValid) {
-      setApiRequestPending(true);
-      const result = await userService.createUser(userModifiedInputs);
-      setApiRequestPending(false);
+      const result = await userConsumer.methods.createNewUser(
+        userModifiedInputs
+      );
 
       if (result.errorOccurred) {
         setCreateUserErrorMessage(result.errorMessage);
@@ -155,10 +156,7 @@ export const Register = () => {
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     event.preventDefault();
-    navigate({
-      pathname: uiRoutes.login,
-      search: searchParams.toString(),
-    });
+    navigate(uiRoutes.login);
   };
 
   const formModelJSX = (): JSX.Element => {
@@ -211,7 +209,7 @@ export const Register = () => {
                       labelClassName="text-white"
                       invalidMessageClassName="mt-1 text-warning"
                       onTextChange={onInputChange(modelInput)}
-                      disabled={isApiRequestPending}
+                      disabled={userConsumer.state.authReqProcessing}
                     />
                   </Form.Group>
                 );
@@ -228,7 +226,7 @@ export const Register = () => {
                   <Spinner
                     className={
                       new ClassName("me-2").addClass(
-                        isApiRequestPending,
+                        userConsumer.state.authReqProcessing,
                         "d-inline-block",
                         "d-none"
                       ).fullClass
@@ -239,7 +237,9 @@ export const Register = () => {
                     aria-hidden="true"
                     as="span"
                   />
-                  {isApiRequestPending ? "Loading" : "Create Account"}
+                  {userConsumer.state.authReqProcessing
+                    ? "Loading"
+                    : "Create Account"}
                 </Button>
               </Container>
             </Form>

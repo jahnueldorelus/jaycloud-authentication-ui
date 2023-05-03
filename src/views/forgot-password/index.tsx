@@ -7,14 +7,14 @@ import Alert from "react-bootstrap/Alert";
 import { EditableInput } from "@components/editable-input";
 import { useLocation, useNavigate } from "react-router-dom";
 import { UIError } from "@components/ui-error";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
-import { userService } from "@services/user";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
 import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
+import { userContext } from "@context/user";
 import "./index.scss";
 
 export const ForgotPassword = () => {
@@ -25,7 +25,6 @@ export const ForgotPassword = () => {
     FormModel | null | undefined
   >(undefined);
   const requestWasSubmitted = useRef(false);
-  const [isApiRequestPending, setApiRequestPending] = useState(false);
   const [passwordResetErrorMessage, setPasswordResetErrorMessage] = useState<
     string | null
   >(null);
@@ -39,6 +38,7 @@ export const ForgotPassword = () => {
   const [inputsValidity, setInputsValidity] = useState<Record<string, boolean>>(
     {}
   );
+  const userConsumer = useContext(userContext);
 
   /**
    * Retrieves the forgot password form.
@@ -85,8 +85,9 @@ export const ForgotPassword = () => {
     event.preventDefault();
 
     if (isFormValid) {
-      setApiRequestPending(true);
-      const result = await userService.resetPassword(userModifiedInputs);
+      const result = await userConsumer.methods.resetUserPassword(
+        userModifiedInputs
+      );
 
       if (result.errorOccurred) {
         setPasswordResetErrorMessage(result.errorMessage);
@@ -95,8 +96,6 @@ export const ForgotPassword = () => {
         setPasswordResetErrorMessage(null);
         requestWasSubmitted.current = true;
       }
-
-      setApiRequestPending(false);
     }
   };
 
@@ -104,7 +103,7 @@ export const ForgotPassword = () => {
    * Goes back to the previous page.
    */
   const goBackAPage = () => {
-    if (!isApiRequestPending) {
+    if (!userConsumer.state.authReqProcessing) {
       navigate(-1);
     }
   };
@@ -208,7 +207,8 @@ export const ForgotPassword = () => {
                         invalidMessageClassName="mt-1 text-warning"
                         onTextChange={onInputChange(modelInput)}
                         disabled={
-                          isApiRequestPending || requestWasSubmitted.current
+                          userConsumer.state.authReqProcessing ||
+                          requestWasSubmitted.current
                         }
                       />
                     </Form.Group>
@@ -230,7 +230,8 @@ export const ForgotPassword = () => {
                     variant="primary"
                     // Disabled if api request is pending or this is the first opened page of the app
                     aria-disabled={
-                      isApiRequestPending || location.key === "default"
+                      userConsumer.state.authReqProcessing ||
+                      location.key === "default"
                     }
                     onClick={goBackAPage}
                   >
@@ -241,13 +242,15 @@ export const ForgotPassword = () => {
                     className="mt-2"
                     type="submit"
                     variant="primary"
-                    aria-disabled={!isFormValid || isApiRequestPending}
+                    aria-disabled={
+                      !isFormValid || userConsumer.state.authReqProcessing
+                    }
                     onClick={onFormSubmit}
                   >
                     <Spinner
                       className={
                         new ClassName("me-2").addClass(
-                          isApiRequestPending,
+                          userConsumer.state.authReqProcessing,
                           "d-inline-block",
                           "d-none"
                         ).fullClass
@@ -258,7 +261,7 @@ export const ForgotPassword = () => {
                       aria-hidden="true"
                       as="span"
                     />
-                    {isApiRequestPending ? "Loading" : "Submit"}
+                    {userConsumer.state.authReqProcessing ? "Loading" : "Submit"}
                   </Button>
                 </Container>
               </Form>

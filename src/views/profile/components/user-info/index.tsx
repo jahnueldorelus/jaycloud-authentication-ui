@@ -1,13 +1,12 @@
 import Container from "react-bootstrap/Container";
 import UserIcon from "@assets/user-profile.svg";
-import { userService } from "@services/user";
 import { useContext } from "react";
 import { userContext } from "@context/user";
 import Placeholder from "react-bootstrap/Placeholder";
 import "./index.scss";
 
 export const UserInfo = () => {
-  const { user } = useContext(userContext);
+  const userConsumer = useContext(userContext);
 
   /**
    * Creates a JSX for the user's info.
@@ -23,7 +22,8 @@ export const UserInfo = () => {
     );
   };
 
-  if (user) {
+  if (userConsumer.state.user) {
+    const user = userConsumer.state.user;
     const createdOnDate = new Date(user.createdAt);
     const createdOnText =
       createdOnDate.toLocaleDateString() +
@@ -31,6 +31,7 @@ export const UserInfo = () => {
       createdOnDate.toLocaleTimeString();
     const id = user._id;
     const email = user.email;
+    const userFullName = userConsumer.methods.getUserFullName(user);
 
     // Displays user's info
     return (
@@ -39,7 +40,7 @@ export const UserInfo = () => {
           <img className="mx-3" src={UserIcon} />
         </Container>
         <Container className="px-0 d-flex flex-wrap flex-column flex-md-row align-items-md-center">
-          {createUserInfoJSX("Name", userService.getUserFullName(user))}
+          {createUserInfoJSX("Name", userFullName)}
           {createUserInfoJSX("Email", email)}
           {createUserInfoJSX("Created On", createdOnText)}
           {createUserInfoJSX("User ID", id)}

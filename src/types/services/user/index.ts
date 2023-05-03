@@ -1,29 +1,23 @@
-export type CreateUserResult = {
+export type APIUserResponseWithoutData = {
   errorOccurred: boolean;
   errorMessage: string;
 };
 
-export type FormSubmitResult = {
-  errorOccurred: boolean;
-  errorMessage: string;
-};
+export interface APIUserResponseWithData extends APIUserResponseWithoutData {
+  data: TokenData | null;
+}
 
-export type PasswordResetRequestInfo = Record<string, string>;
+export type APIUserRequestInfo = Record<string, string>;
 
 export type UpdatePasswordRequestInfo = {
   password?: string;
   token: string;
 };
 
-export type UpdateProfileInfo = Record<string, string>;
-
-export interface PasswordResetRequestResponse extends FormSubmitResult {
+export interface PasswordResetRequestResponse
+  extends APIUserResponseWithoutData {
   timeBeforeTokenExp: string | null;
 }
-
-export interface UpdatePasswordRequestResponse extends FormSubmitResult {}
-
-export interface UpdateProfileInfoResponse extends FormSubmitResult {}
 
 export type TokenData = {
   _id: string;
@@ -33,6 +27,6 @@ export type TokenData = {
   createdAt: string;
 };
 
-export type SSOResponse = {
+export type ServiceRedirectUrl = {
   serviceUrl: string;
 };
