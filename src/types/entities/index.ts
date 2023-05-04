@@ -5,6 +5,7 @@ export interface UserData {
   lastName: string;
   email: string;
   createdAt: string;
+  isAdmin: boolean;
 }
 
 // A service object
