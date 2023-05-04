@@ -20,7 +20,6 @@ export interface PasswordResetRequestResponse
 }
 
 export type TokenData = {
-  _id: string;
   firstName: string;
   lastName: string;
   email: string;

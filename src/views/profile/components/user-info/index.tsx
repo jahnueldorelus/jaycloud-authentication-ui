@@ -29,7 +29,6 @@ export const UserInfo = () => {
       createdOnDate.toLocaleDateString() +
       " " +
       createdOnDate.toLocaleTimeString();
-    const id = user._id;
     const email = user.email;
     const userFullName = userConsumer.methods.getUserFullName(user);
 
@@ -43,7 +42,6 @@ export const UserInfo = () => {
           {createUserInfoJSX("Name", userFullName)}
           {createUserInfoJSX("Email", email)}
           {createUserInfoJSX("Created On", createdOnText)}
-          {createUserInfoJSX("User ID", id)}
         </Container>
       </Container>
     );
