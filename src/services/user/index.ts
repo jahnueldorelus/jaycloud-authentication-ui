@@ -335,7 +335,7 @@ export class UserService {
       refreshToken: this.userRefreshToken || "",
     };
 
-    const response = await apiService.request(
+    const result = await apiService.request(
       apiService.routes.post.users.signOut,
       {
         method: "POST",
@@ -344,7 +344,10 @@ export class UserService {
       }
     );
 
-    if (!isAxiosError(response)) {
+    if (
+      !isAxiosError(result) ||
+      (result.response && result.response.status === 401)
+    ) {
       this.accessToken = null;
       this.userRefreshToken = null;
 
