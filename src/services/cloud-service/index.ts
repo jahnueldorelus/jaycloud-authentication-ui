@@ -14,6 +14,10 @@ class CloudService {
   }
 
   async getServices(): Promise<Service[] | null> {
+    if (this.services) {
+      return this.services;
+    }
+
     try {
       // Retrieves the list of services
       const servicesResponse = await apiService.request(
