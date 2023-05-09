@@ -106,12 +106,15 @@ export const Home = () => {
       <Container className="section-one px-0 pt-5 bg-primary" fluid>
         <Container className="text-white d-flex flex-column flex-md-row align-items-center">
           <Container className="px-3 px-sm-0">
-            <h2 className="text-secondary">Central Information Hub</h2>
+            <h2 className="text-secondary">JayCloud Services Hub</h2>
             <h3 className="fs-4">
-              All of your information stored in one place. No need to dig deep
-              in your emails, letters, and notes trying to find that one piece
-              of information you forgot about. Quickly find what you're looking
-              for without any hassle with JayCloud.
+              A central location of JayCloud services for day-to-day operations.
+              No need to dig into your emails, letters, and notes trying to
+              manage or find your personal information. Make life easier without
+              any hassle with JayCloud. Our website is your one-stop solution to
+              streamline your daily tasks. With our exclusive linked
+              applications, you can manage your finances, read songbooks, and
+              even track your health.
             </h3>
           </Container>
           <Container className="px-5 pt-5 pt-md-0 w-fit d-flex justify-content-center">
