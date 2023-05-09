@@ -16,8 +16,8 @@ import { UIError } from "@components/ui-error";
 import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
-import "./index.scss";
 import { sessionStorageService } from "@services/session-storage";
+import "./index.scss";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -77,6 +77,13 @@ export const Login = () => {
   }, [userConsumer.state.user]);
 
   /**
+   * Determines if the form can be submitted.
+   */
+  const canFormBeSubmitted = () => {
+    return isFormValid && !loginErrorMessage;
+  };
+
+  /**
    * Handles the change of the text for an input.
    * @param formModelInput The form model input option
    * @param newInputValue The new value from the input
@@ -88,6 +95,7 @@ export const Login = () => {
       const userModifiedInputsCopy = { ...userModifiedInputs };
       userModifiedInputsCopy[inputName] = newInputValue;
       setUserModifiedInputs(userModifiedInputsCopy);
+      setLoginErrorMessage(null);
     };
 
   /**
@@ -98,7 +106,7 @@ export const Login = () => {
   ) => {
     event.preventDefault();
 
-    if (isFormValid) {
+    if (canFormBeSubmitted()) {
       const result = await userConsumer.methods.signInUser(userModifiedInputs);
 
       if (result.errorOccurred) {
@@ -178,28 +186,25 @@ export const Login = () => {
           fluid="md"
           className="login-form p-0 text-white bg-senary rounded overflow-hidden shadow"
         >
-          <Container className="px-4 py-2 bg-primary text-center text-md-start">
+          <div className="px-4 py-2 bg-primary">
             <h3 className="m-0">{title}</h3>
-          </Container>
+          </div>
 
-          <Container className="px-4 pt-3">
-            <p className="mb-0">Don't have an account?</p>
-            <a
-              className="text-secondary text-decoration-none"
-              href={uiRoutes.register}
-              onClick={onClickRegisterLink}
+          <div className="px-4 pt-4">
+            <Alert
+              className="py-2 d-flex"
+              variant="danger"
+              show={!!loginErrorMessage}
             >
-              Click here to create a new account
-            </a>
-          </Container>
+              <img
+                src={ErrorSVG}
+                alt={"a red X in a circle"}
+                width={20}
+                aria-hidden={true}
+              />
+              <p className="m-0 ms-2">{loginErrorMessage}</p>
+            </Alert>
 
-          <Container className="px-4 pt-4">
-            {loginErrorMessage && (
-              <Alert className="py-2 d-flex" variant="danger">
-                <img src={ErrorSVG} alt={"A red X in a circle"} width={20} />
-                <p className="m-0 ms-2">{loginErrorMessage}</p>
-              </Alert>
-            )}
             <p>* Required Input</p>
             <Form>
               {inputs.map((modelInput, index) => {
@@ -224,19 +229,12 @@ export const Login = () => {
                 );
               })}
 
-              <NavLink
-                className="text-secondary text-decoration-none"
-                to={uiRoutes.forgotPassword}
-              >
-                Forgot password?
-              </NavLink>
-
-              <Container className="my-4 d-flex justify-content-center">
+              <div className="my-4 d-flex justify-content-center">
                 <Button
                   className="mt-2"
                   type="submit"
                   variant="primary"
-                  aria-disabled={!isFormValid}
+                  aria-disabled={!canFormBeSubmitted()}
                   onClick={onFormSubmit}
                 >
                   <Spinner
@@ -253,11 +251,32 @@ export const Login = () => {
                     aria-hidden="true"
                     as="span"
                   />
-                  {userConsumer.state.authReqProcessing ? "Loading" : "Login"}
+                  {userConsumer.state.authReqProcessing
+                    ? "Logging In"
+                    : "Login"}
                 </Button>
-              </Container>
+              </div>
+
+              <div className="my-4">
+                <p className="mb-0">Don't have an account?</p>
+                <a
+                  className="text-secondary text-decoration-none"
+                  href={uiRoutes.register}
+                  onClick={onClickRegisterLink}
+                >
+                  Create a new account
+                </a>
+
+                <p className="mb-0 mt-4">Forgot your password?</p>
+                <NavLink
+                  className="text-secondary text-decoration-none"
+                  to={uiRoutes.forgotPassword}
+                >
+                  Reset password
+                </NavLink>
+              </div>
             </Form>
-          </Container>
+          </div>
         </Container>
       );
     } // Failed to get authentication form from api

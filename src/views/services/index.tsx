@@ -86,7 +86,8 @@ export const Services = () => {
   };
 
   /**
-   * Creates a service card JSX.
+   * Creates a service card JSX. If a service is provided, a JSX with the
+   * service's info is returned. Otherwise, a placeholder is returned.
    * @param cardKey The key associated with each card
    * @param service The service information to show within the card
    */
@@ -112,9 +113,10 @@ export const Services = () => {
         <a
           className="service-card-link p-3 d-flex text-decoration-none"
           aria-disabled={!service.available}
-          href={service.available ? service.uiUrl : undefined}
+          href={service.available ? service.uiUrl : ""}
+          aria-label={`JayCloud service ${service.name} - status is ${service.available ? "online" : "offline"}`}
         >
-          <Container className="px-0 d-flex flex-column justify-content-between">
+          <Container className="px-0 d-flex flex-column justify-content-evenly">
             <Card.Title className="text-senary" as="h4">
               {service.name}
             </Card.Title>
@@ -181,7 +183,7 @@ export const Services = () => {
         <h3 className="px-3 py-1 mb-4 text-white bg-primary w-fit rounded">
           Select a Service
         </h3>
-        <Row lg={3}>{getListOfServicesJSX()}</Row>
+        <Row xs={1} md={2} lg={3}>{getListOfServicesJSX()}</Row>
       </Container>
     );
   } else {

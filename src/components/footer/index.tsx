@@ -15,6 +15,7 @@ export const AppFooter = () => {
             href="https://www.linkedin.com/in/jahnueldorelus/"
             target="_blank"
             rel="nofollow"
+            aria-label="visit Jahnuel Dorelus's LinkedIn profile"
           >
             Jahnuel Dorelus
           </a>

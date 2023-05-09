@@ -172,6 +172,7 @@ export const EditableInput = (props: EditableInputProps) => {
         }
         aria-disabled={props.disabled}
         readOnly={props.disabled}
+        aria-invalid={!isInputValid}
       />
     );
   };
@@ -188,6 +189,7 @@ export const EditableInput = (props: EditableInputProps) => {
             "text-primary"
           ).fullClass
         }
+        aria-label={inputLabel}
       >
         {inputLabel + (inputRequired ? " *" : "")}
       </label>
@@ -220,6 +222,8 @@ export const EditableInput = (props: EditableInputProps) => {
               "text-danger"
             ).fullClass
           }
+          role="alert"
+          aria-label={`input must follow these rules - ${inputRegexErrorLabel}`}
         >
           {inputRegexErrorLabel}
         </p>

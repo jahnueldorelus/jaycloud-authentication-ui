@@ -74,6 +74,13 @@ export const Register = () => {
   }, [userConsumer.state.user]);
 
   /**
+   * Determines if the form can be submitted.
+   */
+  const canFormBeSubmitted = () => {
+    return isFormValid && !createUserErrorMessage;
+  };
+
+  /**
    * Handles the change of the text for an input.
    * @param formModelInput The form model input option
    * @param newInputValue The new value from the input
@@ -85,6 +92,7 @@ export const Register = () => {
       const userModifiedInputsCopy = { ...userModifiedInputs };
       userModifiedInputsCopy[inputName] = newInputValue;
       setUserModifiedInputs(userModifiedInputsCopy);
+      setCreateUserErrorMessage(null);
     };
 
   /**
@@ -95,7 +103,7 @@ export const Register = () => {
   ) => {
     event.preventDefault();
 
-    if (isFormValid) {
+    if (canFormBeSubmitted()) {
       const result = await userConsumer.methods.createNewUser(
         userModifiedInputs
       );
@@ -171,29 +179,28 @@ export const Register = () => {
           fluid="md"
           className="register-form p-0 text-white bg-senary rounded overflow-hidden shadow"
         >
-          <Container className="px-4 py-2 bg-primary text-center text-md-start">
+          <Container className="px-4 py-2 bg-primary">
             <h3 className="m-0">{title}</h3>
           </Container>
 
-          <Container className="px-4 pt-3">
-            <p className="mb-0">Have an account?</p>
-            <a
-              href={uiRoutes.login}
-              onClick={onClickLoginLink}
-              className="text-secondary text-decoration-none"
+          <div className="px-4 pt-4">
+            <Alert
+              className="py-2 d-flex"
+              variant="danger"
+              show={!!createUserErrorMessage}
+              aria-live="polite"
             >
-              Click here to log into your account
-            </a>
-          </Container>
+              <img
+                src={ErrorSVG}
+                alt={"A red X in a circle"}
+                width={20}
+                aria-hidden={true}
+              />
+              <p className="m-0 ms-2">{createUserErrorMessage}</p>
+            </Alert>
 
-          <Container className="px-4 pt-4">
-            {createUserErrorMessage && (
-              <Alert className="py-2 d-flex" variant="danger">
-                <img src={ErrorSVG} alt={"A red X in a circle"} width={20} />
-                <p className="m-0 ms-2">{createUserErrorMessage}</p>
-              </Alert>
-            )}
             <p>* Required Input</p>
+
             <Form>
               {inputs.map((modelInput, index) => {
                 const inputName = modelInput.name;
@@ -217,12 +224,12 @@ export const Register = () => {
                 );
               })}
 
-              <Container className="my-4 d-flex justify-content-center">
+              <div className="my-4 d-flex justify-content-center">
                 <Button
                   className="mt-2"
                   type="submit"
                   variant="primary"
-                  aria-disabled={!isFormValid}
+                  aria-disabled={!canFormBeSubmitted()}
                   onClick={onFormSubmit}
                 >
                   <Spinner
@@ -240,12 +247,23 @@ export const Register = () => {
                     as="span"
                   />
                   {userConsumer.state.authReqProcessing
-                    ? "Loading"
+                    ? "Creating Account"
                     : "Create Account"}
                 </Button>
-              </Container>
+              </div>
             </Form>
-          </Container>
+
+            <div className="my-4">
+              <p className="mb-0">Have an account?</p>
+              <a
+                href={uiRoutes.login}
+                onClick={onClickLoginLink}
+                className="text-secondary text-decoration-none"
+              >
+                Log into your account
+              </a>
+            </div>
+          </div>
         </Container>
       );
     }

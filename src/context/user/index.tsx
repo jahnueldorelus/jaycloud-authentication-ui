@@ -135,8 +135,11 @@ const UserProvider = (props: UserProviderProps) => {
   ): Promise<APIUserResponseWithData> => {
     setAuthReqProcessing(true);
     const result = await userService.updateProfile(requestData);
-    setUser(result.data);
     setAuthReqProcessing(false);
+
+    if (!result.errorOccurred) {
+      setUser(result.data);
+    }
 
     return result;
   };

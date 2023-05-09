@@ -147,28 +147,25 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
   return (
     <Form>
       <Container className="px-0 pt-4">
-        {/* An alert to show if updating the user's profile fails */}
+        {/* An alert to show if updating the user's profile passes or fails */}
         <Alert
           className="py-2 d-flex w-fit"
-          variant="danger"
-          show={!!updateErrorMessage}
-        >
-          <img src={ErrorSVG} alt={"A red X in a circle"} width={20} />
-          <p className="m-0 ms-2">{updateErrorMessage}</p>
-        </Alert>
-
-        {/* An alert to show if updating the user's profile passes */}
-        <Alert
-          className="py-2 d-flex w-fit"
-          variant="success"
-          show={!!updateSuccessMessage}
+          variant={!!updateSuccessMessage ? "success" : "danger"}
+          show={!!updateSuccessMessage || !!updateErrorMessage}
         >
           <img
-            src={SuccessSVG}
-            alt={"A green checkmark in a circle"}
+            src={!!updateSuccessMessage ? SuccessSVG : ErrorSVG}
+            alt={
+              !!updateSuccessMessage
+                ? "a green checkmark in a circle"
+                : "a red X in a circle"
+            }
             width={20}
+            aria-hidden={true}
           />
-          <p className="m-0 ms-2">{updateSuccessMessage}</p>
+          <p className="m-0 ms-2">
+            {!!updateSuccessMessage ? updateSuccessMessage : updateErrorMessage}
+          </p>
         </Alert>
       </Container>
 
@@ -177,7 +174,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
           const inputName = modelInput.name;
           const inputText = userModifiedInputs[inputName] || "";
           const isInputValid = !!inputsValidity[modelInput.name];
-          const authReqProcessing = userConsumer.state.authReqProcessing
+          const authReqProcessing = userConsumer.state.authReqProcessing;
 
           return (
             <Col key={index}>
@@ -219,7 +216,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
             aria-hidden="true"
             as="span"
           />
-          {userConsumer.state.authReqProcessing ? "Loading" : "Update Profile"}
+          {userConsumer.state.authReqProcessing ? "Updating Profile" : "Update Profile"}
         </Button>
       </Container>
     </Form>

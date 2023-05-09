@@ -85,6 +85,7 @@ export const ForgotPassword = () => {
     event.preventDefault();
 
     if (isFormValid) {
+      setPasswordResetErrorMessage(null);
       const result = await userConsumer.methods.resetUserPassword(
         userModifiedInputs
       );
@@ -158,7 +159,7 @@ export const ForgotPassword = () => {
       const formModelInputs = forgotPasswordForm.inputs;
 
       return (
-        <Container className="password-reset-form py-5 d-flex justify-content-center">
+        <div className="password-reset-form py-5 d-flex justify-content-center">
           <Card className="w-fit rounded overflow-hidden shadow">
             {/* FORM HEADER */}
             <Card.Header className="px-3 py-2 bg-primary text-white fs-3">
@@ -166,7 +167,32 @@ export const ForgotPassword = () => {
             </Card.Header>
 
             {/* FORM BODY */}
-            <Card.Body className="px-3 py-4 bg-senary text-white">
+            <Card.Body className="px-3 pt-4 pb-3 bg-senary text-white">
+              {/* If a reset request has been submitted */}
+              {requestWasSubmitted.current && (
+                <Card.Text
+                  className="mb-3 fs-6 text-center text-md-start"
+                  role="alert"
+                >
+                  If the email provided below is registered, an email with a
+                  reset link will be sent to it. Please check your inbox.
+                  <br />
+                  <br />
+                  <span className="text-secondary">
+                    If you cannot find an email in your inbox, please check your
+                    spam folder.
+                  </span>
+                  <br />
+                  <br />
+                  {timeBeforeTokenExp && (
+                    <span className="text-warning rounded">
+                      You have&nbsp;<strong>{timeBeforeTokenExp}</strong>
+                      &nbsp;before the reset link expires.
+                    </span>
+                  )}
+                </Card.Text>
+              )}
+
               {/* If a reset request hasn't been submitted */}
               {!requestWasSubmitted.current && (
                 <Card.Text className="mb-4 fs-6">
@@ -184,6 +210,7 @@ export const ForgotPassword = () => {
                       src={ErrorSVG}
                       alt={"A red X in a circle"}
                       width={20}
+                      aria-hidden={true}
                     />
                     <p className="m-0 ms-2">{passwordResetErrorMessage}</p>
                   </Alert>
@@ -216,36 +243,24 @@ export const ForgotPassword = () => {
                 })}
 
                 {/* FORM BUTTONS */}
-                <Container
+                <div
                   className={
-                    new ClassName(
-                      "p-0 mt-4 d-flex justify-content-evenly"
-                    ).addClass(requestWasSubmitted.current, "d-none", "d-flex")
-                      .fullClass
+                    new ClassName("p-0 mt-4").addClass(
+                      requestWasSubmitted.current,
+                      "d-none",
+                      "d-flex"
+                    ).fullClass
                   }
                 >
                   <Button
-                    className="mt-2"
-                    type="button"
-                    variant="primary"
-                    // Disabled if api request is pending or this is the first opened page of the app
-                    aria-disabled={
-                      userConsumer.state.authReqProcessing ||
-                      location.key === "default"
-                    }
-                    onClick={goBackAPage}
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    className="mt-2"
+                    className="mt-2 w-100 me-4"
                     type="submit"
                     variant="primary"
                     aria-disabled={
                       !isFormValid || userConsumer.state.authReqProcessing
                     }
                     onClick={onFormSubmit}
+                    aria-label="submit form to reset your password"
                   >
                     <Spinner
                       className={
@@ -261,35 +276,30 @@ export const ForgotPassword = () => {
                       aria-hidden="true"
                       as="span"
                     />
-                    {userConsumer.state.authReqProcessing ? "Loading" : "Submit"}
+                    {userConsumer.state.authReqProcessing
+                      ? "Loading"
+                      : "Submit"}
                   </Button>
-                </Container>
-              </Form>
 
-              {/* If a reset request has been submitted */}
-              {requestWasSubmitted.current && (
-                <Card.Text className="mb-0 fs-6 text-center text-md-start">
-                  If the email provided above is registered, an email with a
-                  reset link will be sent to it. Please check your inbox.
-                  <br />
-                  <br />
-                  <span className="text-secondary">
-                    If you cannot find an email in your inbox, please check your
-                    spam folder.
-                  </span>
-                  <br />
-                  <br />
-                  {timeBeforeTokenExp && (
-                    <span className="text-warning rounded">
-                      *You have&nbsp;<strong>{timeBeforeTokenExp}</strong>
-                      &nbsp;before the reset link expires.*
-                    </span>
-                  )}
-                </Card.Text>
-              )}
+                  <Button
+                    className="mt-2 w-100"
+                    type="button"
+                    variant="primary"
+                    // Disabled if api request is pending or this is the first opened page of the app
+                    aria-disabled={
+                      userConsumer.state.authReqProcessing ||
+                      location.key === "default"
+                    }
+                    onClick={goBackAPage}
+                    aria-label="Go back to login page"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Form>
             </Card.Body>
           </Card>
-        </Container>
+        </div>
       );
     } // Failed to get forgot password form from api
     else if (forgotPasswordForm === null) {
@@ -302,7 +312,10 @@ export const ForgotPassword = () => {
   };
 
   return (
-    <Container className="view-forgot-password d-flex align-items-center" fluid>
+    <Container
+      className="view-forgot-password d-flex justify-content-center align-items-center"
+      fluid
+    >
       {formModelJSX()}
     </Container>
   );

@@ -158,11 +158,19 @@ export const Home = () => {
           </div>
           <h3 className="py-5 mb-0 text-center">
             To get started, create an&nbsp;
-            <NavLink className="text-senary" to={uiRoutes.register}>
+            <NavLink
+              className="text-senary"
+              to={uiRoutes.register}
+              aria-label="create a new account"
+            >
               account
             </NavLink>
             &nbsp;or&nbsp;
-            <NavLink className="text-senary" to={uiRoutes.login}>
+            <NavLink
+              className="text-senary"
+              to={uiRoutes.login}
+              aria-label="login to your account"
+            >
               login
             </NavLink>
             .

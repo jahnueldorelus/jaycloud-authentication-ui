@@ -107,33 +107,28 @@ export const AppNavbar = () => {
    */
   const loggedInUserOffCanvasInfo = (): JSX.Element => {
     const user = userConsumer.state.user;
-
-    if (user) {
-      return (
-        <Offcanvas.Header className="pb-2 align-items-start bg-senary text-white">
-          <Container className="p-0 me-4">
-            {getUserProfileImgJSX()}
-            <Offcanvas.Title className="mt-2">
-              {user ? "Logged in as" : "Not logged in"}
-              <br />
-              {user && (
-                <span className="text-secondary">
-                  <strong>{userConsumer.methods.getUserFullName(user)}</strong>
-                </span>
-              )}
-            </Offcanvas.Title>
-          </Container>
-          <CloseButton
-            className="m-0 bg-light"
-            variant="white"
-            aria-label="Close navigation menu"
-            onClick={onMobileMenuToggle}
-          />
-        </Offcanvas.Header>
-      );
-    } else {
-      return <></>;
-    }
+    return (
+      <Offcanvas.Header className="pb-2 align-items-start bg-senary text-white">
+        <Container className="p-0 me-4">
+          {getUserProfileImgJSX()}
+          <Offcanvas.Title className="mt-2">
+            {user ? "Logged in as" : "Not logged in"}
+            <br />
+            {user && (
+              <span className="text-secondary">
+                <strong>{userConsumer.methods.getUserFullName(user)}</strong>
+              </span>
+            )}
+          </Offcanvas.Title>
+        </Container>
+        <CloseButton
+          className="m-0 bg-light"
+          variant="white"
+          aria-label="Close navigation menu"
+          onClick={onMobileMenuToggle}
+        />
+      </Offcanvas.Header>
+    );
   };
 
   return (
@@ -143,11 +138,12 @@ export const AppNavbar = () => {
           <NavLink
             className="me-0 d-flex align-items-center text-white text-decoration-none fs-3"
             to={uiRoutes.home}
+            aria-label="JayCloud home page"
           >
             <img
               className="me-3"
               src={JayCloudLogo}
-              alt="JayCloud logo"
+              alt="JayCloud's logo"
               width="40"
             />
             <h1 className="m-0 fs-2">JayCloud</h1>
@@ -159,6 +155,8 @@ export const AppNavbar = () => {
           className="px-2 bg-senary"
           onClick={onMobileMenuToggle}
           aria-controls={mobileNavId}
+          label="toggle navigation menu"
+          aria-expanded={isOffcanvasVisible}
         />
 
         <Offcanvas
@@ -167,6 +165,7 @@ export const AppNavbar = () => {
           placement="end"
           show={isOffcanvasVisible}
           onHide={onMobileMenuToggle}
+          aria-label="navigation menu"
         >
           {loggedInUserOffCanvasInfo()}
           <Offcanvas.Body>
@@ -205,6 +204,7 @@ export const AppNavbar = () => {
               className="p-0 bg-transparent d-flex align-items-center rounded-circle border-0"
               aria-expanded={isUserDropdownVisible}
               aria-controls={desktopUserMenuId}
+              aria-label="more navigation options"
             >
               {getUserProfileImgJSX()}
             </Dropdown.Toggle>
@@ -213,15 +213,17 @@ export const AppNavbar = () => {
               className="user-dropdown-menu bg-senary p-2 overflow-hidden"
               id={desktopUserMenuId}
               align="end"
-              as="ul"
+              as="div"
             >
               {loggedInUserDropdownInfo()}
 
-              {createUserDropdownNavItem(uiRoutes.profile, "Profile")}
-              {createUserDropdownNavItem(
-                userConsumer.state.user ? uiRoutes.logout : uiRoutes.login,
-                userConsumer.state.user ? "Log Out" : "Log In"
-              )}
+              <ul className="p-0 m-0">
+                {createUserDropdownNavItem(uiRoutes.profile, "Profile")}
+                {createUserDropdownNavItem(
+                  userConsumer.state.user ? uiRoutes.logout : uiRoutes.login,
+                  userConsumer.state.user ? "Log Out" : "Log In"
+                )}
+              </ul>
             </Dropdown.Menu>
           </Dropdown>
         </Nav>

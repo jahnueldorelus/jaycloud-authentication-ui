@@ -87,6 +87,7 @@ export const UpdatePassword = () => {
     };
 
     if (isFormValid) {
+      setUpdatePasswordErrorMessage(null);
       const result = await userConsumer.methods.updateUserPassword(requestInfo);
 
       if (result.errorOccurred) {
@@ -164,16 +165,20 @@ export const UpdatePassword = () => {
               )}
               <Form>
                 {/* FORM SUBMISSION ERROR */}
-                {updatePasswordErrorMessage && (
-                  <Alert className="py-2 d-flex" variant="danger">
-                    <img
-                      src={ErrorSVG}
-                      alt={"A red X in a circle"}
-                      width={20}
-                    />
-                    <p className="m-0 ms-2">{updatePasswordErrorMessage}</p>
-                  </Alert>
-                )}
+                <Alert
+                  className="py-2 d-flex"
+                  variant="danger"
+                  role="alert"
+                  show={!!updatePasswordErrorMessage}
+                >
+                  <img
+                    src={ErrorSVG}
+                    alt={"A red X in a circle"}
+                    width={20}
+                    aria-hidden={true}
+                  />
+                  <p className="m-0 ms-2">{updatePasswordErrorMessage}</p>
+                </Alert>
 
                 {/* FORM INPUTS */}
                 {formModelInputs.map((modelInput, index) => {
@@ -193,7 +198,8 @@ export const UpdatePassword = () => {
                         invalidMessageClassName="mt-1 text-warning"
                         onTextChange={onInputChange(modelInput)}
                         disabled={
-                          userConsumer.state.authReqProcessing || requestWasSubmitted.current
+                          userConsumer.state.authReqProcessing ||
+                          requestWasSubmitted.current
                         }
                       />
                     </Form.Group>
@@ -213,8 +219,11 @@ export const UpdatePassword = () => {
                     className="mt-2"
                     type="submit"
                     variant="primary"
-                    aria-disabled={!isFormValid || userConsumer.state.authReqProcessing}
+                    aria-disabled={
+                      !isFormValid || userConsumer.state.authReqProcessing
+                    }
                     onClick={onFormSubmit}
+                    aria-label="submit form to update your password"
                   >
                     <Spinner
                       className={
@@ -230,12 +239,17 @@ export const UpdatePassword = () => {
                       aria-hidden="true"
                       as="span"
                     />
-                    {userConsumer.state.authReqProcessing ? "Loading" : "Submit"}
+                    {userConsumer.state.authReqProcessing
+                      ? "Loading"
+                      : "Submit"}
                   </Button>
                 </Container>
 
                 {requestWasSubmitted.current && (
-                  <Card.Text className="mt-4 fs-6 text-center text-md-start">
+                  <Card.Text
+                    className="mt-4 fs-6 text-center text-md-start"
+                    role="alert"
+                  >
                     Your password was updated successfully! Click&nbsp;
                     <NavLink
                       className="text-decoration-none"
