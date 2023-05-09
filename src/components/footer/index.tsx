@@ -14,6 +14,7 @@ export const AppFooter = () => {
             className="text-secondary text-decoration-none"
             href="https://www.linkedin.com/in/jahnueldorelus/"
             target="_blank"
+            rel="nofollow"
           >
             Jahnuel Dorelus
           </a>

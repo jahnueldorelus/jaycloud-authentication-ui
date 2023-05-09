@@ -17,7 +17,7 @@ export const SSOFailed = () => {
           <h3 className="m-0 text-white">Uh-oh, something went wrong!</h3>
         </div>
         <div className="p-3">
-          <img src={NotFoundDoggy} alt="sad JayCloud dog" width="100" />
+          <img src={NotFoundDoggy} alt="sad dog" width="100" />
           <h5 className="mt-3">
             Woof! It appears that some trouble happened while trying to sign you
             in with our SSO service, my good human. Please click the button
