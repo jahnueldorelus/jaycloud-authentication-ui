@@ -56,6 +56,37 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
   }, [userModifiedInputs]);
 
   /**
+   * Creates the JSX of an alert.
+   * @param alertMessage The message of the alert
+   * @param alertVariant The color of the alert
+   * @param alertImage The image of the alert
+   * @param alertImageAlt The description of the alert's image
+   */
+  const createAlertJSX = (
+    alertMessage: string | null,
+    alertVariant: "success" | "danger",
+    alertImage: string,
+    alertImageAlt: string
+  ) => {
+    return (
+      <Alert
+        className="py-2 d-flex w-fit"
+        variant={alertVariant}
+        show={!!alertMessage}
+      >
+        <img
+          src={alertImage}
+          alt={alertImageAlt}
+          width={20}
+          aria-hidden={true}
+        />
+
+        <p className="m-0 ms-2">{alertMessage}</p>
+      </Alert>
+    );
+  };
+
+  /**
    * Validates the form model.
    */
   const validateForm = () => {
@@ -156,26 +187,21 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
       <FocusableReference ref={topOfFormRef} />
 
       <Container className="px-0 pt-4">
-        {/* An alert to show if updating the user's profile passes or fails */}
-        <Alert
-          className="py-2 d-flex w-fit"
-          variant={!!updateSuccessMessage ? "success" : "danger"}
-          show={!!updateSuccessMessage || !!updateErrorMessage}
-        >
-          <img
-            src={!!updateSuccessMessage ? SuccessSVG : ErrorSVG}
-            alt={
-              !!updateSuccessMessage
-                ? "a green checkmark in a circle"
-                : "a red X in a circle"
-            }
-            width={20}
-            aria-hidden={true}
-          />
-          <p className="m-0 ms-2">
-            {!!updateSuccessMessage ? updateSuccessMessage : updateErrorMessage}
-          </p>
-        </Alert>
+        {/* An alert to show if updating the user's profile passes */}
+        {createAlertJSX(
+          updateSuccessMessage,
+          "success",
+          SuccessSVG,
+          "a green checkmark in a circle"
+        )}
+
+        {/* An alert to show if updating the user's profile fails */}
+        {createAlertJSX(
+          updateErrorMessage,
+          "danger",
+          ErrorSVG,
+          "a red X in a circle"
+        )}
       </Container>
 
       <Row xs={1} md={2} lg={3}>
