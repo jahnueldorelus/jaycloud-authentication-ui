@@ -170,3 +170,10 @@ select,
 a {
   @include setOutlineColor($blue-300);
 }
+
+// Prevents the header and main content from being outlined
+header,
+main, form {
+  box-shadow: none;
+  outline: 0;
+}

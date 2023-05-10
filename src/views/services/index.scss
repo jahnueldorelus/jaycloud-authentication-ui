@@ -20,7 +20,7 @@
       }
     }
 
-    .service-card-img {
+    &-img {
       width: 100%;
       -o-object-fit: contain;
       object-fit: contain;
@@ -28,21 +28,12 @@
       &-container {
         max-width: 7rem;
         display: flex;
-        flex: 1 1;
       }
     }
 
-    .service-card-body {
-      flex: 2 1;
-
-      .service-card-link {
-        height: 100%;
-
-        .service-status-indicator {
-          width: 0.5rem;
-          height: 0.5rem;
-        }
-      }
+    .service-status-indicator {
+      width: 0.5rem;
+      height: 0.5rem;
     }
   }
 }

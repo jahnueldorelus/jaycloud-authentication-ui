@@ -3,13 +3,11 @@ import { RefObject } from "react";
 class AppContentHeight {
   headerRef: RefObject<HTMLElement> | null;
   footerRef: RefObject<HTMLElement> | null;
-  backToJayCloudRef: RefObject<HTMLElement> | null;
   setMinContentHeight: ((newHeight: number) => void) | null;
 
   constructor() {
     this.headerRef = null;
     this.footerRef = null;
-    this.backToJayCloudRef = null;
     this.setMinContentHeight = null;
   }
 
@@ -18,23 +16,18 @@ class AppContentHeight {
    * content on the page to have the full height of the window.
    */
   calculateNewHeight = () => {
-    if (this.setMinContentHeight) {
-      if (this.backToJayCloudRef && this.backToJayCloudRef.current) {
-        this.setMinContentHeight(
-          window.innerHeight - this.backToJayCloudRef.current.offsetHeight
-        );
-      } else if (
-        this.headerRef &&
-        this.headerRef.current &&
-        this.footerRef &&
-        this.footerRef.current
-      ) {
-        this.setMinContentHeight(
-          window.innerHeight -
-            this.headerRef.current.offsetHeight -
-            this.footerRef.current.offsetHeight
-        );
-      }
+    if (
+      this.setMinContentHeight &&
+      this.headerRef &&
+      this.headerRef.current &&
+      this.footerRef &&
+      this.footerRef.current
+    ) {
+      this.setMinContentHeight(
+        window.innerHeight -
+          this.headerRef.current.offsetHeight -
+          this.footerRef.current.offsetHeight
+      );
     }
   };
 }

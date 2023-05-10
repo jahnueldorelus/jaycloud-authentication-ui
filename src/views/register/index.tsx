@@ -17,6 +17,7 @@ import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
 import { sessionStorageService } from "@services/session-storage";
+import { FocusableReference } from "@components/focusable-reference";
 import "./index.scss";
 
 export const Register = () => {
@@ -24,6 +25,7 @@ export const Register = () => {
   const [searchParams] = useSearchParams();
   const userConsumer = useContext(userContext);
   const loadedInitialData = useRef(false);
+  const topOfFormRef = useRef<HTMLDivElement>(null);
   const [registrationForm, setRegistrationForm] = useState<
     FormModel | null | undefined
   >(undefined);
@@ -76,7 +78,7 @@ export const Register = () => {
   /**
    * Determines if the form can be submitted.
    */
-  const canFormBeSubmitted = () => {
+  const formCanBeSubmitted = () => {
     return isFormValid && !createUserErrorMessage;
   };
 
@@ -103,10 +105,15 @@ export const Register = () => {
   ) => {
     event.preventDefault();
 
-    if (canFormBeSubmitted()) {
+    if (formCanBeSubmitted()) {
       const result = await userConsumer.methods.createNewUser(
         userModifiedInputs
       );
+
+      // Brings the focus back to the top of the form
+      if (topOfFormRef.current) {
+        topOfFormRef.current.focus();
+      }
 
       if (result.errorOccurred) {
         setCreateUserErrorMessage(result.errorMessage);
@@ -202,6 +209,8 @@ export const Register = () => {
             <p>* Required Input</p>
 
             <Form>
+              <FocusableReference ref={topOfFormRef} />
+
               {inputs.map((modelInput, index) => {
                 const inputName = modelInput.name;
                 const inputText = userModifiedInputs[inputName] || "";
@@ -229,7 +238,7 @@ export const Register = () => {
                   className="mt-2"
                   type="submit"
                   variant="primary"
-                  aria-disabled={!canFormBeSubmitted()}
+                  aria-disabled={!formCanBeSubmitted()}
                   onClick={onFormSubmit}
                 >
                   <Spinner

@@ -103,9 +103,9 @@ export const Home = () => {
 
   return (
     <Container className="view-home p-0" fluid>
-      <Container className="section-one px-0 pt-5 bg-primary" fluid>
+      <div className="section-one px-0 pt-5 bg-primary">
         <Container className="text-white d-flex flex-column flex-md-row align-items-center">
-          <Container className="px-3 px-sm-0">
+          <div className="px-3 px-sm-0 w-100">
             <h2 className="text-secondary">JayCloud Services Hub</h2>
             <h3 className="fs-4">
               A central location of JayCloud services for day-to-day operations.
@@ -116,10 +116,10 @@ export const Home = () => {
               applications, you can manage your finances, read songbooks, and
               even track your health.
             </h3>
-          </Container>
-          <Container className="px-5 pt-5 pt-md-0 w-fit d-flex justify-content-center">
+          </div>
+          <div className="px-5 pt-5 pt-md-0 w-fit d-flex justify-content-center">
             <img src={JayCloudHub} alt="JayCloud service hub" width="500" />
-          </Container>
+          </div>
         </Container>
         <div className="section-one-divider">
           <svg
@@ -134,7 +134,7 @@ export const Home = () => {
             ></path>
           </svg>
         </div>
-      </Container>
+      </div>
 
       <h3 className="pt-5 text-senary text-center fs-1">JayCloud Services</h3>
 

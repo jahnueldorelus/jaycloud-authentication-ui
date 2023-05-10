@@ -43,11 +43,11 @@ export const AppNavbar = () => {
     return (
       <Nav.Item className="py-1 fs-5" as="li">
         <NavLink
-          className="text-decoration-none"
+          className="px-3 mb-0 d-block rounded text-decoration-none"
           to={itemLink}
           onClick={onMobileMenuToggle}
         >
-          <p className="px-3 mb-0 rounded"> {itemName}</p>
+          {itemName}
         </NavLink>
       </Nav.Item>
     );
@@ -61,8 +61,8 @@ export const AppNavbar = () => {
   const createUserDropdownNavItem = (itemLink: string, itemName: string) => {
     return (
       <Dropdown.Item className="user-dropdown-menu-item px-1" as="li">
-        <NavLink to={itemLink}>
-          <p className="px-3 py-1 mb-0 fs-5 rounded">{itemName}</p>
+        <NavLink className="px-3 py-1 mb-0 d-block fs-5 rounded" to={itemLink}>
+          {itemName}
         </NavLink>
       </Dropdown.Item>
     );
@@ -85,13 +85,13 @@ export const AppNavbar = () => {
     if (user) {
       return (
         <Fragment>
-          <li className="mb-0 py-2 px-2 text-white">
+          <div className="mb-0 py-2 px-2 text-white">
             Logged in as
             <br />
             <span className="text-secondary">
               <strong>{userConsumer.methods.getUserFullName(user)}</strong>
             </span>
-          </li>
+          </div>
 
           <Dropdown.Divider className="mx-2 bg-white" />
         </Fragment>
@@ -133,7 +133,7 @@ export const AppNavbar = () => {
 
   return (
     <Navbar className="app-navbar py-1" bg="primary" expand="md">
-      <Container className="flex-md-row" fluid="md">
+      <Container className="flex-row-reverse flex-md-row" fluid="md">
         <Navbar.Brand>
           <NavLink
             className="me-0 d-flex align-items-center text-white text-decoration-none fs-3"
@@ -162,7 +162,7 @@ export const AppNavbar = () => {
         <Offcanvas
           backdropClassName="bg-primary"
           id={mobileNavId}
-          placement="end"
+          placement="start"
           show={isOffcanvasVisible}
           onHide={onMobileMenuToggle}
           aria-label="navigation menu"
@@ -210,14 +210,14 @@ export const AppNavbar = () => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu
-              className="user-dropdown-menu bg-senary p-2 overflow-hidden"
+              className="bg-senary p-2 overflow-hidden"
               id={desktopUserMenuId}
               align="end"
               as="div"
             >
               {loggedInUserDropdownInfo()}
 
-              <ul className="p-0 m-0">
+              <ul className="user-dropdown-menu p-0 pb-1 m-0">
                 {createUserDropdownNavItem(uiRoutes.profile, "Profile")}
                 {createUserDropdownNavItem(
                   userConsumer.state.user ? uiRoutes.logout : uiRoutes.login,

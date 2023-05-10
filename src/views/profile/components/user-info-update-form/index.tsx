@@ -13,12 +13,14 @@ import ErrorSVG from "@assets/error-circle.svg";
 import SuccessSVG from "@assets/success-circle.svg";
 import Alert from "react-bootstrap/Alert";
 import { userContext } from "@context/user";
+import { FocusableReference } from "@components/focusable-reference";
 
 type UserInfoUpdateFormProps = {
   formInputs: FormModelInputOption[];
 };
 
 export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
+  const userConsumer = useContext(userContext);
   const [updateErrorMessage, setUpdateErrorMessage] = useState<string | null>(
     null
   );
@@ -33,7 +35,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
     {}
   );
   const alertTimeout = useRef<NodeJS.Timeout | null>(null);
-  const userConsumer = useContext(userContext);
+  const topOfFormRef = useRef<HTMLDivElement>(null);
 
   // Manages a timer for showing an alert for the api response of updating a user
   useEffect(() => {
@@ -131,6 +133,11 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
         userModifiedInputs
       );
 
+      // Brings the focus back to the top of the form
+      if (topOfFormRef.current) {
+        topOfFormRef.current.focus();
+      }
+
       if (result.errorOccurred) {
         setUpdateErrorMessage(result.errorMessage);
         setUpdateSuccessMessage(null);
@@ -146,6 +153,8 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
 
   return (
     <Form>
+      <FocusableReference ref={topOfFormRef} />
+
       <Container className="px-0 pt-4">
         {/* An alert to show if updating the user's profile passes or fails */}
         <Alert
@@ -216,7 +225,9 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
             aria-hidden="true"
             as="span"
           />
-          {userConsumer.state.authReqProcessing ? "Updating Profile" : "Update Profile"}
+          {userConsumer.state.authReqProcessing
+            ? "Updating Profile"
+            : "Update Profile"}
         </Button>
       </Container>
     </Form>

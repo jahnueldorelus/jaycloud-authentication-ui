@@ -7,13 +7,13 @@ import "./index.scss";
 export const UIError = () => {
   return (
     <Container
-      className="app-ui-error px-0 rounded overflow-hidden shadow"
+      className="app-ui-error px-0 rounded overflow-hidden border border-primary"
       fluid
     >
       <h3 className="mb-0 px-3 py-3 bg-primary text-white">
-        Uh-oh, something went wrong :(
+        Uh-oh, something went wrong :&#40;
       </h3>
-      <Container className="bg-tertiary text-primary">
+      <Container className="text-primary">
         <h4 className="px-3 pt-3 pb-2 fs-5">
           An error has occurred that prevented the page from loading. Please
           navigate to the home page and try again.

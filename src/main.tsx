@@ -18,8 +18,8 @@ import { LogoutError } from "@views/logout-error";
 import { Logout } from "@views/logout";
 import { LogoutSSOServiceRedirect } from "@views/logout-sso-service-redirect";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import "./index.scss";
 import { Seo } from "@components/seo";
+import "./index.scss";
 
 /**
  * Creates the title that will appear in the head meta tag

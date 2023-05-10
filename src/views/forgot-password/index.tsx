@@ -16,11 +16,13 @@ import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
 import "./index.scss";
+import { FocusableReference } from "@components/focusable-reference";
 
 export const ForgotPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const loadedInitialData = useRef(false);
+  const topOfFormRef = useRef<HTMLDivElement>(null);
   const [forgotPasswordForm, setForgotPasswordForm] = useState<
     FormModel | null | undefined
   >(undefined);
@@ -85,17 +87,24 @@ export const ForgotPassword = () => {
     event.preventDefault();
 
     if (isFormValid) {
+      requestWasSubmitted.current = true;
       setPasswordResetErrorMessage(null);
+
       const result = await userConsumer.methods.resetUserPassword(
         userModifiedInputs
       );
 
+      // Brings the focus back to the top of the form
+      if (topOfFormRef.current) {
+        topOfFormRef.current.focus();
+      }
+
       if (result.errorOccurred) {
+        requestWasSubmitted.current = false;
         setPasswordResetErrorMessage(result.errorMessage);
       } else {
         setTimeBeforeTokenExp(result.timeBeforeTokenExp);
         setPasswordResetErrorMessage(null);
-        requestWasSubmitted.current = true;
       }
     }
   };
@@ -215,6 +224,8 @@ export const ForgotPassword = () => {
                     <p className="m-0 ms-2">{passwordResetErrorMessage}</p>
                   </Alert>
                 )}
+
+                <FocusableReference ref={topOfFormRef} />
 
                 {/* FORM INPUTS */}
                 {formModelInputs.map((modelInput, index) => {

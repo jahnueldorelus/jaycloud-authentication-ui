@@ -27,31 +27,29 @@
     // User dropdown menu
     .user-dropdown-menu {
       .user-dropdown-menu-item {
+        // Prevents bootstrap from overriding style
+        &:hover {
+          background-color: transparent;
+        }
+
+        // Styles of dropdown nav link
         a {
-          // Styles of dropdown nav link
-          p {
-            color: var(--bs-white);
-          }
+          color: var(--bs-white);
 
           // Styles of hovered, non-active dropdown nav link
-          &:hover p {
+          &:hover {
             color: var(--bs-primary);
             background-color: var(--bs-tertiary);
           }
 
           // Styles of active dropdown nav link
-          &.active p {
+          &.active {
             background-color: var(--bs-primary);
 
             &:hover {
               color: var(--bs-white);
             }
           }
-        }
-
-        // Prevents bootstrap from overriding style
-        &:hover {
-          background-color: transparent;
         }
       }
     }
@@ -65,21 +63,19 @@
   max-width: 15rem !important;
 
   .nav-item {
+    // Styles of regular nav link
     a {
-      // Styles of regular nav link
-      p {
-        padding: 0.25rem 0.75rem;
-        color: var(--bs-primary);
+      padding: 0.25rem 0.75rem;
+      color: var(--bs-primary);
 
-        // Styles of hovered, non active nav link
-        &:hover {
-          color: var(--bs-primary);
-          background-color: var(--bs-tertiary);
-        }
+      // Styles of hovered, non active nav link
+      &:hover {
+        color: var(--bs-primary);
+        background-color: var(--bs-tertiary);
       }
 
       // Styles of active nav link
-      &.active p {
+      &.active {
         background-color: var(--bs-senary);
         color: var(--bs-white);
       }

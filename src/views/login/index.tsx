@@ -18,12 +18,14 @@ import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
 import { sessionStorageService } from "@services/session-storage";
 import "./index.scss";
+import { FocusableReference } from "@components/focusable-reference";
 
 export const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const userConsumer = useContext(userContext);
   const loadedInitialData = useRef(false);
+  const topOfFormRef = useRef<HTMLDivElement>(null);
   const [authenticationForm, setAuthenticationForm] = useState<
     FormModel | null | undefined
   >(undefined);
@@ -79,7 +81,7 @@ export const Login = () => {
   /**
    * Determines if the form can be submitted.
    */
-  const canFormBeSubmitted = () => {
+  const formCanBeSubmitted = () => {
     return isFormValid && !loginErrorMessage;
   };
 
@@ -106,8 +108,13 @@ export const Login = () => {
   ) => {
     event.preventDefault();
 
-    if (canFormBeSubmitted()) {
+    if (formCanBeSubmitted()) {
       const result = await userConsumer.methods.signInUser(userModifiedInputs);
+
+      // Brings the focus back to the top of the form
+      if (topOfFormRef.current) {
+        topOfFormRef.current.focus();
+      }
 
       if (result.errorOccurred) {
         setLoginErrorMessage(result.errorMessage);
@@ -207,6 +214,8 @@ export const Login = () => {
 
             <p>* Required Input</p>
             <Form>
+              <FocusableReference ref={topOfFormRef} />
+
               {inputs.map((modelInput, index) => {
                 const inputName = modelInput.name;
                 const inputText = userModifiedInputs[inputName] || "";
@@ -234,7 +243,7 @@ export const Login = () => {
                   className="mt-2"
                   type="submit"
                   variant="primary"
-                  aria-disabled={!canFormBeSubmitted()}
+                  aria-disabled={!formCanBeSubmitted()}
                   onClick={onFormSubmit}
                 >
                   <Spinner

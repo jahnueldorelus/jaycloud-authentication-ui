@@ -7,7 +7,7 @@ import Alert from "react-bootstrap/Alert";
 import { EditableInput } from "@components/editable-input";
 import { NavLink, useSearchParams } from "react-router-dom";
 import { UIError } from "@components/ui-error";
-import { useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
@@ -18,10 +18,12 @@ import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
 import "./index.scss";
+import { FocusableReference } from "@components/focusable-reference";
 
 export const UpdatePassword = () => {
   const [searchParams] = useSearchParams();
   const loadedInitialData = useRef(false);
+  const topOfFormRef = useRef<HTMLDivElement>(null);
   const [updatePasswordForm, setUpdatePasswordForm] = useState<
     FormModel | null | undefined
   >(undefined);
@@ -92,6 +94,11 @@ export const UpdatePassword = () => {
 
       if (result.errorOccurred) {
         setUpdatePasswordErrorMessage(result.errorMessage);
+
+        // Brings the focus back to the top of the form
+        if (topOfFormRef.current) {
+          topOfFormRef.current.focus();
+        }
       } else {
         setUpdatePasswordErrorMessage(null);
         requestWasSubmitted.current = true;
@@ -159,7 +166,7 @@ export const UpdatePassword = () => {
             {/* FORM BODY */}
             <Card.Body className="px-3 py-4 bg-senary text-white">
               {!requestWasSubmitted.current && (
-                <Card.Text className="mb-4 fs-6 text-center text-md-start">
+                <Card.Text className="mb-4">
                   To update your password, please fill the form below.
                 </Card.Text>
               )}
@@ -180,14 +187,18 @@ export const UpdatePassword = () => {
                   <p className="m-0 ms-2">{updatePasswordErrorMessage}</p>
                 </Alert>
 
+                <FocusableReference ref={topOfFormRef} />
+
                 {/* FORM INPUTS */}
-                {formModelInputs.map((modelInput, index) => {
+                {!requestWasSubmitted.current && formModelInputs.map((modelInput, index) => {
                   const inputName = modelInput.name;
                   const inputText = userModifiedInputs[inputName] || "";
                   const isInputValid = !!inputsValidity[modelInput.name];
 
                   return (
-                    <Form.Group key={index}>
+                    <Form.Group
+                      key={index}
+                    >
                       <EditableInput
                         formModelName={inputName}
                         input={modelInput}
@@ -246,19 +257,31 @@ export const UpdatePassword = () => {
                 </Container>
 
                 {requestWasSubmitted.current && (
-                  <Card.Text
-                    className="mt-4 fs-6 text-center text-md-start"
-                    role="alert"
-                  >
-                    Your password was updated successfully! Click&nbsp;
-                    <NavLink
-                      className="text-decoration-none"
-                      to={uiRoutes.login}
+                  <Fragment>
+                    <Card.Text
+                      className="mb-2"
+                      role="alert"
+                      as="h6"
                     >
-                      <span className="text-secondary">here&nbsp;</span>
-                    </NavLink>
-                    to login.
-                  </Card.Text>
+                      Your password was updated successfully!
+                    </Card.Text>
+
+                    <Card.Text className="mb-0">
+                      Click&nbsp;
+                      <NavLink
+                        className="text-decoration-none"
+                        to={uiRoutes.login}
+                      >
+                        <span
+                          className="text-secondary"
+                          aria-label="go to the login page"
+                        >
+                          here&nbsp;
+                        </span>
+                      </NavLink>
+                      to login.
+                    </Card.Text>
+                  </Fragment>
                 )}
               </Form>
             </Card.Body>
