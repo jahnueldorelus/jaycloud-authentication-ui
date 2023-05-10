@@ -24,7 +24,6 @@ function App() {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const [minimumContentHeight, setMinimumContentHeight] = useState<number>(0);
-  const [isOffcanvasVisible, setIsOffcanvasVisible] = useState(false);
   const userConsumer = useContext(userContext);
   const navigationZIndex = 990;
 
@@ -56,7 +55,7 @@ function App() {
 
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
-    if (topOfPageRef.current && !isOffcanvasVisible) {
+    if (topOfPageRef.current) {
       topOfPageRef.current.focus();
     }
 
