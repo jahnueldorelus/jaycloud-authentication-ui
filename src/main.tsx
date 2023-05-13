@@ -38,9 +38,6 @@ const router = createBrowserRouter([
         path: uiRoutes.home,
         element: (
           <Fragment>
-            <Helmet>
-              <title>{createTitle("Home")}</title>
-            </Helmet>
             <Seo
               indexPage={true}
               title="Home"
