@@ -24,6 +24,7 @@ function App() {
   const headerRef = useRef<HTMLElement>(null);
   const footerRef = useRef<HTMLElement>(null);
   const [minimumContentHeight, setMinimumContentHeight] = useState<number>(0);
+  const [lastPathname, setLastPathname] = useState("");
   const userConsumer = useContext(userContext);
   const navigationZIndex = 990;
 
@@ -61,11 +62,15 @@ function App() {
 
     // Removes session storage auth info if the user navigates away from the login and register page
     if (
+      (lastPathname === uiRoutes.login || lastPathname === uiRoutes.register) &&
       location.pathname !== uiRoutes.login &&
       location.pathname !== uiRoutes.register
     ) {
       sessionStorageService.removeViewBeforeAuth();
     }
+
+    // Updates the last pathname state
+    setLastPathname(location.pathname);
   }, [location.pathname]);
 
   /**
