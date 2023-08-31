@@ -27,6 +27,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "baseUrl": "./",
+    "types": ["vitest/globals"],
     "paths": {
       "@assets/*": [
         "./src/assets/*"
@@ -49,11 +50,14 @@
       "@views/*": [
         "./src/views/*"
       ],
+      "@tests/*": [
+        "./tests/*"
+      ],
     },
   },
   "include": [
     "src"
-  ],
+, "tests", "tests-setup.ts", "tests"  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

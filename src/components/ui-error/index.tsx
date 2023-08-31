@@ -2,6 +2,7 @@ import { uiRoutes } from "@components/navbar/routes";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import { NavLink } from "react-router-dom";
+import { testDataIds } from "@tests/helper";
 import "./index.scss";
 
 export const UIError = () => {
@@ -9,6 +10,7 @@ export const UIError = () => {
     <Container
       className="app-ui-error px-0 rounded overflow-hidden border border-primary"
       fluid
+      data-testid={testDataIds.appUiError}
     >
       <h3 className="mb-0 px-3 py-3 bg-primary text-white">
         Uh-oh, something went wrong :&#40;

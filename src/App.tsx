@@ -124,7 +124,7 @@ function App() {
   const getAppBodyJSX = () => {
     return (
       <Fragment>
-        <FocusableReference ref={topOfPageRef} />
+        <FocusableReference ref={topOfPageRef} data-testid="top-of-page-ref" />
 
         <Button
           className="visually-hidden-focusable px-2 py-1 ms-2 mt-2 mb-0 bg-white text-primary border border-primary rounded w-fit position-absolute top-0"
@@ -145,7 +145,7 @@ function App() {
         </header>
 
         {/* Main content of the application */}
-        <FocusableReference ref={topOfMainRef} />
+        <FocusableReference ref={topOfMainRef} data-testid="top-of-main-ref" />
 
         <main className="d-flex" style={{ minHeight: minimumContentHeight }}>
           <Outlet />

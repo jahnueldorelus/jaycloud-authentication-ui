@@ -113,7 +113,7 @@ export const ForgotPassword = () => {
    * Goes back to the previous page.
    */
   const goBackAPage = () => {
-    if (!userConsumer.state.authReqProcessing) {
+    if (!userConsumer.state.authReqProcessing && location.key !== "default") {
       navigate(-1);
     }
   };
@@ -171,8 +171,11 @@ export const ForgotPassword = () => {
         <div className="password-reset-form py-5 d-flex justify-content-center">
           <Card className="w-fit rounded overflow-hidden shadow">
             {/* FORM HEADER */}
-            <Card.Header className="px-3 py-2 bg-primary text-white fs-3">
-              <h3 className="m-0"> {formModelTitle}</h3>
+            <Card.Header
+              className="px-3 py-2 bg-primary text-white fs-3"
+              data-testid="form-title"
+            >
+              <h3 className="m-0">{formModelTitle}</h3>
             </Card.Header>
 
             {/* FORM BODY */}
@@ -221,7 +224,9 @@ export const ForgotPassword = () => {
                       width={20}
                       aria-hidden={true}
                     />
-                    <p className="m-0 ms-2">{passwordResetErrorMessage}</p>
+                    <p className="m-0 ms-2" data-testid="form-error-message">
+                      {passwordResetErrorMessage}
+                    </p>
                   </Alert>
                 )}
 
@@ -272,6 +277,7 @@ export const ForgotPassword = () => {
                     }
                     onClick={onFormSubmit}
                     aria-label="submit form to reset your password"
+                    data-testid="form-submit-button"
                   >
                     <Spinner
                       className={
@@ -303,6 +309,7 @@ export const ForgotPassword = () => {
                     }
                     onClick={goBackAPage}
                     aria-label="Go back to login page"
+                    data-testid="form-go-back-button"
                   >
                     Cancel
                   </Button>
