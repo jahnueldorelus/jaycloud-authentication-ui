@@ -4,6 +4,11 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 export const testDataIds = {
   appUiError: "app-ui-error",
   appLoader: "app-loader",
+  appError: {
+    card: "app-error-card",
+    title: "app-error-title",
+    message: "app-error-message",
+  },
 };
 
 /**
