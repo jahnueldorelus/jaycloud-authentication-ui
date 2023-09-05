@@ -216,19 +216,21 @@ export const ForgotPassword = () => {
 
               <Form>
                 {/* FORM SUBMISSION ERROR */}
-                {passwordResetErrorMessage && (
-                  <Alert className="py-2 d-flex" variant="danger">
-                    <img
-                      src={ErrorSVG}
-                      alt={"A red X in a circle"}
-                      width={20}
-                      aria-hidden={true}
-                    />
-                    <p className="m-0 ms-2" data-testid="form-error-message">
-                      {passwordResetErrorMessage}
-                    </p>
-                  </Alert>
-                )}
+                <Alert
+                  className="py-2 d-flex"
+                  variant="danger"
+                  show={!!passwordResetErrorMessage}
+                >
+                  <img
+                    src={ErrorSVG}
+                    alt={"A red X in a circle"}
+                    width={20}
+                    aria-hidden={true}
+                  />
+                  <p className="m-0 ms-2" data-testid="form-error-message">
+                    {passwordResetErrorMessage}
+                  </p>
+                </Alert>
 
                 <FocusableReference ref={topOfFormRef} />
 

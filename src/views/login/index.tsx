@@ -8,17 +8,16 @@ import Spinner from "react-bootstrap/Spinner";
 import { ClassName } from "@services/class-name";
 import { EditableInput } from "@components/editable-input";
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
-import { useNavigate } from "react-router";
 import { objectService } from "@services/object";
 import { formModelService } from "@services/form-model";
-import { NavLink, useSearchParams } from "react-router-dom";
+import { NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
 import { sessionStorageService } from "@services/session-storage";
-import "./index.scss";
 import { FocusableReference } from "@components/focusable-reference";
+import "./index.scss";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -192,6 +191,7 @@ export const Login = () => {
         <Container
           fluid="md"
           className="login-form p-0 text-white bg-senary rounded overflow-hidden shadow"
+          data-testid="login-form"
         >
           <div className="px-4 py-2 bg-primary">
             <h3 className="m-0">{title}</h3>
@@ -209,7 +209,9 @@ export const Login = () => {
                 width={20}
                 aria-hidden={true}
               />
-              <p className="m-0 ms-2">{loginErrorMessage}</p>
+              <p className="m-0 ms-2" data-testid="form-error-message">
+                {loginErrorMessage}
+              </p>
             </Alert>
 
             <p>* Required Input</p>
@@ -245,6 +247,7 @@ export const Login = () => {
                   variant="primary"
                   aria-disabled={!formCanBeSubmitted()}
                   onClick={onFormSubmit}
+                  data-testid="form-submit-button"
                 >
                   <Spinner
                     className={
