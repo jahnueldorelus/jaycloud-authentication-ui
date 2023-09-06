@@ -1,10 +1,9 @@
 import { formModelService } from "@services/form-model";
 import { SpyInstance } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Login } from "@views/login";
 import { FormModel } from "@app-types/form-model";
-import { testDataIds } from "@tests/helper";
+import { testDataIds, domUser } from "@tests/helper";
 import { addUserProvider } from "@tests/helper";
 import { userService } from "@services/user";
 import { APIUserResponseWithData, TokenData } from "@app-types/services/user";
@@ -156,54 +155,46 @@ describe("Login Form", () => {
 
   it("Should show that a login request failed", async () => {
     const errorMessage = "FAILED-TO-LOGIN";
-    mocks.authenticateUser.mockImplementationOnce(
-      async () =>
-        ({
-          data: null,
-          errorMessage,
-          errorOccurred: true,
-        } as APIUserResponseWithData)
+    mocks.authenticateUser.mockReturnValueOnce(
+      Promise.resolve({
+        data: null,
+        errorMessage,
+        errorOccurred: true,
+      } as APIUserResponseWithData)
     );
-
     render(loginJSX);
 
+    let inputElement: HTMLInputElement = await screen.findByRole("textbox");
+    await domUser.type(inputElement, "text");
+
+    const submitButton = await screen.findByTestId("form-submit-button");
+    await domUser.click(submitButton);
+
     await waitFor(async () => {
-      // Simulates the user type in an input and submitting the form
-      const inputElement: HTMLInputElement = screen.getByRole("textbox");
-      await userEvent.type(inputElement, "dummy-text");
-
-      const submitButton = await screen.findByTestId("form-submit-button");
-      await userEvent.click(submitButton);
-
-      const errorMessageElement = screen.getByTestId("form-error-message");
-      expect(errorMessageElement).toBeInTheDocument();
-      expect(errorMessageElement.textContent).toBe(errorMessage);
+      const errorElement = await screen.findByTestId("form-error-message");
+      expect(errorElement.textContent).toBe(errorMessage);
     });
   });
 
   it("Should submit form when it's validated", async () => {
     render(loginJSX);
 
-    await waitFor(async () => {
-      const inputElement: HTMLInputElement = screen.getByRole("textbox");
-      await userEvent.type(inputElement, "email");
+    const inputElement: HTMLInputElement = await screen.findByRole("textbox");
+    await domUser.type(inputElement, "email");
 
-      const submitButton = screen.getByTestId("form-submit-button");
-      await userEvent.click(submitButton);
+    const submitButton = await screen.findByTestId("form-submit-button");
+    await domUser.click(submitButton);
 
-      expect(mocks.authenticateUser).toHaveBeenCalledTimes(1);
-    });
+    expect(mocks.authenticateUser).toHaveBeenCalledTimes(1);
   });
 
   it("Shouldn't submit form when it's invalid", async () => {
     render(loginJSX);
 
-    await waitFor(async () => {
-      const submitButton = screen.getByTestId("form-submit-button");
-      fireEvent.click(submitButton);
+    const submitButton = await screen.findByTestId("form-submit-button");
+    await domUser.click(submitButton);
 
-      expect(mocks.authenticateUser).toHaveBeenCalledTimes(0);
-    });
+    expect(mocks.authenticateUser).toHaveBeenCalledTimes(0);
   });
 
   describe("Views after successful login", () => {
@@ -212,28 +203,24 @@ describe("Login Form", () => {
       render(loginJSX);
 
       // Successfully signs in
-      await waitFor(async () => {
-        const inputElement: HTMLInputElement = screen.getByRole("textbox");
-        await userEvent.type(inputElement, "email");
-        const submitButton = screen.getByTestId("form-submit-button");
-        await userEvent.click(submitButton);
+      const inputElement: HTMLInputElement = await screen.findByRole("textbox");
+      await domUser.type(inputElement, "email");
+      const submitButton = await screen.findByTestId("form-submit-button");
+      await domUser.click(submitButton);
 
-        expect(mocks.redirectToPreviousService).toHaveBeenCalled();
-      });
+      expect(mocks.redirectToPreviousService).toHaveBeenCalled();
     });
 
     it("Should redirect the user to a view in the current application", async () => {
       render(loginJSX);
 
-      await waitFor(async () => {
-        // Successfully signs in
-        const inputElement: HTMLInputElement = screen.getByRole("textbox");
-        await userEvent.type(inputElement, "email");
-        const submitButton = screen.getByTestId("form-submit-button");
-        await userEvent.click(submitButton);
+      // Successfully signs in
+      const inputElement: HTMLInputElement = await screen.findByRole("textbox");
+      await domUser.type(inputElement, "email");
+      const submitButton = await screen.findByTestId("form-submit-button");
+      await domUser.click(submitButton);
 
-        expect(mocks.getViewBeforeAuth).toHaveBeenCalled();
-      });
+      expect(mocks.getViewBeforeAuth).toHaveBeenCalled();
     });
   });
 });

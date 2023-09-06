@@ -73,6 +73,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
         className="py-2 d-flex w-fit"
         variant={alertVariant}
         show={!!alertMessage}
+        data-testid="form-alert-message"
       >
         <img
           src={alertImage}
@@ -111,6 +112,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
         });
       }
     });
+
     // Determines if all inputs are valid
     const formIsValid =
       Object.values(userModifiedInputs).some((input) => input.length > 0) &&
@@ -236,6 +238,7 @@ export const UserInfoUpdateForm = (props: UserInfoUpdateFormProps) => {
           variant="primary"
           aria-disabled={!isFormValid}
           onClick={onFormSubmit}
+          data-testid="form-submit-button"
         >
           <Spinner
             className={

@@ -1,10 +1,9 @@
 import { formModelService } from "@services/form-model";
 import { SpyInstance, vi } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import { ForgotPassword } from "@views/forgot-password";
 import { FormModel } from "@app-types/form-model";
-import { addUserProvider, testDataIds } from "@tests/helper";
+import { addUserProvider, testDataIds, domUser } from "@tests/helper";
 import { userService } from "@services/user";
 import {
   APIUserRequestInfo,
@@ -147,13 +146,13 @@ describe("Forgot Password Form", () => {
     );
     render(forgetPasswordJSX);
 
-    await waitFor(async () => {
-      // Simulates the user type in an input and submitting the form
-      const inputElement: HTMLInputElement = screen.getByRole("textbox");
-      await userEvent.type(inputElement, "email");
-      const submitButton = screen.getByTestId("form-submit-button");
-      await userEvent.click(submitButton);
+    // Simulates the user type in an input and submitting the form
+    const inputElement: HTMLInputElement = await screen.findByRole("textbox");
+    await domUser.type(inputElement, "email");
+    const submitButton = await screen.findByTestId("form-submit-button");
+    await domUser.click(submitButton);
 
+    await waitFor(async () => {
       const errorMessageElement = screen.getByTestId("form-error-message");
       expect(errorMessageElement).toBeInTheDocument();
       expect(errorMessageElement.textContent).toBe(errorMessage);
@@ -163,36 +162,30 @@ describe("Forgot Password Form", () => {
   it("Should submit form when it's validated", async () => {
     render(forgetPasswordJSX);
 
-    await waitFor(async () => {
-      const inputElement: HTMLInputElement = screen.getByRole("textbox");
-      await userEvent.type(inputElement, "email");
+    const inputElement: HTMLInputElement = await screen.findByRole("textbox");
+    await domUser.type(inputElement, "email");
 
-      const submitButton = screen.getByTestId("form-submit-button");
-      fireEvent.click(submitButton);
+    const submitButton = await screen.findByTestId("form-submit-button");
+    await domUser.click(submitButton);
 
-      expect(mocks.resetPassword).toHaveBeenCalledTimes(1);
-    });
+    expect(mocks.resetPassword).toHaveBeenCalledTimes(1);
   });
 
   it("Shouldn't submit form when it's invalid", async () => {
     render(forgetPasswordJSX);
 
-    await waitFor(async () => {
-      const submitButton = screen.getByTestId("form-submit-button");
-      fireEvent.click(submitButton);
+    const submitButton = await screen.findByTestId("form-submit-button");
+    await domUser.click(submitButton);
 
-      expect(mocks.resetPassword).toHaveBeenCalledTimes(0);
-    });
+    expect(mocks.resetPassword).toHaveBeenCalledTimes(0);
   });
 
   it("Shouldn't allow user to 'go back' a page on first app render", async () => {
-    const { getByTestId } = render(forgetPasswordJSX);
+    render(forgetPasswordJSX);
 
-    await waitFor(async () => {
-      const goBackButton = getByTestId("form-go-back-button");
-      await userEvent.click(goBackButton);
+    const goBackButton = await screen.findByTestId("form-go-back-button");
+    await domUser.click(goBackButton);
 
-      expect(mockHelperFns.navigate).toBeCalledTimes(0);
-    });
+    expect(mockHelperFns.navigate).toBeCalledTimes(0);
   });
 });
