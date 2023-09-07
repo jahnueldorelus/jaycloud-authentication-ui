@@ -1,6 +1,5 @@
 import { FormModel, FormModelInputOption } from "@app-types/form-model";
 import { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import { EditableInput } from "@components/editable-input";
@@ -11,7 +10,7 @@ import { formModelService } from "@services/form-model";
 import ErrorSVG from "@assets/error-circle.svg";
 import { ClassName } from "@services/class-name";
 import { objectService } from "@services/object";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { UIError } from "@components/ui-error";
 import { uiRoutes, uiSearchParams } from "@components/navbar/routes";
 import { Loader } from "@components/loader";
@@ -185,6 +184,7 @@ export const Register = () => {
         <Container
           fluid="md"
           className="register-form p-0 text-white bg-senary rounded overflow-hidden shadow"
+          data-testid="register-form"
         >
           <Container className="px-4 py-2 bg-primary">
             <h3 className="m-0">{title}</h3>
@@ -196,6 +196,7 @@ export const Register = () => {
               variant="danger"
               show={!!createUserErrorMessage}
               aria-live="polite"
+              data-testid="form-error-message"
             >
               <img
                 src={ErrorSVG}
@@ -240,6 +241,7 @@ export const Register = () => {
                   variant="primary"
                   aria-disabled={!formCanBeSubmitted()}
                   onClick={onFormSubmit}
+                  data-testid="form-submit-button"
                 >
                   <Spinner
                     className={

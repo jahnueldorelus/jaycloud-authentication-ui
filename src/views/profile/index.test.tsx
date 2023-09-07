@@ -40,6 +40,7 @@ describe("Profile", () => {
       .spyOn(formModelService, "getProfileUpdateForm")
       .mockImplementation(async () => mocks.updateProfileFormData);
 
+    // Mocks React Router Dom
     vi.mock("react-router-dom", () => ({
       useLocation: mocks.useLocation,
       NavLink: mocks.navLink,

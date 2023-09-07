@@ -1,7 +1,7 @@
 import { formModelService } from "@services/form-model";
 import { SpyInstance } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import { Login } from "@views/login";
+import { Register } from "@views/register";
 import { FormModel } from "@app-types/form-model";
 import { testDataIds, domUser } from "@tests/helper";
 import { addUserProvider } from "@tests/helper";
@@ -9,16 +9,16 @@ import { userService } from "@services/user";
 import { APIUserResponseWithData, TokenData } from "@app-types/services/user";
 import { sessionStorageService } from "@services/session-storage";
 
-describe("Login Form", () => {
+describe("Register Form", () => {
   // JSX of the component to test
-  const loginJSX = addUserProvider(<Login />);
+  const registerJSX = addUserProvider(<Register />);
 
   /**
    * Mock variables and functions.
    */
   const mockHelperFns = vi.hoisted(() => ({
     navigate: vi.fn(),
-    useLocation: vi.fn(() => ({ key: "default" })),
+    useLocation: vi.fn(() => ({})),
     useSearchParamsGet: vi.fn(),
     NavLink: vi.fn(),
   }));
@@ -31,7 +31,7 @@ describe("Login Form", () => {
       lastName: "user-last",
     } as TokenData,
 
-    loginFormData: {
+    registerFormData: {
       title: "FORM-TITLE",
       inputs: [
         {
@@ -52,12 +52,9 @@ describe("Login Form", () => {
       ],
     } as FormModel,
 
-    getAuthenticationForm: vi.fn() as SpyInstance<
-      [],
-      Promise<FormModel | null>
-    >,
+    getRegistrationForm: vi.fn() as SpyInstance<[], Promise<FormModel | null>>,
 
-    authenticateUser: vi.fn() as SpyInstance<
+    createUser: vi.fn() as SpyInstance<
       [requestBody: object],
       Promise<APIUserResponseWithData>
     >,
@@ -77,21 +74,19 @@ describe("Login Form", () => {
    */
   beforeEach(() => {
     // Prevents API service from being called when fetching form
-    mocks.getAuthenticationForm = vi
-      .spyOn(formModelService, "getAuthenticationForm")
-      .mockImplementation(async () => mocks.loginFormData);
+    mocks.getRegistrationForm = vi
+      .spyOn(formModelService, "getRegistrationForm")
+      .mockImplementation(async () => mocks.registerFormData);
 
     // Prevents API service from being called when submitting form
-    mocks.authenticateUser = vi
-      .spyOn(userService, "authenticateUser")
-      .mockImplementation(
-        async () =>
-          ({
-            data: mocks.tokenData,
-            errorMessage: "",
-            errorOccurred: false,
-          } as APIUserResponseWithData)
-      );
+    mocks.createUser = vi.spyOn(userService, "createUser").mockImplementation(
+      async () =>
+        ({
+          data: mocks.tokenData,
+          errorMessage: "",
+          errorOccurred: false,
+        } as APIUserResponseWithData)
+    );
 
     // Prevents webpage redirect after user logs in
     mocks.redirectToPreviousService = vi
@@ -121,23 +116,23 @@ describe("Login Form", () => {
    */
   afterEach(() => {
     vi.clearAllMocks();
-    mocks.getAuthenticationForm.mockRestore();
-    mocks.authenticateUser.mockRestore();
+    mocks.getRegistrationForm.mockRestore();
+    mocks.createUser.mockRestore();
     mocks.redirectToPreviousService.mockRestore();
   });
 
   it("Should successfully fetch form and display it", async () => {
-    render(loginJSX);
+    render(registerJSX);
 
     await waitFor(() => {
-      const loginForm = screen.getByTestId("login-form");
-      expect(loginForm).toBeInTheDocument();
+      const registerForm = screen.getByTestId("register-form");
+      expect(registerForm).toBeInTheDocument();
     });
   });
 
   it("Should fail to fetch form and display an error", async () => {
-    mocks.getAuthenticationForm.mockImplementationOnce(async () => null);
-    render(loginJSX);
+    mocks.getRegistrationForm.mockImplementationOnce(async () => null);
+    render(registerJSX);
 
     await waitFor(() => {
       const uiErrorElement = screen.getByTestId(testDataIds.appUiError);
@@ -146,7 +141,7 @@ describe("Login Form", () => {
   });
 
   it("Should show loader while form is being fetched", async () => {
-    render(loginJSX);
+    render(registerJSX);
 
     await waitFor(() => {
       const appLoaderElement = screen.getByTestId(testDataIds.appLoader);
@@ -154,16 +149,16 @@ describe("Login Form", () => {
     });
   });
 
-  it("Should show that a login request failed", async () => {
-    const errorMessage = "FAILED-TO-LOGIN";
-    mocks.authenticateUser.mockReturnValueOnce(
+  it("Should show that a register request failed", async () => {
+    const errorMessage = "FAILED-TO-REGISTER";
+    mocks.createUser.mockReturnValueOnce(
       Promise.resolve({
         data: null,
         errorMessage,
         errorOccurred: true,
       } as APIUserResponseWithData)
     );
-    render(loginJSX);
+    render(registerJSX);
 
     let inputElement: HTMLInputElement = await screen.findByRole("textbox");
     await domUser.type(inputElement, "text");
@@ -178,7 +173,7 @@ describe("Login Form", () => {
   });
 
   it("Should submit form when it's validated", async () => {
-    render(loginJSX);
+    render(registerJSX);
 
     const inputElement: HTMLInputElement = await screen.findByRole("textbox");
     await domUser.type(inputElement, "email");
@@ -186,22 +181,22 @@ describe("Login Form", () => {
     const submitButton = await screen.findByTestId("form-submit-button");
     await domUser.click(submitButton);
 
-    expect(mocks.authenticateUser).toHaveBeenCalledTimes(1);
+    expect(mocks.createUser).toHaveBeenCalledTimes(1);
   });
 
   it("Shouldn't submit form when it's invalid", async () => {
-    render(loginJSX);
+    render(registerJSX);
 
     const submitButton = await screen.findByTestId("form-submit-button");
     await domUser.click(submitButton);
 
-    expect(mocks.authenticateUser).toHaveBeenCalledTimes(0);
+    expect(mocks.createUser).toHaveBeenCalledTimes(0);
   });
 
   describe("Views after successful login", () => {
     it("Should redirect the user to a service webpage", async () => {
       mockHelperFns.useSearchParamsGet.mockReturnValueOnce("true");
-      render(loginJSX);
+      render(registerJSX);
 
       // Successfully signs in
       const inputElement: HTMLInputElement = await screen.findByRole("textbox");
@@ -213,7 +208,7 @@ describe("Login Form", () => {
     });
 
     it("Should redirect the user to a view in the current application", async () => {
-      render(loginJSX);
+      render(registerJSX);
 
       // Successfully signs in
       const inputElement: HTMLInputElement = await screen.findByRole("textbox");
