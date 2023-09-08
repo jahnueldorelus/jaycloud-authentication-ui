@@ -24,7 +24,11 @@ export const SSOFailed = () => {
             below to go back to the previous service.
           </h5>
 
-          <Button className="my-3" onClick={onBtnClick}>
+          <Button
+            className="my-3"
+            onClick={onBtnClick}
+            data-testid="back-button"
+          >
             Back to Service
           </Button>
 

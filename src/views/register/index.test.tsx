@@ -136,7 +136,7 @@ describe("Register Form", () => {
 
     await waitFor(() => {
       const uiErrorElement = screen.getByTestId(testDataIds.appUiError);
-      expect(uiErrorElement).not.toBeNull();
+      expect(uiErrorElement).toBeInTheDocument();
     });
   });
 
@@ -145,7 +145,7 @@ describe("Register Form", () => {
 
     await waitFor(() => {
       const appLoaderElement = screen.getByTestId(testDataIds.appLoader);
-      expect(appLoaderElement).not.toBeNull();
+      expect(appLoaderElement).toBeInTheDocument();
     });
   });
 
