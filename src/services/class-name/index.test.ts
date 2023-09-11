@@ -1,4 +1,4 @@
-import { ClassName } from ".";
+import { ClassName } from "@services/class-name";
 
 describe("Service - Class Name", () => {
   const defaultClasses = "p-3 d-flex justify-content-center";

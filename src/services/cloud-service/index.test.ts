@@ -3,7 +3,7 @@ import { APIRequestConfig } from "@app-types/services/api";
 import { apiService } from "@services/api";
 import { AxiosError, AxiosResponse } from "axios";
 import { SpyInstance } from "vitest";
-import { cloudService } from ".";
+import { cloudService } from "@services/cloud-service";
 
 describe("Service - Cloud Service", () => {
   // List of dummy services for testing

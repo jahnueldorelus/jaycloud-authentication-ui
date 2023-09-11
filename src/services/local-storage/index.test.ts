@@ -1,9 +1,11 @@
-import { localStorageService } from ".";
+import { localStorageService } from "@services/local-storage";
 
 describe("Service - Local Storage", () => {
   const dummyRefreshToken = "xxxxx-xxxxx-xxxxx";
 
   it("Should set the user's refresh token", () => {
+    expect(window.localStorage.length).toBe(0);
+
     localStorageService.setRefreshToken(dummyRefreshToken);
     expect(window.localStorage.length).toBe(1);
   });
