@@ -16,8 +16,8 @@ describe("Service - Cloud Service", () => {
   }));
 
   const mocks = vi.hoisted(() => ({
-    apiServiceRequest: vi.fn(),
-    apiService: vi.fn() as SpyInstance<
+    apiServiceRequestHelper: vi.fn(),
+    apiServiceRequest: vi.fn() as SpyInstance<
       [apiPath: string, config?: APIRequestConfig | undefined],
       Promise<AxiosResponse<any, any> | AxiosError<any, any>>
     >,
@@ -25,17 +25,17 @@ describe("Service - Cloud Service", () => {
 
   beforeEach(() => {
     // Mocks the API service request initiator
-    mocks.apiService = vi
+    mocks.apiServiceRequest = vi
       .spyOn(apiService, "request")
-      .mockImplementation(mocks.apiServiceRequest);
+      .mockImplementation(mocks.apiServiceRequestHelper);
   });
 
   afterEach(() => {
-    mocks.apiService.mockRestore();
+    mocks.apiServiceRequest.mockRestore();
   });
 
   it("Should fail to get the list of services", async () => {
-    mocks.apiServiceRequest.mockImplementationOnce(async () => {
+    mocks.apiServiceRequestHelper.mockImplementationOnce(async () => {
       throw Error();
     });
 
@@ -45,13 +45,17 @@ describe("Service - Cloud Service", () => {
   });
 
   it("Should get list of services", async () => {
-    mocks.apiServiceRequest.mockImplementationOnce(async (url: string) => {
-      const axiosResponse: AxiosResponse = {
-        data: dummyServices,
-      } as AxiosResponse;
+    mocks.apiServiceRequestHelper.mockImplementationOnce(
+      async (url: string) => {
+        const axiosResponse: AxiosResponse = <AxiosResponse>{
+          data: dummyServices,
+        };
 
-      return url === apiService.routes.get.services.list ? axiosResponse : null;
-    });
+        return url === apiService.routes.get.services.list
+          ? axiosResponse
+          : null;
+      }
+    );
 
     await cloudService.getServices();
 
