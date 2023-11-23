@@ -3,7 +3,10 @@ import "./index.scss";
 
 export const Loader = () => {
   return (
-    <Container className="d-flex flex-column align-items-center">
+    <Container
+      className="d-flex flex-column align-items-center"
+      data-testid="app-loader"
+    >
       <Container className="px-0 d-flex justify-content-center">
         <div className="app-loader spinner-grow bg-primary" role="status" />
         <div className="app-loader spinner-grow bg-tertiary" role="status" />

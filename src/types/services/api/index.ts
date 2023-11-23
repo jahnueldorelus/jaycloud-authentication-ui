@@ -21,10 +21,10 @@ export type APIRoute = {
       passwordReset: string;
       updatePassword: string;
       update: string;
-      ssoRedirect: string;
+      ssoSignedInServiceRedirect: string;
       signOut: string;
-      ssoSignOut: string;
-      ssoToken: string;
+      ssoSignedOutServiceRedirect: string;
+      ssoDecryptedCsrfToken: string;
     };
   };
 };

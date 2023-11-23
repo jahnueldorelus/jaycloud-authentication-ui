@@ -7,7 +7,7 @@ class ObjectService {
   }
 
   /**
-   * Creates a deep copy of an object.
+   * Creates a shallow copy of an object.
    * @param obj The object to copy
    */
   shallowClone<T extends object>(obj: T) {

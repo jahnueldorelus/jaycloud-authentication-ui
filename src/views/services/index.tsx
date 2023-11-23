@@ -116,7 +116,11 @@ export const Services = () => {
       cardBodyContent = (
         <Fragment>
           <div className="ps-3 py-2 d-flex flex-column justify-content-evenly w-100 h-100">
-            <Card.Title className="text-senary" as="h4">
+            <Card.Title
+              className="text-senary"
+              as="h4"
+              data-testid="service-card-title"
+            >
               {service.name}
             </Card.Title>
 
@@ -149,7 +153,7 @@ export const Services = () => {
     else {
       cardImage = ServiceLogoPlaceholder;
       cardBodyContent = (
-        <Container className="p-3">
+        <Container className="p-3" data-testid="service-card-placeholder">
           <Placeholder animation="glow" as={Card.Title}>
             <Placeholder xs={6} />
           </Placeholder>

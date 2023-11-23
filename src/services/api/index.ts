@@ -33,14 +33,16 @@ class APIService {
         users: {
           create: this.baseApiUsersPath + "/new",
           authenticate: this.baseApiUsersPath,
+          signOut: this.baseApiUsersPath + "/sign-out",
           newRefreshToken: this.baseApiUsersPath + "/refresh-token",
           passwordReset: this.baseApiUsersPath + "/password-reset",
           updatePassword: this.baseApiUsersPath + "/update-password",
           update: this.baseApiUsersPath + "/update",
-          ssoRedirect: this.baseApiSSOPath + "/sso-redirect",
-          signOut: this.baseApiSSOPath + "/sign-out",
-          ssoSignOut: this.baseApiSSOPath + "/sign-out-service-redirect",
-          ssoToken: this.baseApiSSOPath + "/sso-token",
+          ssoSignedInServiceRedirect:
+            this.baseApiSSOPath + "/sign-in-service-redirect",
+          ssoSignedOutServiceRedirect:
+            this.baseApiSSOPath + "/sign-out-service-redirect",
+          ssoDecryptedCsrfToken: this.baseApiSSOPath + "/sso-token",
         },
       },
     };

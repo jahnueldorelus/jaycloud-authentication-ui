@@ -113,7 +113,7 @@ export const ForgotPassword = () => {
    * Goes back to the previous page.
    */
   const goBackAPage = () => {
-    if (!userConsumer.state.authReqProcessing) {
+    if (!userConsumer.state.authReqProcessing && location.key !== "default") {
       navigate(-1);
     }
   };
@@ -171,8 +171,11 @@ export const ForgotPassword = () => {
         <div className="password-reset-form py-5 d-flex justify-content-center">
           <Card className="w-fit rounded overflow-hidden shadow">
             {/* FORM HEADER */}
-            <Card.Header className="px-3 py-2 bg-primary text-white fs-3">
-              <h3 className="m-0"> {formModelTitle}</h3>
+            <Card.Header
+              className="px-3 py-2 bg-primary text-white fs-3"
+              data-testid="form-title"
+            >
+              <h3 className="m-0">{formModelTitle}</h3>
             </Card.Header>
 
             {/* FORM BODY */}
@@ -213,17 +216,21 @@ export const ForgotPassword = () => {
 
               <Form>
                 {/* FORM SUBMISSION ERROR */}
-                {passwordResetErrorMessage && (
-                  <Alert className="py-2 d-flex" variant="danger">
-                    <img
-                      src={ErrorSVG}
-                      alt={"A red X in a circle"}
-                      width={20}
-                      aria-hidden={true}
-                    />
-                    <p className="m-0 ms-2">{passwordResetErrorMessage}</p>
-                  </Alert>
-                )}
+                <Alert
+                  className="py-2 d-flex"
+                  variant="danger"
+                  show={!!passwordResetErrorMessage}
+                >
+                  <img
+                    src={ErrorSVG}
+                    alt={"A red X in a circle"}
+                    width={20}
+                    aria-hidden={true}
+                  />
+                  <p className="m-0 ms-2" data-testid="form-error-message">
+                    {passwordResetErrorMessage}
+                  </p>
+                </Alert>
 
                 <FocusableReference ref={topOfFormRef} />
 
@@ -272,6 +279,7 @@ export const ForgotPassword = () => {
                     }
                     onClick={onFormSubmit}
                     aria-label="submit form to reset your password"
+                    data-testid="form-submit-button"
                   >
                     <Spinner
                       className={
@@ -303,6 +311,7 @@ export const ForgotPassword = () => {
                     }
                     onClick={goBackAPage}
                     aria-label="Go back to login page"
+                    data-testid="form-go-back-button"
                   >
                     Cancel
                   </Button>

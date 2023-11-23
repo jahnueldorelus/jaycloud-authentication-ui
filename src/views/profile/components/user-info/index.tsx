@@ -16,7 +16,9 @@ export const UserInfo = () => {
   const createUserInfoJSX = (label: string, content: string) => {
     return (
       <div className="px-sm-0 px-md-3 py-2">
-        <h3 className="fs-5 text-primary">{label}</h3>
+        <h3 className="fs-5 text-primary" data-testid="user-info-label">
+          {label}
+        </h3>
         <h3 className="fs-6">{content}</h3>
       </div>
     );
@@ -49,7 +51,10 @@ export const UserInfo = () => {
   // Displays loader
   else {
     return (
-      <Container className="view-profile-user-info px-0 py-2 d-flex flex-column flex-md-row">
+      <Container
+        className="view-profile-user-info px-0 py-2 d-flex flex-column flex-md-row"
+        data-testid="user-info-placeholder"
+      >
         <Container className="px-0 me-md-3 w-fit d-flex align-items-center">
           <img src={UserIcon} />
         </Container>

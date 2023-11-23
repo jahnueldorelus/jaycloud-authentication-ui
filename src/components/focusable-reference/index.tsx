@@ -8,6 +8,7 @@ export const FocusableReference = forwardRef(
         ref={ref}
         tabIndex={-1}
         style={{ transform: `translateX(-110vw)` }}
+        {..._props}
       />
     );
   }

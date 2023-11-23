@@ -146,7 +146,7 @@ export class UserService {
    */
   async redirectToPreviousService() {
     const result = await apiService.request(
-      apiService.routes.post.users.ssoRedirect,
+      apiService.routes.post.users.ssoSignedInServiceRedirect,
       { method: "POST", withCredentials: true }
     );
     if (isAxiosError(result)) {
@@ -166,7 +166,7 @@ export class UserService {
   async getSSOToken(): Promise<void> {
     try {
       const response = await apiService.request(
-        apiService.routes.post.users.ssoToken,
+        apiService.routes.post.users.ssoDecryptedCsrfToken,
         {
           method: "GET",
           withCredentials: true,
@@ -364,7 +364,7 @@ export class UserService {
    */
   async loggedOutUserSSORedirect() {
     const response = await apiService.request(
-      apiService.routes.post.users.ssoSignOut,
+      apiService.routes.post.users.ssoSignedOutServiceRedirect,
       {
         method: "POST",
         withCredentials: true,

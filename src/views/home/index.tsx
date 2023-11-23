@@ -43,7 +43,11 @@ export const Home = () => {
 
       cardBodyContent = (
         <Fragment>
-          <Card.Title className="text-senary" as="h4">
+          <Card.Title
+            className="text-senary"
+            as="h4"
+            data-testid="service-card-title"
+          >
             {service.name}
           </Card.Title>
           <Card.Text>{service.description}</Card.Text>
@@ -53,11 +57,15 @@ export const Home = () => {
       cardImage = ServiceLogoPlaceholder;
       cardBodyContent = (
         <Fragment>
-          <Placeholder animation="glow" as={Card.Title}>
+          <Placeholder
+            animation="glow"
+            as={Card.Title}
+            data-testid="placeholder-card-title"
+          >
             <Placeholder xs={6} />
           </Placeholder>
           <Placeholder animation="glow" as={Card.Text}>
-            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{" "}
+            <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />
             <Placeholder xs={6} /> <Placeholder xs={8} />
           </Placeholder>
         </Fragment>

@@ -17,8 +17,8 @@ import { uiRoutes } from "@components/navbar/routes";
 import { formModelService } from "@services/form-model";
 import { Loader } from "@components/loader";
 import { userContext } from "@context/user";
-import "./index.scss";
 import { FocusableReference } from "@components/focusable-reference";
+import "./index.scss";
 
 export const UpdatePassword = () => {
   const [searchParams] = useSearchParams();
@@ -170,7 +170,7 @@ export const UpdatePassword = () => {
                   To update your password, please fill the form below.
                 </Card.Text>
               )}
-              <Form>
+              <Form data-testid="update-password-form">
                 {/* FORM SUBMISSION ERROR */}
                 <Alert
                   className="py-2 d-flex"
@@ -184,38 +184,39 @@ export const UpdatePassword = () => {
                     width={20}
                     aria-hidden={true}
                   />
-                  <p className="m-0 ms-2">{updatePasswordErrorMessage}</p>
+                  <p className="m-0 ms-2" data-testid="form-error-message">
+                    {updatePasswordErrorMessage}
+                  </p>
                 </Alert>
 
                 <FocusableReference ref={topOfFormRef} />
 
                 {/* FORM INPUTS */}
-                {!requestWasSubmitted.current && formModelInputs.map((modelInput, index) => {
-                  const inputName = modelInput.name;
-                  const inputText = userModifiedInputs[inputName] || "";
-                  const isInputValid = !!inputsValidity[modelInput.name];
+                {!requestWasSubmitted.current &&
+                  formModelInputs.map((modelInput, index) => {
+                    const inputName = modelInput.name;
+                    const inputText = userModifiedInputs[inputName] || "";
+                    const isInputValid = !!inputsValidity[modelInput.name];
 
-                  return (
-                    <Form.Group
-                      key={index}
-                    >
-                      <EditableInput
-                        formModelName={inputName}
-                        input={modelInput}
-                        inputText={inputText}
-                        isInputValid={isInputValid}
-                        placeholder={`Enter your ${modelInput.label.toLowerCase()}`}
-                        labelClassName="text-white"
-                        invalidMessageClassName="mt-1 text-warning"
-                        onTextChange={onInputChange(modelInput)}
-                        disabled={
-                          userConsumer.state.authReqProcessing ||
-                          requestWasSubmitted.current
-                        }
-                      />
-                    </Form.Group>
-                  );
-                })}
+                    return (
+                      <Form.Group key={index}>
+                        <EditableInput
+                          formModelName={inputName}
+                          input={modelInput}
+                          inputText={inputText}
+                          isInputValid={isInputValid}
+                          placeholder={`Enter your ${modelInput.label.toLowerCase()}`}
+                          labelClassName="text-white"
+                          invalidMessageClassName="mt-1 text-warning"
+                          onTextChange={onInputChange(modelInput)}
+                          disabled={
+                            userConsumer.state.authReqProcessing ||
+                            requestWasSubmitted.current
+                          }
+                        />
+                      </Form.Group>
+                    );
+                  })}
 
                 {/* FORM BUTTONS */}
                 <Container
@@ -235,6 +236,7 @@ export const UpdatePassword = () => {
                     }
                     onClick={onFormSubmit}
                     aria-label="submit form to update your password"
+                    data-testid="form-submit-button"
                   >
                     <Spinner
                       className={
@@ -258,11 +260,7 @@ export const UpdatePassword = () => {
 
                 {requestWasSubmitted.current && (
                   <Fragment>
-                    <Card.Text
-                      className="mb-2"
-                      role="alert"
-                      as="h6"
-                    >
+                    <Card.Text className="mb-2" role="alert" as="h6">
                       Your password was updated successfully!
                     </Card.Text>
 
