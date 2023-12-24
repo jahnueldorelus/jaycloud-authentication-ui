@@ -52,12 +52,9 @@ class AxiosInterceptorsService {
 
           // Adds the user's access token if they're signed in
           if (userAccessToken && userRefreshToken) {
-            request.headers = {
-              Accept: "application/json",
-              Authorization: `Bearer ${userAccessToken}`,
-              "Content-Type": "application/json",
-              ...request.headers,
-            };
+            request.headers.setAccept("application/json");
+            request.headers.setAuthorization(`Bearer ${userAccessToken}`);
+            request.headers.setContentType("application/json");
           }
         }
         return request;
@@ -114,8 +111,12 @@ class AxiosInterceptorsService {
 
 let axiosInterceptorsService: AxiosInterceptorsService | null = null;
 
-export const setupAxiosInterceptors = (userConsumerMethods: UserConsumerMethods) => {
+export const setupAxiosInterceptors = (
+  userConsumerMethods: UserConsumerMethods
+) => {
   if (!axiosInterceptorsService) {
-    axiosInterceptorsService = new AxiosInterceptorsService(userConsumerMethods);
+    axiosInterceptorsService = new AxiosInterceptorsService(
+      userConsumerMethods
+    );
   }
 };
